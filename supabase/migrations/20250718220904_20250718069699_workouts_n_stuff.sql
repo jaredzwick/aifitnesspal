@@ -476,19 +476,3 @@ CREATE TRIGGER update_nutrition_entries_updated_at BEFORE UPDATE ON nutrition_en
 CREATE TRIGGER update_user_goals_updated_at BEFORE UPDATE ON user_goals FOR EACH ROW EXECUTE FUNCTION update_updated_at_column();
 CREATE TRIGGER update_ai_recommendations_updated_at BEFORE UPDATE ON ai_recommendations FOR EACH ROW EXECUTE FUNCTION update_updated_at_column();
 CREATE TRIGGER update_user_preferences_updated_at BEFORE UPDATE ON user_preferences FOR EACH ROW EXECUTE FUNCTION update_updated_at_column();
-
--- Insert some default exercises
-INSERT INTO exercises (name, description, instructions, muscle_groups, equipment, difficulty, exercise_type, calories_per_minute) VALUES
-('Push-ups', 'Classic bodyweight chest exercise', ARRAY['Start in plank position', 'Lower body until chest nearly touches floor', 'Push back up to starting position'], ARRAY['chest', 'shoulders', 'triceps'], ARRAY[], 'beginner', 'strength', 8.0),
-('Squats', 'Fundamental lower body exercise', ARRAY['Stand with feet shoulder-width apart', 'Lower body as if sitting back into chair', 'Return to standing position'], ARRAY['quadriceps', 'glutes', 'hamstrings'], ARRAY[], 'beginner', 'strength', 10.0),
-('Plank', 'Core stability exercise', ARRAY['Start in push-up position', 'Hold body in straight line', 'Engage core muscles'], ARRAY['core', 'shoulders'], ARRAY[], 'beginner', 'strength', 5.0),
-('Burpees', 'Full-body cardio exercise', ARRAY['Start standing', 'Drop to squat position', 'Jump back to plank', 'Do push-up', 'Jump feet back to squat', 'Jump up with arms overhead'], ARRAY['full-body'], ARRAY[], 'intermediate', 'cardio', 15.0),
-('Mountain Climbers', 'Dynamic core and cardio exercise', ARRAY['Start in plank position', 'Alternate bringing knees to chest rapidly', 'Keep core engaged'], ARRAY['core', 'shoulders', 'legs'], ARRAY[], 'intermediate', 'cardio', 12.0)
-ON CONFLICT DO NOTHING;
-
--- Insert some default workout templates
-INSERT INTO workouts (name, description, type, difficulty, duration_minutes, calories_burned_estimate, equipment_needed, muscle_groups, is_template) VALUES
-('Beginner Full Body', 'Perfect starter workout for beginners', 'strength', 'beginner', 30, 200, ARRAY[], ARRAY['full-body'], true),
-('HIIT Cardio Blast', 'High-intensity interval training', 'cardio', 'intermediate', 20, 300, ARRAY[], ARRAY['full-body'], true),
-('Core Strength', 'Focused core strengthening routine', 'strength', 'intermediate', 25, 150, ARRAY[], ARRAY['core'], true)
-ON CONFLICT DO NOTHING;
