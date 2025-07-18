@@ -8,7 +8,6 @@ import { ActivityLevelStep } from './onboarding/ActivityLevelStep';
 import { NutritionStep } from './onboarding/NutritionStep';
 import { HealthInfoStep } from './onboarding/HealthInfoStep';
 import { PhotosStep } from './onboarding/PhotosStep';
-import { PreferencesStep } from './onboarding/PreferencesStep';
 import { AuthStep } from './onboarding/AuthStep';
 
 export const Onboarding: React.FC = () => {
@@ -16,66 +15,59 @@ export const Onboarding: React.FC = () => {
 
   const steps = [
     <WelcomeStep key="welcome" onNext={nextStep} />,
-    <PersonalInfoStep 
-      key="personal-info" 
-      userData={userData} 
-      onUpdate={updateUserData} 
-      onNext={nextStep} 
-      onPrev={prevStep} 
+    <FitnessLevelStep
+      key="fitness-level"
+      userData={userData}
+      onUpdate={updateUserData}
+      onNext={nextStep}
+      onPrev={prevStep}
     />,
-    <FitnessLevelStep 
-      key="fitness-level" 
-      userData={userData} 
-      onUpdate={updateUserData} 
-      onNext={nextStep} 
-      onPrev={prevStep} 
+    <PersonalInfoStep
+      key="personal-info"
+      userData={userData}
+      onUpdate={updateUserData}
+      onNext={nextStep}
+      onPrev={prevStep}
     />,
-    <GoalsStep 
-      key="goals" 
-      userData={userData} 
-      onUpdate={updateUserData} 
-      onNext={nextStep} 
-      onPrev={prevStep} 
+    <GoalsStep
+      key="goals"
+      userData={userData}
+      onUpdate={updateUserData}
+      onNext={nextStep}
+      onPrev={prevStep}
     />,
-    <ActivityLevelStep 
-      key="activity-level" 
-      userData={userData} 
-      onUpdate={updateUserData} 
-      onNext={nextStep} 
-      onPrev={prevStep} 
+    <ActivityLevelStep
+      key="activity-level"
+      userData={userData}
+      onUpdate={updateUserData}
+      onNext={nextStep}
+      onPrev={prevStep}
     />,
-    <NutritionStep 
-      key="nutrition" 
-      userData={userData} 
-      onUpdate={updateUserData} 
-      onNext={nextStep} 
-      onPrev={prevStep} 
+    <NutritionStep
+      key="nutrition"
+      userData={userData}
+      onUpdate={updateUserData}
+      onNext={nextStep}
+      onPrev={prevStep}
     />,
-    <HealthInfoStep 
-      key="health-info" 
-      userData={userData} 
-      onUpdate={updateUserData} 
-      onNext={nextStep} 
-      onPrev={prevStep} 
+    <HealthInfoStep
+      key="health-info"
+      userData={userData}
+      onUpdate={updateUserData}
+      onNext={nextStep}
+      onPrev={prevStep}
     />,
-    <PhotosStep 
-      key="photos" 
-      userData={userData} 
-      onUpdate={updateUserData} 
-      onNext={nextStep} 
-      onPrev={prevStep} 
-    />,
-    <PreferencesStep 
-      key="preferences" 
-      userData={userData} 
-      onUpdate={updateUserData} 
-      onNext={nextStep} 
-      onPrev={prevStep} 
+    <PhotosStep
+      key="photos"
+      userData={userData}
+      onUpdate={updateUserData}
+      onNext={nextStep}
+      onPrev={prevStep}
     />,
     <AuthStep
       key="auth"
       userData={userData}
-      onComplete={() => {}}
+      onComplete={() => { }}
       onPrev={prevStep}
     />,
   ];

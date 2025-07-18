@@ -123,7 +123,7 @@ export const PersonalInfoStep: React.FC<PersonalInfoStepProps> = ({
     onNext();
   };
 
-  const isValid = formData.name && formData.email && formData.age && formData.gender && 
+  const isValid = formData.name && formData.age && formData.gender && 
     ((heightUnit === 'cm' && formData.height) || 
      (heightUnit === 'ft' && formData.heightFeet && formData.heightInches)) &&
     formData.weight;
