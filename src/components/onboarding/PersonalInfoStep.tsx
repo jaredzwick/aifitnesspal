@@ -25,8 +25,8 @@ export const PersonalInfoStep: React.FC<PersonalInfoStepProps> = ({
     heightInches: '',
   });
 
-  const [heightUnit, setHeightUnit] = useState<'cm' | 'ft'>('cm');
-  const [weightUnit, setWeightUnit] = useState<'kg' | 'lbs'>('kg');
+  const [heightUnit, setHeightUnit] = useState<'cm' | 'ft'>('ft');
+  const [weightUnit, setWeightUnit] = useState<'kg' | 'lbs'>('lbs');
 
   // Convert height from feet/inches to cm
   const convertHeightToCm = (feet: number, inches: number) => {
@@ -151,21 +151,6 @@ export const PersonalInfoStep: React.FC<PersonalInfoStepProps> = ({
             onChange={(e) => setFormData({ ...formData, name: e.target.value })}
             className="w-full px-4 py-3 rounded-xl border border-gray-300 dark:border-gray-600 bg-white dark:bg-gray-800 text-gray-900 dark:text-white focus:ring-2 focus:ring-emerald-500 focus:border-transparent transition-colors"
             placeholder="Enter your name"
-            required
-          />
-        </div>
-
-        <div>
-          <label htmlFor="email" className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-2">
-            Email address
-          </label>
-          <input
-            type="email"
-            id="email"
-            value={formData.email}
-            onChange={(e) => setFormData({ ...formData, email: e.target.value })}
-            className="w-full px-4 py-3 rounded-xl border border-gray-300 dark:border-gray-600 bg-white dark:bg-gray-800 text-gray-900 dark:text-white focus:ring-2 focus:ring-emerald-500 focus:border-transparent transition-colors"
-            placeholder="Enter your email"
             required
           />
         </div>

@@ -1,6 +1,6 @@
 import React, { useState } from 'react';
 import { Camera, Upload, X, Check } from 'lucide-react';
-import { User as FitnessUser } from '../../types';
+import { FitnessUser } from '../../types';
 
 interface PhotosStepProps {
   userData: Partial<FitnessUser>;
