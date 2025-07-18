@@ -1,6 +1,7 @@
 import React, { useState } from 'react';
 import { Eye, EyeOff, Mail, Lock, User, AlertCircle } from 'lucide-react';
 import { useAuth } from '../../hooks/useAuth';
+import { useOnboarding } from '../../hooks/useOnboarding';
 
 interface AuthFormProps {
   mode: 'signin' | 'signup';
@@ -20,6 +21,7 @@ export const AuthForm: React.FC<AuthFormProps> = ({
   onError
 }) => {
   const { signIn, signUp } = useAuth();
+  const { userData } = useOnboarding();
   const [formData, setFormData] = useState({
     email: defaultEmail,
     password: '',
@@ -43,7 +45,7 @@ export const AuthForm: React.FC<AuthFormProps> = ({
           return;
         }
         
-        const { error } = await signUp(formData.email, formData.password);
+        const { error } = await signUp(formData.email, formData.password, userData);
         if (error) {
           const errorMessage = error.message || 'Failed to create account. Please try again.';
           if (onError) {

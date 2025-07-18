@@ -7,13 +7,10 @@ import {
   Target, 
   Calendar,
   Dumbbell,
-  Heart,
   Zap,
-  Clock,
-  Award,
-  Plus
+  Plus,
+  Play
 } from 'lucide-react';
-import { User as FitnessUser } from '../types';
 import { ThemeToggle } from './ThemeToggle';
 import { WorkoutTracker } from './workouts/WorkoutTracker';
 import { WorkoutList } from './workouts/WorkoutList';
@@ -24,12 +21,12 @@ import { useQuery } from '../hooks/useApi';
 import { workoutService } from '../services/workoutService';
 import { nutritionService } from '../services/nutritionService';
 import { progressService } from '../services/progressService';
-import { LoadingSpinner, SkeletonCard } from './ui/LoadingSpinner';
-import { ErrorMessage } from './ui/ErrorMessage';
+import { SkeletonCard } from './ui/LoadingSpinner';
+import { User } from '@supabase/supabase-js';
 import { ErrorBoundary } from './ui/ErrorBoundary';
 
 interface DashboardProps {
-  user: FitnessUser;
+  user: User;
 }
 
 type DashboardView = 'overview' | 'workout-tracker' | 'workouts' | 'nutrition' | 'progress';
@@ -49,7 +46,7 @@ export const Dashboard: React.FC<DashboardProps> = ({ user }) => {
   const {
     data: recentWorkouts,
     loading: workoutsLoading,
-  } = useQuery(() => workoutService.getUserWorkouts({ limit: '5' }));
+  } = useQuery(() => workoutService.getUserWorkouts());
 
   const {
     data: progressSummary,
@@ -71,7 +68,7 @@ export const Dashboard: React.FC<DashboardProps> = ({ user }) => {
       <div className="bg-gradient-to-r from-emerald-500 to-blue-600 rounded-2xl p-6 text-white">
         <div className="flex items-center justify-between">
           <div>
-            <h1 className="text-3xl font-bold mb-2">Welcome back, {user.name}! 👋</h1>
+            <h1 className="text-3xl font-bold mb-2">Welcome back, {user.user_metadata.name}! 👋</h1>
             <p className="text-emerald-100">
               Ready to crush your fitness goals today?
             </p>
@@ -82,7 +79,53 @@ export const Dashboard: React.FC<DashboardProps> = ({ user }) => {
           </div>
         </div>
       </div>
-
+ {/* Quick Actions */}
+ <div className="bg-white dark:bg-gray-800 rounded-xl border border-gray-200 dark:border-gray-700 p-6">
+        <h3 className="text-lg font-semibold text-gray-900 dark:text-white mb-4">
+          Quick Actions
+        </h3>
+        <div className="grid grid-cols-2 md:grid-cols-4 gap-4">
+          <button
+            onClick={() => setCurrentView('workout-tracker')}
+            className="flex flex-col items-center space-y-2 p-4 bg-emerald-50 dark:bg-emerald-900/20 hover:bg-emerald-100 dark:hover:bg-emerald-900/30 rounded-xl transition-colors"
+          >
+            <Play className="w-6 h-6 text-emerald-600 dark:text-emerald-400" />
+            <span className="text-sm font-medium text-emerald-700 dark:text-emerald-300">
+              Start Workout
+            </span>
+          </button>
+          
+          <button
+            onClick={() => setCurrentView('nutrition')}
+            className="flex flex-col items-center space-y-2 p-4 bg-orange-50 dark:bg-orange-900/20 hover:bg-orange-100 dark:hover:bg-orange-900/30 rounded-xl transition-colors"
+          >
+            <Plus className="w-6 h-6 text-orange-600 dark:text-orange-400" />
+            <span className="text-sm font-medium text-orange-700 dark:text-orange-300">
+              Log Food
+            </span>
+          </button>
+          
+          <button
+            onClick={() => setCurrentView('progress')}
+            className="flex flex-col items-center space-y-2 p-4 bg-blue-50 dark:bg-blue-900/20 hover:bg-blue-100 dark:hover:bg-blue-900/30 rounded-xl transition-colors"
+          >
+            <Camera className="w-6 h-6 text-blue-600 dark:text-blue-400" />
+            <span className="text-sm font-medium text-blue-700 dark:text-blue-300">
+              Progress Photo
+            </span>
+          </button>
+          
+          <button
+            onClick={() => setCurrentView('progress')}
+            className="flex flex-col items-center space-y-2 p-4 bg-purple-50 dark:bg-purple-900/20 hover:bg-purple-100 dark:hover:bg-purple-900/30 rounded-xl transition-colors"
+          >
+            <TrendingUp className="w-6 h-6 text-purple-600 dark:text-purple-400" />
+            <span className="text-sm font-medium text-purple-700 dark:text-purple-300">
+              View Progress
+            </span>
+          </button>
+        </div>
+      </div>
       {/* Quick Stats */}
       <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-4">
         {/* Active Workout */}
@@ -157,7 +200,7 @@ export const Dashboard: React.FC<DashboardProps> = ({ user }) => {
           ) : (
             <div>
               <div className="text-2xl font-bold text-gray-900 dark:text-white mb-1">
-                {progressSummary?.latestWeight || user.weight}kg
+                {progressSummary?.latestWeight || user.user_metadata.weight}kg
               </div>
               <p className="text-sm text-gray-600 dark:text-gray-300">
                 {progressSummary?.weightChange ? (
@@ -329,53 +372,7 @@ export const Dashboard: React.FC<DashboardProps> = ({ user }) => {
         </div>
       </div>
 
-      {/* Quick Actions */}
-      <div className="bg-white dark:bg-gray-800 rounded-xl border border-gray-200 dark:border-gray-700 p-6">
-        <h3 className="text-lg font-semibold text-gray-900 dark:text-white mb-4">
-          Quick Actions
-        </h3>
-        <div className="grid grid-cols-2 md:grid-cols-4 gap-4">
-          <button
-            onClick={() => setCurrentView('workout-tracker')}
-            className="flex flex-col items-center space-y-2 p-4 bg-emerald-50 dark:bg-emerald-900/20 hover:bg-emerald-100 dark:hover:bg-emerald-900/30 rounded-xl transition-colors"
-          >
-            <Play className="w-6 h-6 text-emerald-600 dark:text-emerald-400" />
-            <span className="text-sm font-medium text-emerald-700 dark:text-emerald-300">
-              Start Workout
-            </span>
-          </button>
-          
-          <button
-            onClick={() => setCurrentView('nutrition')}
-            className="flex flex-col items-center space-y-2 p-4 bg-orange-50 dark:bg-orange-900/20 hover:bg-orange-100 dark:hover:bg-orange-900/30 rounded-xl transition-colors"
-          >
-            <Plus className="w-6 h-6 text-orange-600 dark:text-orange-400" />
-            <span className="text-sm font-medium text-orange-700 dark:text-orange-300">
-              Log Food
-            </span>
-          </button>
-          
-          <button
-            onClick={() => setCurrentView('progress')}
-            className="flex flex-col items-center space-y-2 p-4 bg-blue-50 dark:bg-blue-900/20 hover:bg-blue-100 dark:hover:bg-blue-900/30 rounded-xl transition-colors"
-          >
-            <Camera className="w-6 h-6 text-blue-600 dark:text-blue-400" />
-            <span className="text-sm font-medium text-blue-700 dark:text-blue-300">
-              Progress Photo
-            </span>
-          </button>
-          
-          <button
-            onClick={() => setCurrentView('progress')}
-            className="flex flex-col items-center space-y-2 p-4 bg-purple-50 dark:bg-purple-900/20 hover:bg-purple-100 dark:hover:bg-purple-900/30 rounded-xl transition-colors"
-          >
-            <TrendingUp className="w-6 h-6 text-purple-600 dark:text-purple-400" />
-            <span className="text-sm font-medium text-purple-700 dark:text-purple-300">
-              View Progress
-            </span>
-          </button>
-        </div>
-      </div>
+     
     </div>
   );
 
@@ -445,10 +442,10 @@ export const Dashboard: React.FC<DashboardProps> = ({ user }) => {
                   >
                     <div className="w-8 h-8 bg-gradient-to-br from-emerald-500 to-emerald-600 rounded-full flex items-center justify-center">
                       <span className="text-white text-sm font-semibold">
-                        {user.name.charAt(0).toUpperCase()}
+                        {user.user_metadata.name ? user.user_metadata.name.charAt(0).toUpperCase() : 'U'}
                       </span>
                     </div>
-                    <span className="hidden md:block">{user.name}</span>
+                    <span className="hidden md:block">{user.user_metadata.name}</span>
                   </button>
                 </div>
               </div>

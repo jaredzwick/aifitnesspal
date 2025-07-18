@@ -1,5 +1,4 @@
-export interface User {
-  id: string;
+export interface FitnessUser {
   name: string;
   email: string;
   age: number;

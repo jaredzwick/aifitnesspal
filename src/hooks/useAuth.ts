@@ -1,6 +1,7 @@
 import { useState, useEffect } from 'react';
-import { User, Session, AuthError } from '@supabase/supabase-js';
+import { User, Session } from '@supabase/supabase-js';
 import { supabase } from '../lib/supabase';
+import { FitnessUser } from '../types';
 
 export interface AuthState {
   user: User | null;
@@ -58,11 +59,14 @@ export const useAuth = () => {
     setAuthState(prev => ({ ...prev, error: null }));
   };
 
-  const signUp = async (email: string, password: string) => {
+  const signUp = async (email: string, password: string, userData: Partial<FitnessUser>) => {
     try {
       const { data, error } = await supabase.auth.signUp({
         email,
         password,
+        options: {
+          data: userData,
+        },
       });
       return { data, error };
     } catch (err) {

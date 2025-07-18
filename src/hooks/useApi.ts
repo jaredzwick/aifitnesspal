@@ -1,5 +1,5 @@
-import { useState, useEffect, useCallback, useRef } from 'react';
-import { apiClient, ApiError } from '../lib/api';
+import { useState, useCallback, useRef } from 'react';
+import { ApiError } from '../lib/api';
 
 // Loading states
 export type LoadingState = 'idle' | 'loading' | 'success' | 'error';
@@ -46,13 +46,6 @@ export function useApi<T>(
   const lastArgsRef = useRef<any[]>([]);
   const retryCountRef = useRef(0);
   const mountedRef = useRef(true);
-
-  useEffect(() => {
-    mountedRef.current = true;
-    return () => {
-      mountedRef.current = false;
-    };
-  }, []);
 
   const execute = useCallback(async (...args: any[]): Promise<T | null> => {
     if (!mountedRef.current) return null;
@@ -111,11 +104,11 @@ export function useApi<T>(
     retryCountRef.current = 0;
   }, []);
 
-  useEffect(() => {
-    if (immediate) {
-      execute();
-    }
-  }, [immediate, execute]);
+  // useEffect(() => {
+  //   if (immediate) {
+  //     execute();
+  //   }
+  // }, [immediate, execute]);
 
   return {
     data,

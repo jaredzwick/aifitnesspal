@@ -1,6 +1,5 @@
 import React from 'react';
 import { useOnboarding } from '../hooks/useOnboarding';
-import { useUserProfile } from '../hooks/useUserProfile';
 import { WelcomeStep } from './onboarding/WelcomeStep';
 import { PersonalInfoStep } from './onboarding/PersonalInfoStep';
 import { FitnessLevelStep } from './onboarding/FitnessLevelStep';
@@ -8,30 +7,8 @@ import { GoalsStep } from './onboarding/GoalsStep';
 import { PreferencesStep } from './onboarding/PreferencesStep';
 import { AuthStep } from './onboarding/AuthStep';
 
-interface OnboardingProps {
-  onComplete: () => void;
-}
-
-export const Onboarding: React.FC<OnboardingProps> = ({ onComplete }) => {
-  const { refreshProfile } = useUserProfile();
-  const { step, userData, updateUserData, nextStep, prevStep, completeOnboarding } = useOnboarding();
-
-  const handleComplete = async () => {
-    try {
-      await completeOnboarding();
-      await refreshProfile();
-    } catch (error) {
-      console.error('Error completing onboarding:', error);
-    }
-    onComplete();
-  };
-
-  const handleAuthSuccess = async (user: any) => {
-    // Wait a moment for auth state to update
-    setTimeout(async () => {
-      await handleComplete();
-    }, 1000);
-  };
+export const Onboarding: React.FC = () => {
+  const { step, userData, updateUserData, nextStep, prevStep } = useOnboarding();
 
   const steps = [
     <WelcomeStep key="welcome" onNext={nextStep} />,
@@ -66,7 +43,7 @@ export const Onboarding: React.FC<OnboardingProps> = ({ onComplete }) => {
     <AuthStep
       key="auth"
       userData={userData}
-      onComplete={handleAuthSuccess}
+      onComplete={() => {}}
       onPrev={prevStep}
     />,
   ];
