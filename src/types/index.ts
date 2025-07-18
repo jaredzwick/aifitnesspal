@@ -1,11 +1,25 @@
 export interface FitnessUser {
   name: string;
   email: string;
+  gender: 'male' | 'female' | 'other';
   age: number;
   height: number;
   weight: number;
   fitnessLevel: 'beginner' | 'intermediate' | 'advanced';
   goals: string[];
+  cardioDaysPerWeek: number;
+  trainDaysPerWeek: number;
+  canDoMore: boolean;
+  dailyCalories: number;
+  detailedEating?: string;
+  pastInjuries: string[];
+  dietaryRestrictions: string[];
+  additionalHealthNotes?: string;
+  progressPhotos?: Array<{
+    type: 'front' | 'side' | 'back';
+    file: File;
+    preview: string;
+  }>;
   preferences: {
     workoutTypes: string[];
     dietaryRestrictions: string[];
@@ -24,6 +38,13 @@ export interface Workout {
   calories: number;
   completed: boolean;
   completedAt?: Date;
+}
+
+export interface WorkoutRequest {
+  name: string;
+  duration: number;
+  exercises: string[];
+  intensity: string;
 }
 
 export interface Exercise {

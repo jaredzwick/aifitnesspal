@@ -4,6 +4,10 @@ import { WelcomeStep } from './onboarding/WelcomeStep';
 import { PersonalInfoStep } from './onboarding/PersonalInfoStep';
 import { FitnessLevelStep } from './onboarding/FitnessLevelStep';
 import { GoalsStep } from './onboarding/GoalsStep';
+import { ActivityLevelStep } from './onboarding/ActivityLevelStep';
+import { NutritionStep } from './onboarding/NutritionStep';
+import { HealthInfoStep } from './onboarding/HealthInfoStep';
+import { PhotosStep } from './onboarding/PhotosStep';
 import { PreferencesStep } from './onboarding/PreferencesStep';
 import { AuthStep } from './onboarding/AuthStep';
 
@@ -33,6 +37,34 @@ export const Onboarding: React.FC = () => {
       onNext={nextStep} 
       onPrev={prevStep} 
     />,
+    <ActivityLevelStep 
+      key="activity-level" 
+      userData={userData} 
+      onUpdate={updateUserData} 
+      onNext={nextStep} 
+      onPrev={prevStep} 
+    />,
+    <NutritionStep 
+      key="nutrition" 
+      userData={userData} 
+      onUpdate={updateUserData} 
+      onNext={nextStep} 
+      onPrev={prevStep} 
+    />,
+    <HealthInfoStep 
+      key="health-info" 
+      userData={userData} 
+      onUpdate={updateUserData} 
+      onNext={nextStep} 
+      onPrev={prevStep} 
+    />,
+    <PhotosStep 
+      key="photos" 
+      userData={userData} 
+      onUpdate={updateUserData} 
+      onNext={nextStep} 
+      onPrev={prevStep} 
+    />,
     <PreferencesStep 
       key="preferences" 
       userData={userData} 
@@ -56,13 +88,13 @@ export const Onboarding: React.FC = () => {
           <div className="mb-8">
             <div className="flex justify-center mb-2">
               <span className="text-sm text-gray-600 dark:text-gray-300">
-                Step {step} of 5
+                Step {step} of 9
               </span>
             </div>
             <div className="w-full bg-gray-200 dark:bg-gray-700 rounded-full h-2">
               <div
                 className="bg-gradient-to-r from-emerald-500 to-emerald-600 h-2 rounded-full transition-all duration-300"
-                style={{ width: `${(step / 5) * 100}%` }}
+                style={{ width: `${(step / 9) * 100}%` }}
               />
             </div>
           </div>

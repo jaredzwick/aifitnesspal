@@ -453,7 +453,7 @@ export const NutritionTracker: React.FC = () => {
                 </div>
 
                 <div className="bg-gradient-to-br from-purple-50 to-purple-100 dark:from-purple-900/20 dark:to-purple-800/20 rounded-xl p-4">
-                  <h4 className="font-semibold text-purple-900 dark:text-purple-100 mb-3">Water Intake</h4>
+                  <h4 className="font-semibold text-purple-900 dark:text-purple-100 mb-3">Hydration</h4>
                   <div className="space-y-2">
                     <div className="flex justify-between text-sm">
                       <span>Today</span>

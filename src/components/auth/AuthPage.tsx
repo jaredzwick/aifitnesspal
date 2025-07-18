@@ -20,15 +20,16 @@ export const AuthPage: React.FC = () => {
               <Dumbbell className="w-6 h-6" />
             </div>
             <h1 className="text-2xl font-bold">FitCoach AI</h1>
+            <h1 className="text-2xl font-bold">Fit Fly</h1>
           </div>
           
           <div className="space-y-8">
             <div>
               <h2 className="text-4xl font-bold mb-4">
-                Your AI Fitness Journey Starts Here
+                Your Fitness Journey Starts Here
               </h2>
               <p className="text-xl text-emerald-100">
-                Personalized workouts, nutrition tracking, and 24/7 AI coaching to help you achieve your fitness goals.
+                Personalized workouts, nutrition tracking, and 24/7 coaching to help you achieve your fitness goals.
               </p>
             </div>
 
@@ -39,7 +40,7 @@ export const AuthPage: React.FC = () => {
                 </div>
                 <div>
                   <h3 className="font-semibold mb-2">Personalized Plans</h3>
-                  <p className="text-emerald-100">AI-powered workout and nutrition plans tailored to your unique goals and preferences.</p>
+                  <p className="text-emerald-100">Personalized workout and nutrition plans tailored to your unique goals and preferences.</p>
                 </div>
               </div>
 
@@ -58,8 +59,8 @@ export const AuthPage: React.FC = () => {
                   <Heart className="w-6 h-6" />
                 </div>
                 <div>
-                  <h3 className="font-semibold mb-2">24/7 AI Coach</h3>
-                  <p className="text-emerald-100">Your personal AI coach is always there to motivate, guide, and keep you accountable.</p>
+                  <h3 className="font-semibold mb-2">24/7 Coach</h3>
+                  <p className="text-emerald-100">Your personal coach is always there to motivate, guide, and keep you accountable.</p>
                 </div>
               </div>
             </div>
@@ -68,7 +69,7 @@ export const AuthPage: React.FC = () => {
 
         <div className="relative z-10">
           <p className="text-emerald-100">
-            "FitCoach AI transformed my fitness journey. The personalized approach and constant motivation kept me on track like never before."
+            "Fit Fly transformed my fitness journey. The personalized approach and constant motivation kept me on track like never before."
           </p>
           <p className="font-semibold mt-2">- Sarah M., Beta User</p>
         </div>

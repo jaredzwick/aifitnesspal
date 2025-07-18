@@ -103,7 +103,7 @@ Deno.serve(async (req) => {
             .from('ai_recommendations')
             .insert({
               user_id: user.user.id,
-              recommendation_type: 'workout',
+              recommendation_type: 'workout', 
               title: 'Personalized Workout Plan',
               content: JSON.stringify(workoutRecommendation),
               reasoning: `Based on your ${request.fitness_level} fitness level and ${request.available_time} minutes available time`,
@@ -229,7 +229,7 @@ function generateWorkoutRecommendation(request: WorkoutRecommendationRequest) {
   const { goals, fitness_level, available_time, equipment, preferences } = request;
   
   // This would be replaced with actual AI logic
-  const workouts = [];
+  const workouts:  = [];
   
   if (goals.includes('weight-loss')) {
     workouts.push({

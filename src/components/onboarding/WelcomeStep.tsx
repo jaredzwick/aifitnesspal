@@ -21,11 +21,11 @@ export const WelcomeStep: React.FC<WelcomeStepProps> = ({ onNext }) => {
         </div>
         
         <h1 className="text-4xl font-bold bg-gradient-to-r from-emerald-600 to-blue-600 dark:from-emerald-400 dark:to-blue-400 bg-clip-text text-transparent">
-          Welcome to FitCoach AI
+          Welcome to Fit Fly
         </h1>
         
         <p className="text-lg text-gray-600 dark:text-gray-300 max-w-md mx-auto">
-          Your personal AI fitness accountability partner, ready to guide you on your journey to better health.
+          Your personal fitness accountability partner, ready to guide you on your journey to better health.
         </p>
       </div>
 
@@ -36,7 +36,7 @@ export const WelcomeStep: React.FC<WelcomeStepProps> = ({ onNext }) => {
           </div>
           <h3 className="font-semibold text-gray-900 dark:text-white mb-2">Personalized Plans</h3>
           <p className="text-sm text-gray-600 dark:text-gray-300">
-            AI-powered workout and nutrition plans tailored to your goals and preferences.
+            Personalized workout and nutrition plans tailored to your goals and preferences.
           </p>
         </div>
 
@@ -56,7 +56,7 @@ export const WelcomeStep: React.FC<WelcomeStepProps> = ({ onNext }) => {
           </div>
           <h3 className="font-semibold text-gray-900 dark:text-white mb-2">24/7 Support</h3>
           <p className="text-sm text-gray-600 dark:text-gray-300">
-            Your AI coach is always there to motivate, guide, and keep you accountable.
+            Your coach is always there to motivate, guide, and keep you accountable.
           </p>
         </div>
       </div>

@@ -404,7 +404,7 @@ export const Dashboard: React.FC<DashboardProps> = ({ user }) => {
                   <Dumbbell className="w-5 h-5 text-white" />
                 </div>
                 <h1 className="text-xl font-bold text-gray-900 dark:text-white">
-                  FitCoach AI
+                  Fit Fly
                 </h1>
               </div>
 
