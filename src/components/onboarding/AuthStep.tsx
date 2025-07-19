@@ -60,6 +60,7 @@ export const AuthStep: React.FC<AuthStepProps> = ({ userData, onComplete, onPrev
           onSuccess={onComplete}
           defaultEmail={userData.email}
           onError={handleAuthError}
+          userData={userData}
         />
       )}
 

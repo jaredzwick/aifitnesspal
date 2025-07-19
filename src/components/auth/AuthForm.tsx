@@ -1,7 +1,7 @@
 import React, { useState } from 'react';
 import { Eye, EyeOff, Mail, Lock, User, AlertCircle } from 'lucide-react';
 import { useAuth } from '../../hooks/useAuth';
-import { useOnboarding } from '../../hooks/useOnboarding';
+import { FitnessUser } from '../../types';
 
 interface AuthFormProps {
   mode: 'signin' | 'signup';
@@ -10,18 +10,19 @@ interface AuthFormProps {
   onSuccess?: (user: any) => void;
   defaultEmail?: string;
   onError?: (error: string) => void;
+  userData?: Partial<FitnessUser>;
 }
 
-export const AuthForm: React.FC<AuthFormProps> = ({ 
-  mode, 
-  onToggleMode, 
-  onForgotPassword, 
+export const AuthForm: React.FC<AuthFormProps> = ({
+  mode,
+  onToggleMode,
+  onForgotPassword,
   onSuccess,
   defaultEmail = '',
-  onError
+  onError,
+  userData = {}
 }) => {
   const { signIn, signUp } = useAuth();
-  const { userData } = useOnboarding();
   const [formData, setFormData] = useState({
     email: defaultEmail,
     password: '',
@@ -44,7 +45,7 @@ export const AuthForm: React.FC<AuthFormProps> = ({
           setLoading(false);
           return;
         }
-        
+
         const { error } = await signUp(formData.email, formData.password, userData);
         if (error) {
           const errorMessage = error.message || 'Failed to create account. Please try again.';
@@ -81,9 +82,10 @@ export const AuthForm: React.FC<AuthFormProps> = ({
     }
   };
 
-  const isValid = formData.email && formData.password && 
+  const isValid = formData.email && formData.password &&
     (mode === 'signin' || formData.confirmPassword);
 
+  console.log('userData', userData)
   return (
     <div className="w-full max-w-md">
       <div className="text-center mb-8">
@@ -94,8 +96,8 @@ export const AuthForm: React.FC<AuthFormProps> = ({
           {mode === 'signin' ? 'Welcome back!' : 'Create your account'}
         </h2>
         <p className="text-gray-600 dark:text-gray-300">
-          {mode === 'signin' 
-            ? 'Sign in to continue your fitness journey' 
+          {mode === 'signin'
+            ? 'Sign in to continue your fitness journey'
             : 'Start your personalized fitness journey today'
           }
         </p>
@@ -206,7 +208,7 @@ export const AuthForm: React.FC<AuthFormProps> = ({
             Forgot your password?
           </button>
         )}
-        
+
         <div className="text-sm text-gray-600 dark:text-gray-300">
           {mode === 'signin' ? "Don't have an account? " : "Already have an account? "}
           <button
