@@ -2,6 +2,8 @@ import { Onboarding } from './components/Onboarding';
 import { Dashboard } from './components/Dashboard';
 import { useTheme } from './hooks/useTheme';
 import { useAuth } from './hooks/useAuth';
+import { Routes, Route, BrowserRouter as Router } from 'react-router-dom';
+import { PrivacyPolicy } from './components/PrivacyPolicy';
 
 function App() {
   useTheme();
@@ -15,13 +17,17 @@ function App() {
     );
   }
 
-  console.log('~user', user);
   return (
     <>
       {!user ? (
         <Onboarding />
       ) : (
-        <Dashboard user={user} />
+        <Router>
+          <Routes>
+            <Route path="/" element={<Dashboard user={user} />} />
+            <Route path="/privacy" element={<PrivacyPolicy />} />
+          </Routes>
+        </Router>
       )}
     </>
   );
