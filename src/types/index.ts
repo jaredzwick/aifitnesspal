@@ -6,7 +6,7 @@ export interface FitnessUser {
   height: number;
   weight: number;
   fitnessLevel: 'beginner' | 'intermediate' | 'advanced';
-  goals: string[];
+  goal: string;
   cardioDaysPerWeek: number;
   trainDaysPerWeek: number;
   canDoMore: boolean;
@@ -25,7 +25,94 @@ export interface FitnessUser {
     dietaryRestrictions: string[];
     availableTime: number;
   };
+  personalizedPlan?: PersonalizedPlan;
   onboardingComplete: boolean;
+}
+
+export interface PersonalizedPlan {
+  trainingRegimen: TrainingRegimen;
+  nutritionRegimen: NutritionRegimen;
+  createdAt: Date;
+  lastUpdated: Date;
+}
+
+export interface TrainingRegimen {
+  weeklySchedule: WeeklyWorkoutPlan[];
+  progressionPlan: {
+    phase: 'foundation' | 'development' | 'advanced';
+    duration: number; // weeks
+    nextPhase?: string;
+  };
+  restDays: number;
+  estimatedCaloriesBurned: number;
+}
+
+export interface WeeklyWorkoutPlan {
+  day: 'monday' | 'tuesday' | 'wednesday' | 'thursday' | 'friday' | 'saturday' | 'sunday';
+  workout?: WorkoutTemplate;
+  isRestDay: boolean;
+}
+
+export interface WorkoutTemplate {
+  name: string;
+  type: 'strength' | 'cardio' | 'hiit' | 'flexibility' | 'mixed';
+  duration: number;
+  targetMuscleGroups: string[];
+  exercises: ExerciseTemplate[];
+  estimatedCalories: number;
+}
+
+export interface ExerciseTemplate {
+  name: string;
+  type: 'strength' | 'cardio' | 'flexibility';
+  sets?: number;
+  reps?: number;
+  duration?: number; // for cardio/time-based exercises
+  restTime: number;
+  instructions: string[];
+  modifications: {
+    beginner?: string;
+    advanced?: string;
+  };
+}
+
+export interface NutritionRegimen {
+  dailyCalorieTarget: number;
+  macroTargets: {
+    protein: number; // grams
+    carbs: number; // grams
+    fat: number; // grams
+    proteinPercentage: number;
+    carbsPercentage: number;
+    fatPercentage: number;
+  };
+  mealPlan: MealPlanTemplate[];
+  hydrationTarget: number; // liters
+  supplements?: string[];
+}
+
+export interface MealPlanTemplate {
+  mealType: 'breakfast' | 'lunch' | 'dinner' | 'snack';
+  targetCalories: number;
+  targetMacros: {
+    protein: number;
+    carbs: number;
+    fat: number;
+  };
+  suggestions: MealSuggestion[];
+}
+
+export interface MealSuggestion {
+  name: string;
+  ingredients: string[];
+  calories: number;
+  macros: {
+    protein: number;
+    carbs: number;
+    fat: number;
+  };
+  prepTime: number;
+  difficulty: 'easy' | 'medium' | 'hard';
 }
 
 export interface Workout {

@@ -9,16 +9,16 @@ interface GoalsStepProps {
 }
 
 const goals = [
-  { 
-    id: 'fat-loss', 
-    label: 'Fat Loss', 
+  {
+    id: 'fat-loss',
+    label: 'Fat Loss',
     icon: '🔥',
     description: 'Lose weight and reduce body fat percentage',
     benefits: ['Burn calories efficiently', 'Improve cardiovascular health', 'Increase energy levels']
   },
-  { 
-    id: 'muscle-growth', 
-    label: 'Muscle Growth', 
+  {
+    id: 'muscle-growth',
+    label: 'Muscle Growth',
     icon: '💪',
     description: 'Build lean muscle mass and strength',
     benefits: ['Increase muscle size', 'Boost metabolism', 'Improve functional strength']
@@ -32,11 +32,11 @@ export const GoalsStep: React.FC<GoalsStepProps> = ({
   onPrev,
 }) => {
   const [selectedGoal, setSelectedGoal] = useState<string>(
-    userData.goals && userData.goals.length > 0 ? userData.goals[0] : ''
+    userData.goal || ''
   );
 
   const handleSubmit = () => {
-    onUpdate({ goals: [selectedGoal] });
+    onUpdate({ goal: selectedGoal });
     onNext();
   };
 
@@ -56,11 +56,10 @@ export const GoalsStep: React.FC<GoalsStepProps> = ({
           <button
             key={goal.id}
             onClick={() => setSelectedGoal(goal.id)}
-            className={`p-8 rounded-2xl border-2 transition-all duration-300 text-left hover:shadow-xl transform hover:scale-105 ${
-              selectedGoal === goal.id
-                ? 'border-emerald-500 bg-gradient-to-br from-emerald-50 to-emerald-100 dark:from-emerald-900/20 dark:to-emerald-800/20 shadow-xl scale-105'
-                : 'border-gray-200 dark:border-gray-700 bg-white dark:bg-gray-800 hover:border-emerald-300 dark:hover:border-emerald-600'
-            }`}
+            className={`p-8 rounded-2xl border-2 transition-all duration-300 text-left hover:shadow-xl transform hover:scale-105 ${selectedGoal === goal.id
+              ? 'border-emerald-500 bg-gradient-to-br from-emerald-50 to-emerald-100 dark:from-emerald-900/20 dark:to-emerald-800/20 shadow-xl scale-105'
+              : 'border-gray-200 dark:border-gray-700 bg-white dark:bg-gray-800 hover:border-emerald-300 dark:hover:border-emerald-600'
+              }`}
           >
             <div className="text-center mb-6">
               <div className="text-6xl mb-4">{goal.icon}</div>

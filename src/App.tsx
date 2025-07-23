@@ -18,18 +18,15 @@ function App() {
   }
 
   return (
-    <>
-      {!user ? (
-        <Onboarding />
-      ) : (
-        <Router>
-          <Routes>
-            <Route path="/" element={<Dashboard user={user} />} />
-            <Route path="/privacy" element={<PrivacyPolicy />} />
-          </Routes>
-        </Router>
-      )}
-    </>
+    <Router>
+      <Routes>
+        <Route
+          path="/"
+          element={user ? <Dashboard user={user} /> : <Onboarding />}
+        />
+        <Route path="/privacy" element={<PrivacyPolicy />} />
+      </Routes>
+    </Router>
   );
 }
 
