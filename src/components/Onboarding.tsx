@@ -22,13 +22,7 @@ export const Onboarding: React.FC = () => {
       onNext={nextStep}
       onPrev={prevStep}
     />,
-    <PersonalInfoStep
-      key="personal-info"
-      userData={userData}
-      onUpdate={updateUserData}
-      onNext={nextStep}
-      onPrev={prevStep}
-    />,
+  
     <GoalsStep
       key="goals"
       userData={userData}
@@ -57,6 +51,13 @@ export const Onboarding: React.FC = () => {
       onNext={nextStep}
       onPrev={prevStep}
     />,
+    <PersonalInfoStep
+    key="personal-info"
+    userData={userData}
+    onUpdate={updateUserData}
+    onNext={nextStep}
+    onPrev={prevStep}
+  />,
     <PhotosStep
       key="photos"
       userData={userData}

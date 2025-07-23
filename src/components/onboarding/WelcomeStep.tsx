@@ -1,6 +1,6 @@
 import React from 'react';
 import { Dumbbell, Heart, Target } from 'lucide-react';
-import logo from '../../assets/logov1_transparent.png';
+import logo from '../../assets/logo-t.png';
 
 interface WelcomeStepProps {
   onNext: () => void;
