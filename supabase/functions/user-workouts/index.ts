@@ -1,9 +1,10 @@
-import { createClient } from 'npm:@supabase/supabase-js@2';
+import { createClient } from "npm:@supabase/supabase-js@2";
 
 const corsHeaders = {
-  'Access-Control-Allow-Origin': '*',
-  'Access-Control-Allow-Headers': 'authorization, x-client-info, apikey, content-type',
-  'Access-Control-Allow-Methods': 'GET, POST, PUT, DELETE, OPTIONS',
+  "Access-Control-Allow-Origin": "*",
+  "Access-Control-Allow-Headers":
+    "authorization, x-client-info, apikey, content-type",
+  "Access-Control-Allow-Methods": "GET, POST, PUT, DELETE, OPTIONS",
 };
 
 interface Database {
@@ -119,39 +120,39 @@ interface Database {
 }
 
 Deno.serve(async (req) => {
-  if (req.method === 'OPTIONS') {
+  if (req.method === "OPTIONS") {
     return new Response(null, { headers: corsHeaders });
   }
 
   try {
     const supabaseClient = createClient<Database>(
-      Deno.env.get('SUPABASE_URL') ?? '',
-      Deno.env.get('SUPABASE_ANON_KEY') ?? '',
+      Deno.env.get("SUPABASE_URL") ?? "",
+      Deno.env.get("SUPABASE_ANON_KEY") ?? "",
       {
         global: {
-          headers: { Authorization: req.headers.get('Authorization')! },
+          headers: { Authorization: req.headers.get("Authorization")! },
         },
-      }
+      },
     );
 
     const { data: user } = await supabaseClient.auth.getUser();
     if (!user.user) {
-      return new Response(JSON.stringify({ error: 'Unauthorized' }), {
+      return new Response(JSON.stringify({ error: "Unauthorized" }), {
         status: 401,
-        headers: { ...corsHeaders, 'Content-Type': 'application/json' },
+        headers: { ...corsHeaders, "Content-Type": "application/json" },
       });
     }
 
     const url = new URL(req.url);
-    const segments = url.pathname.split('/').filter(Boolean);
+    const segments = url.pathname.split("/").filter(Boolean);
     const userWorkoutId = segments[segments.length - 1];
 
     switch (req.method) {
-      case 'GET':
-        if (userWorkoutId && userWorkoutId !== 'user-workouts') {
+      case "GET":
+        if (userWorkoutId && userWorkoutId !== "user-workouts") {
           // Get specific user workout with full details
           const { data, error } = await supabaseClient
-            .from('user_workouts')
+            .from("user_workouts")
             .select(`
               *,
               workouts (
@@ -167,23 +168,23 @@ Deno.serve(async (req) => {
                 user_workout_sets (*)
               )
             `)
-            .eq('id', userWorkoutId)
-            .eq('user_id', user.user.id)
+            .eq("id", userWorkoutId)
+            .eq("user_id", user.user.id)
             .single();
 
           if (error) throw error;
 
           return new Response(JSON.stringify(data), {
-            headers: { ...corsHeaders, 'Content-Type': 'application/json' },
+            headers: { ...corsHeaders, "Content-Type": "application/json" },
           });
         } else {
           // Get user workouts with filters
-          const status = url.searchParams.get('status');
-          const date = url.searchParams.get('date');
-          const limit = url.searchParams.get('limit');
+          const status = url.searchParams.get("status");
+          const date = url.searchParams.get("date");
+          const limit = url.searchParams.get("limit");
 
           let query = supabaseClient
-            .from('user_workouts')
+            .from("user_workouts")
             .select(`
               *,
               workouts (
@@ -194,11 +195,16 @@ Deno.serve(async (req) => {
                 calories_burned_estimate
               )
             `)
-            .eq('user_id', user.user.id)
-            .order('created_at', { ascending: false });
+            .eq("user_id", user.user.id)
+            .order("created_at", { ascending: false });
 
-          if (status) query = query.eq('status', status);
-          if (date) query = query.gte('scheduled_for', date).lt('scheduled_for', `${date}T23:59:59`);
+          if (status) query = query.eq("status", status);
+          if (date) {
+            query = query.gte("scheduled_for", date).lt(
+              "scheduled_for",
+              `${date}T23:59:59`,
+            );
+          }
           if (limit) query = query.limit(parseInt(limit));
 
           const { data, error } = await query;
@@ -206,36 +212,40 @@ Deno.serve(async (req) => {
           if (error) throw error;
 
           return new Response(JSON.stringify(data), {
-            headers: { ...corsHeaders, 'Content-Type': 'application/json' },
+            headers: { ...corsHeaders, "Content-Type": "application/json" },
           });
         }
 
-      case 'POST':
+      case "POST":
         const workoutData = await req.json();
-        
+
         // Create user workout
-        const { data: newUserWorkout, error: createError } = await supabaseClient
-          .from('user_workouts')
-          .insert({
-            ...workoutData,
-            user_id: user.user.id,
-          })
-          .select()
-          .single();
+        const { data: newUserWorkout, error: createError } =
+          await supabaseClient
+            .from("user_workouts")
+            .insert({
+              ...workoutData,
+              user_id: user.user.id,
+            })
+            .select()
+            .single();
 
         if (createError) throw createError;
 
         // If this is starting a workout, copy exercises from workout template
-        if (workoutData.status === 'in_progress' || workoutData.status === 'scheduled') {
+        if (
+          workoutData.status === "in_progress" ||
+          workoutData.status === "scheduled"
+        ) {
           const { data: workoutExercises } = await supabaseClient
-            .from('workout_exercises')
-            .select('*, exercises(*)')
-            .eq('workout_id', workoutData.workout_id)
-            .order('order_index');
+            .from("workout_exercises")
+            .select("*, exercises(*)")
+            .eq("workout_id", workoutData.workout_id)
+            .order("order_index");
 
           if (workoutExercises) {
             // Create user workout exercises
-            const userWorkoutExercises = workoutExercises.map(we => ({
+            const userWorkoutExercises = workoutExercises.map((we) => ({
               user_workout_id: newUserWorkout.id,
               exercise_id: we.exercise_id,
               order_index: we.order_index,
@@ -248,7 +258,7 @@ Deno.serve(async (req) => {
             }));
 
             const { data: createdExercises } = await supabaseClient
-              .from('user_workout_exercises')
+              .from("user_workout_exercises")
               .insert(userWorkoutExercises)
               .select();
 
@@ -270,7 +280,7 @@ Deno.serve(async (req) => {
               }
 
               await supabaseClient
-                .from('user_workout_sets')
+                .from("user_workout_sets")
                 .insert(allSets);
             }
           }
@@ -278,53 +288,54 @@ Deno.serve(async (req) => {
 
         return new Response(JSON.stringify(newUserWorkout), {
           status: 201,
-          headers: { ...corsHeaders, 'Content-Type': 'application/json' },
+          headers: { ...corsHeaders, "Content-Type": "application/json" },
         });
 
-      case 'PUT':
+      case "PUT":
         const updateData = await req.json();
-        
-        const { data: updatedWorkout, error: updateError } = await supabaseClient
-          .from('user_workouts')
-          .update({
-            ...updateData,
-            updated_at: new Date().toISOString(),
-          })
-          .eq('id', userWorkoutId)
-          .eq('user_id', user.user.id)
-          .select()
-          .single();
+
+        const { data: updatedWorkout, error: updateError } =
+          await supabaseClient
+            .from("user_workouts")
+            .update({
+              ...updateData,
+              updated_at: new Date().toISOString(),
+            })
+            .eq("id", userWorkoutId)
+            .eq("user_id", user.user.id)
+            .select()
+            .single();
 
         if (updateError) throw updateError;
 
         return new Response(JSON.stringify(updatedWorkout), {
-          headers: { ...corsHeaders, 'Content-Type': 'application/json' },
+          headers: { ...corsHeaders, "Content-Type": "application/json" },
         });
 
-      case 'DELETE':
+      case "DELETE":
         const { error: deleteError } = await supabaseClient
-          .from('user_workouts')
+          .from("user_workouts")
           .delete()
-          .eq('id', userWorkoutId)
-          .eq('user_id', user.user.id);
+          .eq("id", userWorkoutId)
+          .eq("user_id", user.user.id);
 
         if (deleteError) throw deleteError;
 
         return new Response(JSON.stringify({ success: true }), {
-          headers: { ...corsHeaders, 'Content-Type': 'application/json' },
+          headers: { ...corsHeaders, "Content-Type": "application/json" },
         });
 
       default:
-        return new Response(JSON.stringify({ error: 'Method not allowed' }), {
+        return new Response(JSON.stringify({ error: "Method not allowed" }), {
           status: 405,
-          headers: { ...corsHeaders, 'Content-Type': 'application/json' },
+          headers: { ...corsHeaders, "Content-Type": "application/json" },
         });
     }
   } catch (error) {
-    console.error('Error:', error);
+    console.error("Error:", error);
     return new Response(JSON.stringify({ error: error.message }), {
       status: 500,
-      headers: { ...corsHeaders, 'Content-Type': 'application/json' },
+      headers: { ...corsHeaders, "Content-Type": "application/json" },
     });
   }
 });

@@ -1,4 +1,4 @@
-import { apiClient } from '../lib/api';
+import { apiClient } from "../lib/api";
 
 // Workout types
 export interface Workout {
@@ -6,7 +6,7 @@ export interface Workout {
   name: string;
   description?: string;
   type: string;
-  difficulty: 'beginner' | 'intermediate' | 'advanced';
+  difficulty: "beginner" | "intermediate" | "advanced";
   duration_minutes: number;
   calories_burned_estimate: number;
   equipment_needed: string[];
@@ -24,7 +24,7 @@ export interface Exercise {
   instructions: string[];
   muscle_groups: string[];
   equipment_needed: string[];
-  difficulty: 'beginner' | 'intermediate' | 'advanced';
+  difficulty: "beginner" | "intermediate" | "advanced";
   exercise_type: string;
 }
 
@@ -35,7 +35,7 @@ export interface UserWorkout {
   scheduled_for?: string;
   started_at?: string;
   completed_at?: string;
-  status: 'scheduled' | 'in_progress' | 'completed' | 'skipped';
+  status: "scheduled" | "in_progress" | "completed" | "skipped";
   notes?: string;
   workout?: Workout;
 }
@@ -52,11 +52,11 @@ export const workoutService = {
   // Get workouts with optional filters
   getWorkouts: (filters: WorkoutFilters = {}): Promise<Workout[]> => {
     const params = new URLSearchParams();
-    
+
     Object.entries(filters).forEach(([key, value]) => {
       if (value !== undefined) {
         if (Array.isArray(value)) {
-          value.forEach(v => params.append(key, v));
+          value.forEach((v) => params.append(key, v));
         } else {
           params.append(key, String(value));
         }
@@ -64,7 +64,7 @@ export const workoutService = {
     });
 
     const queryString = params.toString();
-    return apiClient.get(`/workouts${queryString ? `?${queryString}` : ''}`);
+    return apiClient.get(`/workouts${queryString ? `?${queryString}` : ""}`);
   },
 
   // Get specific workout by ID
@@ -73,8 +73,10 @@ export const workoutService = {
   },
 
   // Create new workout
-  createWorkout: (workout: Omit<Workout, 'id' | 'created_at' | 'updated_at' | 'created_by'>): Promise<Workout> => {
-    return apiClient.post('/workouts', workout);
+  createWorkout: (
+    workout: Omit<Workout, "id" | "created_at" | "updated_at" | "created_by">,
+  ): Promise<Workout> => {
+    return apiClient.post("/workouts", workout);
   },
 
   // Update workout
@@ -88,38 +90,48 @@ export const workoutService = {
   },
 
   // Get user's workout history
-  getUserWorkouts: (filters: { status?: string; date?: string } = {}): Promise<UserWorkout[]> => {
+  getUserWorkouts: (
+    filters: { status?: string; date?: string } = {},
+  ): Promise<UserWorkout[]> => {
     const params = new URLSearchParams();
-    
+
     Object.entries(filters).forEach(([key, value]) => {
       if (value) params.append(key, value);
     });
 
     const queryString = params.toString();
-    return apiClient.get(`/user-workouts${queryString ? `?${queryString}` : ''}`);
+    return apiClient.get(
+      `/user-workouts${queryString ? `?${queryString}` : ""}`,
+    );
   },
 
   // Schedule workout
-  scheduleWorkout: (workoutId: string, scheduledFor: string): Promise<UserWorkout> => {
-    return apiClient.post('/user-workouts', {
+  scheduleWorkout: (
+    workoutId: string,
+    scheduledFor: string,
+  ): Promise<UserWorkout> => {
+    return apiClient.post("/user-workouts", {
       workout_id: workoutId,
       scheduled_for: scheduledFor,
-      status: 'scheduled',
+      status: "scheduled",
     });
   },
 
   // Start workout
   startWorkout: (userWorkoutId: string): Promise<UserWorkout> => {
     return apiClient.put(`/user-workouts/${userWorkoutId}`, {
-      status: 'in_progress',
+      status: "in_progress",
       started_at: new Date().toISOString(),
     });
   },
 
   // Complete workout
-  completeWorkout: (userWorkoutId: string, notes?: string): Promise<UserWorkout> => {
+  completeWorkout: (
+    userWorkoutId: string,
+    notes?: string,
+  ): Promise<UserWorkout> => {
     return apiClient.put(`/user-workouts/${userWorkoutId}`, {
-      status: 'completed',
+      status: "completed",
       completed_at: new Date().toISOString(),
       notes,
     });
@@ -127,16 +139,32 @@ export const workoutService = {
 
   // Get user's current active workout
   getActiveWorkout: (): Promise<UserWorkout | null> => {
-    return apiClient.get('/user-workouts?status=in_progress').then(workouts => workouts[0] || null);
+    return apiClient.get("/user-workouts?status=in_progress").then((workouts) =>
+      (workouts as UserWorkout[])[0] || null
+    );
   },
 
   // Update workout exercise set
-  updateWorkoutSet: (userWorkoutId: string, exerciseId: string, setData: any): Promise<any> => {
-    return apiClient.put(`/user-workouts/${userWorkoutId}/exercises/${exerciseId}/sets`, setData);
+  updateWorkoutSet: (
+    userWorkoutId: string,
+    exerciseId: string,
+    setData: any,
+  ): Promise<any> => {
+    return apiClient.put(
+      `/user-workouts/${userWorkoutId}/exercises/${exerciseId}/sets`,
+      setData,
+    );
   },
 
   // Add set to workout exercise
-  addWorkoutSet: (userWorkoutId: string, exerciseId: string, setData: any): Promise<any> => {
-    return apiClient.post(`/user-workouts/${userWorkoutId}/exercises/${exerciseId}/sets`, setData);
+  addWorkoutSet: (
+    userWorkoutId: string,
+    exerciseId: string,
+    setData: any,
+  ): Promise<any> => {
+    return apiClient.post(
+      `/user-workouts/${userWorkoutId}/exercises/${exerciseId}/sets`,
+      setData,
+    );
   },
 };

@@ -1,15 +1,12 @@
 import React, { useState, useEffect } from 'react';
-import { 
-  Play, 
-  Pause, 
-  Square, 
-  Plus, 
-  Minus, 
-  Clock, 
-  Zap, 
-  Target, 
+import {
+  Play,
+  Plus,
+  Minus,
+  Clock,
+  Zap,
+  Target,
   CheckCircle2,
-  RotateCcw,
   Timer,
   Heart,
   Activity,
@@ -249,13 +246,13 @@ export const WorkoutTracker: React.FC = () => {
 
     setActiveWorkout(prev => {
       if (!prev) return prev;
-      
+
       const newWorkout = { ...prev };
       const exercise = newWorkout.workout.exercises[currentExerciseIndex];
       const set = exercise.sets[currentSetIndex];
-      
+
       Object.assign(set, updates);
-      
+
       return newWorkout;
     });
   };
@@ -300,10 +297,10 @@ export const WorkoutTracker: React.FC = () => {
 
     setActiveWorkout(prev => {
       if (!prev) return prev;
-      
+
       const newWorkout = { ...prev };
       newWorkout.workout.exercises[currentExerciseIndex].sets.push(newSet);
-      
+
       return newWorkout;
     });
   };
@@ -657,18 +654,17 @@ export const WorkoutTracker: React.FC = () => {
                   <span>Add Set</span>
                 </button>
               </div>
-              
+
               <div className="grid gap-2">
                 {currentExercise.sets.map((set, index) => (
                   <div
                     key={set.id}
-                    className={`p-3 rounded-lg border-2 transition-all duration-200 ${
-                      index === currentSetIndex
+                    className={`p-3 rounded-lg border-2 transition-all duration-200 ${index === currentSetIndex
                         ? 'border-emerald-500 bg-emerald-50 dark:bg-emerald-900/20'
                         : set.completed
-                        ? 'border-green-200 bg-green-50 dark:bg-green-900/20'
-                        : 'border-gray-200 dark:border-gray-600 bg-gray-50 dark:bg-gray-700'
-                    }`}
+                          ? 'border-green-200 bg-green-50 dark:bg-green-900/20'
+                          : 'border-gray-200 dark:border-gray-600 bg-gray-50 dark:bg-gray-700'
+                      }`}
                   >
                     <div className="flex items-center justify-between">
                       <span className="font-medium text-gray-900 dark:text-white">
@@ -728,9 +724,9 @@ export const WorkoutTracker: React.FC = () => {
             <div className="flex items-center space-x-2 text-sm text-gray-600 dark:text-gray-300">
               <TrendingUp className="w-4 h-4" />
               <span>
-                {activeWorkout.workout.exercises.reduce((total, ex) => 
+                {activeWorkout.workout.exercises.reduce((total, ex) =>
                   total + ex.sets.filter(s => s.completed).length, 0
-                )} / {activeWorkout.workout.exercises.reduce((total, ex) => 
+                )} / {activeWorkout.workout.exercises.reduce((total, ex) =>
                   total + ex.sets.length, 0
                 )} sets completed
               </span>

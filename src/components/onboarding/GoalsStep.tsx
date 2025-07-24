@@ -1,5 +1,6 @@
 import React, { useState } from 'react';
 import { FitnessUser } from '../../../common/models/fitnessUser';
+import { FITNESS_GOALS } from '../../../common/constants';
 
 interface GoalsStepProps {
   userData: Partial<FitnessUser>;
@@ -10,14 +11,14 @@ interface GoalsStepProps {
 
 const goals = [
   {
-    id: 'fat-loss',
+    id: FITNESS_GOALS.FAT_LOSS,
     label: 'Fat Loss',
     icon: '🔥',
     description: 'Lose weight and reduce body fat percentage',
     benefits: ['Burn calories efficiently', 'Improve cardiovascular health', 'Increase energy levels']
   },
   {
-    id: 'muscle-growth',
+    id: FITNESS_GOALS.MUSCLE_GROWTH,
     label: 'Muscle Growth',
     icon: '💪',
     description: 'Build lean muscle mass and strength',
@@ -36,7 +37,7 @@ export const GoalsStep: React.FC<GoalsStepProps> = ({
   );
 
   const handleSubmit = () => {
-    onUpdate({ goal: selectedGoal });
+    onUpdate({ goal: selectedGoal as FITNESS_GOALS });
     onNext();
   };
 
@@ -44,11 +45,8 @@ export const GoalsStep: React.FC<GoalsStepProps> = ({
     <div className="max-w-3xl mx-auto space-y-8">
       <div className="text-center">
         <h2 className="text-3xl font-bold text-gray-900 dark:text-white mb-2">
-          What's your primary goal?
+          Select your Fitness Goal
         </h2>
-        <p className="text-gray-600 dark:text-gray-300">
-          Choose your main fitness objective. We'll customize your experience to help you achieve it.
-        </p>
       </div>
 
       <div className="grid grid-cols-1 md:grid-cols-2 gap-6">

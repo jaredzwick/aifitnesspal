@@ -53,9 +53,9 @@ export const PersonalInfoStep: React.FC<PersonalInfoStepProps> = ({
 
   const handleHeightUnitChange = (unit: 'cm' | 'ft') => {
     if (unit === heightUnit) return;
-    
+
     setHeightUnit(unit);
-    
+
     if (unit === 'ft' && formData.height) {
       const { feet, inches } = convertHeightToFeetInches(Number(formData.height));
       setFormData(prev => ({
@@ -74,19 +74,19 @@ export const PersonalInfoStep: React.FC<PersonalInfoStepProps> = ({
 
   const handleWeightUnitChange = (unit: 'kg' | 'lbs') => {
     if (unit === weightUnit) return;
-    
+
     setWeightUnit(unit);
-    
+
     if (formData.weight) {
       const currentWeight = Number(formData.weight);
       let newWeight;
-      
+
       if (unit === 'lbs' && weightUnit === 'kg') {
         newWeight = convertWeightToLbs(currentWeight);
       } else if (unit === 'kg' && weightUnit === 'lbs') {
         newWeight = convertWeightToKg(currentWeight);
       }
-      
+
       if (newWeight) {
         setFormData(prev => ({
           ...prev,
@@ -98,20 +98,20 @@ export const PersonalInfoStep: React.FC<PersonalInfoStepProps> = ({
 
   const handleSubmit = (e: React.FormEvent) => {
     e.preventDefault();
-    
+
     let finalHeight = Number(formData.height);
     let finalWeight = Number(formData.weight);
-    
+
     // Convert height to cm if in feet/inches
     if (heightUnit === 'ft' && formData.heightFeet && formData.heightInches) {
       finalHeight = convertHeightToCm(Number(formData.heightFeet), Number(formData.heightInches));
     }
-    
+
     // Convert weight to kg if in lbs
     if (weightUnit === 'lbs') {
       finalWeight = convertWeightToKg(Number(formData.weight));
     }
-    
+
     onUpdate({
       name: formData.name,
       email: formData.email,
@@ -123,19 +123,19 @@ export const PersonalInfoStep: React.FC<PersonalInfoStepProps> = ({
     onNext();
   };
 
-  const isValid = formData.name && formData.age && formData.gender && 
-    ((heightUnit === 'cm' && formData.height) || 
-     (heightUnit === 'ft' && formData.heightFeet && formData.heightInches)) &&
+  const isValid = formData.name && formData.age && formData.gender &&
+    ((heightUnit === 'cm' && formData.height) ||
+      (heightUnit === 'ft' && formData.heightFeet && formData.heightInches)) &&
     formData.weight;
 
   return (
     <div className="max-w-md mx-auto space-y-8">
       <div className="text-center">
         <h2 className="text-3xl font-bold text-gray-900 dark:text-white mb-2">
-          Tell us about yourself
+          Tell Us About Yourself
         </h2>
         <p className="text-gray-600 dark:text-gray-300">
-          This helps us create a personalized experience just for you.
+          Our intelligent systems use this information to create your custom-fit plan
         </p>
       </div>
 
@@ -202,22 +202,20 @@ export const PersonalInfoStep: React.FC<PersonalInfoStepProps> = ({
               <button
                 type="button"
                 onClick={() => handleHeightUnitChange('cm')}
-                className={`px-3 py-1 text-sm font-medium rounded-md transition-colors ${
-                  heightUnit === 'cm'
+                className={`px-3 py-1 text-sm font-medium rounded-md transition-colors ${heightUnit === 'cm'
                     ? 'bg-emerald-500 text-white'
                     : 'text-gray-600 dark:text-gray-300 hover:text-gray-900 dark:hover:text-white'
-                }`}
+                  }`}
               >
                 cm
               </button>
               <button
                 type="button"
                 onClick={() => handleHeightUnitChange('ft')}
-                className={`px-3 py-1 text-sm font-medium rounded-md transition-colors ${
-                  heightUnit === 'ft'
+                className={`px-3 py-1 text-sm font-medium rounded-md transition-colors ${heightUnit === 'ft'
                     ? 'bg-emerald-500 text-white'
                     : 'text-gray-600 dark:text-gray-300 hover:text-gray-900 dark:hover:text-white'
-                }`}
+                  }`}
               >
                 ft/in
               </button>
@@ -283,7 +281,7 @@ export const PersonalInfoStep: React.FC<PersonalInfoStepProps> = ({
                   <span className="text-xs text-blue-600 dark:text-blue-400">i</span>
                 </div>
                 <p className="text-xs text-gray-500 dark:text-gray-400">
-                  Fasted weight means the weight you are in the morning when you first wake up before adding substance
+                  Your weight upon waking, measured before consuming food or liquids
                 </p>
               </div>
             </div>
@@ -291,22 +289,20 @@ export const PersonalInfoStep: React.FC<PersonalInfoStepProps> = ({
               <button
                 type="button"
                 onClick={() => handleWeightUnitChange('kg')}
-                className={`px-3 py-1 text-sm font-medium rounded-md transition-colors ${
-                  weightUnit === 'kg'
+                className={`px-3 py-1 text-sm font-medium rounded-md transition-colors ${weightUnit === 'kg'
                     ? 'bg-emerald-500 text-white'
                     : 'text-gray-600 dark:text-gray-300 hover:text-gray-900 dark:hover:text-white'
-                }`}
+                  }`}
               >
                 kg
               </button>
               <button
                 type="button"
                 onClick={() => handleWeightUnitChange('lbs')}
-                className={`px-3 py-1 text-sm font-medium rounded-md transition-colors ${
-                  weightUnit === 'lbs'
+                className={`px-3 py-1 text-sm font-medium rounded-md transition-colors ${weightUnit === 'lbs'
                     ? 'bg-emerald-500 text-white'
                     : 'text-gray-600 dark:text-gray-300 hover:text-gray-900 dark:hover:text-white'
-                }`}
+                  }`}
               >
                 lbs
               </button>

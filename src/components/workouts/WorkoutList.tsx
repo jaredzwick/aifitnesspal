@@ -1,8 +1,8 @@
-import React, { useState } from 'react';
+import { useState } from 'react';
 import { Clock, Zap, Users, Filter, Search } from 'lucide-react';
 import { useQuery } from '../../hooks/useApi';
 import { workoutService, Workout, WorkoutFilters } from '../../services/workoutService';
-import { LoadingSpinner, SkeletonList } from '../ui/LoadingSpinner';
+import { SkeletonList } from '../ui/LoadingSpinner';
 import { ErrorMessage } from '../ui/ErrorMessage';
 import { ErrorBoundary } from '../ui/ErrorBoundary';
 
@@ -40,7 +40,7 @@ export const WorkoutList: React.FC<WorkoutListProps> = ({
   const filteredWorkouts = workouts?.filter(workout =>
     workout.name.toLowerCase().includes(searchQuery.toLowerCase()) ||
     workout.description?.toLowerCase().includes(searchQuery.toLowerCase()) ||
-    workout.muscle_groups.some(group => 
+    workout.muscle_groups.some(group =>
       group.toLowerCase().includes(searchQuery.toLowerCase())
     )
   ) || [];
@@ -160,7 +160,7 @@ export const WorkoutList: React.FC<WorkoutListProps> = ({
                     </label>
                     <select
                       value={filters.is_template === undefined ? '' : filters.is_template.toString()}
-                      onChange={(e) => handleFilterChange({ 
+                      onChange={(e) => handleFilterChange({
                         is_template: e.target.value === '' ? undefined : e.target.value === 'true'
                       })}
                       className="w-full px-3 py-2 border border-gray-300 dark:border-gray-600 rounded-lg bg-white dark:bg-gray-700 text-gray-900 dark:text-white focus:ring-2 focus:ring-emerald-500"

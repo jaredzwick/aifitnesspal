@@ -1,4 +1,4 @@
-import { supabase } from './supabase';
+import { supabase } from "./supabase";
 
 // Base API configuration
 const API_BASE_URL = `${import.meta.env.VITE_SUPABASE_URL}/functions/v1`;
@@ -33,7 +33,7 @@ export class ApiError extends Error {
 
   constructor(message: string, code?: string, details?: any, status?: number) {
     super(message);
-    this.name = 'ApiError';
+    this.name = "ApiError";
     this.code = code;
     this.details = details;
     this.status = status;
@@ -41,23 +41,35 @@ export class ApiError extends Error {
 }
 
 // Timeout utility
-const withTimeout = (promise: Promise<Response>, timeout: number): Promise<Response> => {
+const withTimeout = (
+  promise: Promise<Response>,
+  timeout: number,
+): Promise<Response> => {
   return Promise.race([
     promise,
     new Promise<Response>((_, reject) =>
-      setTimeout(() => reject(new ApiError('Request timeout', 'TIMEOUT')), timeout)
+      setTimeout(
+        () => reject(new ApiError("Request timeout", "TIMEOUT")),
+        timeout,
+      )
     ),
   ]);
 };
 
 // Base API client
 class ApiClient {
-  private async getAuthHeaders(): Promise<HeadersInit> {
+  private async getAuthHeaders(anon?: boolean): Promise<HeadersInit> {
     const { data: { session } } = await supabase.auth.getSession();
-    
+
+    let key;
+    if (anon) {
+      key = import.meta.env.VITE_SUPABASE_ANON_KEY;
+    } else {
+      key = session?.access_token;
+    }
     return {
-      'Content-Type': 'application/json',
-      'Authorization': session?.access_token ? `Bearer ${session.access_token}` : '',
+      "Content-Type": "application/json",
+      "Authorization": key ? `Bearer ${key}` : "",
     };
   }
 
@@ -74,25 +86,31 @@ class ApiClient {
         // If we can't parse the error response, use the default message
       }
 
-      throw new ApiError(errorMessage, 'HTTP_ERROR', errorDetails, response.status);
+      throw new ApiError(
+        errorMessage,
+        "HTTP_ERROR",
+        errorDetails,
+        response.status,
+      );
     }
 
     try {
       return await response.json();
     } catch (error) {
-      throw new ApiError('Failed to parse response', 'PARSE_ERROR', error);
+      throw new ApiError("Failed to parse response", "PARSE_ERROR", error);
     }
   }
 
   async request<T>(
     endpoint: string,
-    config: RequestConfig = {}
+    config: RequestConfig = {},
+    options?: { anon?: boolean },
   ): Promise<T> {
     const { timeout = 10000, ...requestConfig } = config;
-    
+
     try {
-      const headers = await this.getAuthHeaders();
-      
+      const headers = await this.getAuthHeaders(options?.anon);
+
       const response = await withTimeout(
         fetch(`${API_BASE_URL}${endpoint}`, {
           ...requestConfig,
@@ -101,7 +119,7 @@ class ApiClient {
             ...requestConfig.headers,
           },
         }),
-        timeout
+        timeout,
       );
 
       return this.handleResponse<T>(response);
@@ -109,60 +127,80 @@ class ApiClient {
       if (error instanceof ApiError) {
         throw error;
       }
-      
+
       // Handle network errors
-      if (error instanceof TypeError && error.message.includes('fetch')) {
-        throw new ApiError('Network error. Please check your connection.', 'NETWORK_ERROR');
+      if (error instanceof TypeError && error.message.includes("fetch")) {
+        throw new ApiError(
+          "Network error. Please check your connection.",
+          "NETWORK_ERROR",
+        );
       }
-      
-      throw new ApiError('An unexpected error occurred', 'UNKNOWN_ERROR', error);
+
+      throw new ApiError(
+        "An unexpected error occurred",
+        "UNKNOWN_ERROR",
+        error,
+      );
     }
   }
 
   // HTTP method helpers
   async get<T>(endpoint: string, config?: RequestConfig): Promise<T> {
-    return this.request<T>(endpoint, { ...config, method: 'GET' });
+    return this.request<T>(endpoint, { ...config, method: "GET" });
   }
 
-  async post<T>(endpoint: string, data?: any, config?: RequestConfig): Promise<T> {
+  async post<T>(
+    endpoint: string,
+    data?: any,
+    config?: RequestConfig,
+    options?: { anon?: boolean },
+  ): Promise<T> {
     return this.request<T>(endpoint, {
       ...config,
-      method: 'POST',
+      method: "POST",
       body: data ? JSON.stringify(data) : undefined,
-    });
+    }, options);
   }
 
-  async put<T>(endpoint: string, data?: any, config?: RequestConfig): Promise<T> {
+  async put<T>(
+    endpoint: string,
+    data?: any,
+    config?: RequestConfig,
+  ): Promise<T> {
     return this.request<T>(endpoint, {
       ...config,
-      method: 'PUT',
+      method: "PUT",
       body: data ? JSON.stringify(data) : undefined,
     });
   }
 
   async delete<T>(endpoint: string, config?: RequestConfig): Promise<T> {
-    return this.request<T>(endpoint, { ...config, method: 'DELETE' });
+    return this.request<T>(endpoint, { ...config, method: "DELETE" });
   }
 
   // File upload helper
-  async uploadFile(file: File, bucket: string = 'progress-photos', folder: string = 'uploads'): Promise<any> {
+  async uploadFile(
+    file: File,
+    bucket: string = "progress-photos",
+    folder: string = "uploads",
+  ): Promise<any> {
     const formData = new FormData();
-    formData.append('file', file);
-    formData.append('bucket', bucket);
-    formData.append('folder', folder);
+    formData.append("file", file);
+    formData.append("bucket", bucket);
+    formData.append("folder", folder);
 
     const headers = await this.getAuthHeaders();
-    delete (headers as any)['Content-Type']; // Let browser set content-type for FormData
+    delete (headers as any)["Content-Type"]; // Let browser set content-type for FormData
 
     const response = await withTimeout(
       fetch(`${API_BASE_URL}/file-upload`, {
-        method: 'POST',
+        method: "POST",
         headers: {
-          'Authorization': (headers as any).Authorization,
+          "Authorization": (headers as any).Authorization,
         },
         body: formData,
       }),
-      30000 // 30 second timeout for file uploads
+      30000, // 30 second timeout for file uploads
     );
 
     return this.handleResponse(response);

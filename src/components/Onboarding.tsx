@@ -9,6 +9,7 @@ import { NutritionStep } from './onboarding/NutritionStep';
 import { HealthInfoStep } from './onboarding/HealthInfoStep';
 import { PhotosStep } from './onboarding/PhotosStep';
 import { AuthStep } from './onboarding/AuthStep';
+import { PlanGenerationStep } from './onboarding/PlanGenerationStep';
 
 export const Onboarding: React.FC = () => {
   const { step, userData, updateUserData, nextStep, prevStep } = useOnboarding();
@@ -22,7 +23,6 @@ export const Onboarding: React.FC = () => {
       onNext={nextStep}
       onPrev={prevStep}
     />,
-  
     <GoalsStep
       key="goals"
       userData={userData}
@@ -52,16 +52,22 @@ export const Onboarding: React.FC = () => {
       onPrev={prevStep}
     />,
     <PersonalInfoStep
-    key="personal-info"
-    userData={userData}
-    onUpdate={updateUserData}
-    onNext={nextStep}
-    onPrev={prevStep}
+      key="personal-info"
+      userData={userData}
+      onUpdate={updateUserData}
+      onNext={nextStep}
+      onPrev={prevStep}
     />,
     <PhotosStep
       key="photos"
       userData={userData}
       onUpdate={updateUserData}
+      onNext={nextStep}
+      onPrev={prevStep}
+    />,
+    <PlanGenerationStep
+      key="plan-generation"
+      userData={userData}
       onNext={nextStep}
       onPrev={prevStep}
     />,
@@ -71,6 +77,7 @@ export const Onboarding: React.FC = () => {
       onComplete={() => { }}
       onPrev={prevStep}
     />,
+
   ];
 
   return (

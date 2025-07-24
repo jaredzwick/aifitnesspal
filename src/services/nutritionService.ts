@@ -1,23 +1,31 @@
-import { apiClient } from '../lib/api';
-
+import { apiClient } from "../lib/api";
+import {
+  Food,
+  Meal,
+  MealFood,
+  NutritionEntry,
+  NutritionGoals,
+} from "../../common";
 
 // Nutrition service
 export const nutritionService = {
   // Get nutrition entries
-  getNutritionEntries: (filters: { 
-    date?: string; 
-    start_date?: string; 
+  getNutritionEntries: (filters: {
+    date?: string;
+    start_date?: string;
     end_date?: string;
     limit?: number;
   } = {}): Promise<NutritionEntry[]> => {
     const params = new URLSearchParams();
-    
+
     Object.entries(filters).forEach(([key, value]) => {
       if (value) params.append(key, String(value));
     });
 
     const queryString = params.toString();
-    return apiClient.get(`/nutrition/entries${queryString ? `?${queryString}` : ''}`);
+    return apiClient.get(
+      `/nutrition/entries${queryString ? `?${queryString}` : ""}`,
+    );
   },
 
   // Get nutrition entry for specific date
@@ -27,12 +35,17 @@ export const nutritionService = {
   },
 
   // Create or update nutrition entry
-  saveNutritionEntry: (entry: Omit<NutritionEntry, 'id' | 'user_id' | 'created_at' | 'updated_at'>): Promise<NutritionEntry> => {
-    return apiClient.post('/nutrition/entries', entry);
+  saveNutritionEntry: (
+    entry: Omit<NutritionEntry, "id" | "user_id" | "created_at" | "updated_at">,
+  ): Promise<NutritionEntry> => {
+    return apiClient.post("/nutrition/entries", entry);
   },
 
   // Update nutrition entry
-  updateNutritionEntry: (id: string, entry: Partial<NutritionEntry>): Promise<NutritionEntry> => {
+  updateNutritionEntry: (
+    id: string,
+    entry: Partial<NutritionEntry>,
+  ): Promise<NutritionEntry> => {
     return apiClient.put(`/nutrition/entries/${id}`, entry);
   },
 
@@ -43,7 +56,9 @@ export const nutritionService = {
 
   // Search foods
   searchFoods: (query: string): Promise<Food[]> => {
-    return apiClient.get(`/nutrition/foods?search=${encodeURIComponent(query)}`);
+    return apiClient.get(
+      `/nutrition/foods?search=${encodeURIComponent(query)}`,
+    );
   },
 
   // Get food by barcode
@@ -58,8 +73,10 @@ export const nutritionService = {
   },
 
   // Create custom food
-  createFood: (food: Omit<Food, 'id' | 'created_by' | 'created_at'>): Promise<Food> => {
-    return apiClient.post('/nutrition/foods', food);
+  createFood: (
+    food: Omit<Food, "id" | "created_by" | "created_at">,
+  ): Promise<Food> => {
+    return apiClient.post("/nutrition/foods", food);
   },
 
   // Update food
@@ -74,12 +91,14 @@ export const nutritionService = {
 
   // Get meals for nutrition entry
   getMeals: (nutritionEntryId: string): Promise<Meal[]> => {
-    return apiClient.get(`/nutrition/meals?nutrition_entry_id=${nutritionEntryId}`);
+    return apiClient.get(
+      `/nutrition/meals?nutrition_entry_id=${nutritionEntryId}`,
+    );
   },
 
   // Create meal
-  createMeal: (meal: Omit<Meal, 'id' | 'meal_foods'>): Promise<Meal> => {
-    return apiClient.post('/nutrition/meals', meal);
+  createMeal: (meal: Omit<Meal, "id" | "meal_foods">): Promise<Meal> => {
+    return apiClient.post("/nutrition/meals", meal);
   },
 
   // Update meal
@@ -104,7 +123,7 @@ export const nutritionService = {
 
     // First, ensure nutrition entry exists for the date
     let nutritionEntry = await nutritionService.getNutritionEntry(date);
-    
+
     if (!nutritionEntry) {
       nutritionEntry = await nutritionService.saveNutritionEntry({
         date,
@@ -118,18 +137,18 @@ export const nutritionService = {
     }
 
     // Find or create meal
-    let meal = nutritionEntry.meals?.find(m => m.meal_type === mealType);
-    
+    let meal = nutritionEntry.meals?.find((m) => m.meal_type === mealType);
+
     if (!meal) {
       meal = await nutritionService.createMeal({
         nutrition_entry_id: nutritionEntry.id,
-        meal_type: mealType as Meal['meal_type'],
+        meal_type: mealType as Meal["meal_type"],
         consumed_at: new Date().toISOString(),
       });
     }
 
     // Add food to meal
-    const mealFood = await apiClient.post('/nutrition/meal-foods', {
+    const mealFood = await apiClient.post("/nutrition/meal-foods", {
       meal_id: meal.id,
       food_id: food.id,
       quantity,
@@ -139,19 +158,30 @@ export const nutritionService = {
 
     // Update nutrition entry totals
     const factor = quantity / 100; // Assuming per 100g values
-    const updatedEntry = await nutritionService.updateNutritionEntry(nutritionEntry.id, {
-      total_calories: (nutritionEntry.total_calories || 0) + (food.calories_per_100g * factor),
-      total_protein: (nutritionEntry.total_protein || 0) + (food.protein_per_100g * factor),
-      total_carbs: (nutritionEntry.total_carbs || 0) + (food.carbs_per_100g * factor),
-      total_fat: (nutritionEntry.total_fat || 0) + (food.fat_per_100g * factor),
-      total_fiber: (nutritionEntry.total_fiber || 0) + ((food.fiber_per_100g || 0) * factor),
-    });
+    const updatedEntry = await nutritionService.updateNutritionEntry(
+      nutritionEntry.id,
+      {
+        total_calories: (nutritionEntry.total_calories || 0) +
+          (food.calories_per_100g * factor),
+        total_protein: (nutritionEntry.total_protein || 0) +
+          (food.protein_per_100g * factor),
+        total_carbs: (nutritionEntry.total_carbs || 0) +
+          (food.carbs_per_100g * factor),
+        total_fat: (nutritionEntry.total_fat || 0) +
+          (food.fat_per_100g * factor),
+        total_fiber: (nutritionEntry.total_fiber || 0) +
+          ((food.fiber_per_100g || 0) * factor),
+      },
+    );
 
     return mealFood;
   },
 
   // Update meal food
-  updateMealFood: (id: string, mealFood: Partial<MealFood>): Promise<MealFood> => {
+  updateMealFood: (
+    id: string,
+    mealFood: Partial<MealFood>,
+  ): Promise<MealFood> => {
     return apiClient.put(`/nutrition/meal-foods/${id}`, mealFood);
   },
 
@@ -162,16 +192,20 @@ export const nutritionService = {
 
   // Get nutrition goals for user
   getNutritionGoals: (): Promise<NutritionGoals> => {
-    return apiClient.get('/nutrition/goals');
+    return apiClient.get("/nutrition/goals");
   },
 
   // Update nutrition goals
-  updateNutritionGoals: (goals: Partial<NutritionGoals>): Promise<NutritionGoals> => {
-    return apiClient.put('/nutrition/goals', goals);
+  updateNutritionGoals: (
+    goals: Partial<NutritionGoals>,
+  ): Promise<NutritionGoals> => {
+    return apiClient.put("/nutrition/goals", goals);
   },
 
   // Calculate nutrition totals for foods
-  calculateNutrition: (foods: Array<{ food: Food; quantity: number; unit: string }>): {
+  calculateNutrition: (
+    foods: Array<{ food: Food; quantity: number; unit: string }>,
+  ): {
     calories: number;
     protein: number;
     carbs: number;
@@ -181,7 +215,7 @@ export const nutritionService = {
     return foods.reduce((totals, { food, quantity }) => {
       // Assuming quantity is in grams for simplicity
       const factor = quantity / 100;
-      
+
       return {
         calories: totals.calories + (food.calories_per_100g * factor),
         protein: totals.protein + (food.protein_per_100g * factor),
@@ -196,7 +230,7 @@ export const nutritionService = {
   getNutritionAnalytics: (params: {
     start_date: string;
     end_date: string;
-    metric?: 'calories' | 'protein' | 'carbs' | 'fat';
+    metric?: "calories" | "protein" | "carbs" | "fat";
   }): Promise<Array<{ date: string; value: number }>> => {
     const queryParams = new URLSearchParams(params);
     return apiClient.get(`/nutrition/analytics?${queryParams}`);
@@ -213,9 +247,16 @@ export const nutritionService = {
   },
 
   // Upload meal photo
-  uploadMealPhoto: async (file: File, mealId: string): Promise<{ url: string }> => {
-    const uploadResult = await apiClient.uploadFile(file, 'meal-photos', 'meals');
-    
+  uploadMealPhoto: async (
+    file: File,
+    mealId: string,
+  ): Promise<{ url: string }> => {
+    const uploadResult = await apiClient.uploadFile(
+      file,
+      "meal-photos",
+      "meals",
+    );
+
     // Associate photo with meal
     await apiClient.post(`/nutrition/meals/${mealId}/photos`, {
       image_url: uploadResult.data.publicUrl,
@@ -232,16 +273,16 @@ export const nutritionService = {
     calorie_target?: number;
   }): Promise<Food[]> => {
     const queryParams = new URLSearchParams();
-    queryParams.append('meal_type', params.meal_type);
-    
+    queryParams.append("meal_type", params.meal_type);
+
     if (params.dietary_restrictions) {
-      params.dietary_restrictions.forEach(restriction => 
-        queryParams.append('dietary_restrictions', restriction)
+      params.dietary_restrictions.forEach((restriction) =>
+        queryParams.append("dietary_restrictions", restriction)
       );
     }
-    
+
     if (params.calorie_target) {
-      queryParams.append('calorie_target', String(params.calorie_target));
+      queryParams.append("calorie_target", String(params.calorie_target));
     }
 
     return apiClient.get(`/nutrition/suggestions?${queryParams}`);

@@ -1,10 +1,10 @@
 import React, { useState, useEffect } from 'react';
-import { 
-  Calendar, 
-  Plus, 
-  Search, 
-  Camera, 
-  Utensils, 
+import {
+  Calendar,
+  Plus,
+  Search,
+  Camera,
+  Utensils,
   Clock,
   Zap,
   Target,
@@ -86,10 +86,10 @@ export const NutritionTracker: React.FC = () => {
     execute: addFoodToMeal,
     loading: addingFood,
   } = useMutation(
-    async ({ food, quantity, unit, mealType }: { 
-      food: Food; 
-      quantity: number; 
-      unit: string; 
+    async ({ food, quantity, unit, mealType }: {
+      food: Food;
+      quantity: number;
+      unit: string;
       mealType: string;
     }) => {
       // Create meal if it doesn't exist, then add food
@@ -162,10 +162,10 @@ export const NutritionTracker: React.FC = () => {
     } else if (date.toDateString() === yesterday.toDateString()) {
       return 'Yesterday';
     } else {
-      return date.toLocaleDateString('en-US', { 
-        weekday: 'long', 
-        month: 'short', 
-        day: 'numeric' 
+      return date.toLocaleDateString('en-US', {
+        weekday: 'long',
+        month: 'short',
+        day: 'numeric'
       });
     }
   };
@@ -204,12 +204,12 @@ export const NutritionTracker: React.FC = () => {
 
   const calculateMealNutrition = (meal: Meal) => {
     if (!meal.meal_foods) return { calories: 0, protein: 0, carbs: 0, fat: 0, fiber: 0 };
-    
+
     return meal.meal_foods.reduce((totals, mealFood) => {
       if (!mealFood.food) return totals;
-      
+
       const factor = mealFood.quantity / 100; // Assuming per 100g values
-      
+
       return {
         calories: totals.calories + (mealFood.food.calories_per_100g * factor),
         protein: totals.protein + (mealFood.food.protein_per_100g * factor),
@@ -244,7 +244,7 @@ export const NutritionTracker: React.FC = () => {
                 {formatDate(selectedDate)}
               </p>
             </div>
-            
+
             <div className="flex items-center space-x-4">
               <input
                 type="date"
@@ -492,7 +492,7 @@ export const NutritionTracker: React.FC = () => {
               const meal = nutritionEntry?.meals?.find(m => m.meal_type === mealType);
               const mealNutrition = meal ? calculateMealNutrition(meal) : { calories: 0, protein: 0, carbs: 0, fat: 0, fiber: 0 };
               const MealIcon = getMealIcon(mealType);
-              
+
               return (
                 <div
                   key={mealType}
@@ -521,7 +521,7 @@ export const NutritionTracker: React.FC = () => {
                           </div>
                         </div>
                       </div>
-                      
+
                       <button
                         onClick={() => {
                           setSelectedMealType(mealType as any);
@@ -595,7 +595,7 @@ export const NutritionTracker: React.FC = () => {
                                 </div>
                               </div>
                             </div>
-                            
+
                             <div className="flex items-center space-x-2">
                               {editingFood?.mealId === meal.id && editingFood?.foodId === mealFood.id ? (
                                 <div className="flex items-center space-x-2">
@@ -675,7 +675,7 @@ export const NutritionTracker: React.FC = () => {
                     <X className="w-6 h-6" />
                   </button>
                 </div>
-                
+
                 <div className="flex space-x-3">
                   <div className="flex-1 relative">
                     <Search className="absolute left-3 top-1/2 transform -translate-y-1/2 w-5 h-5 text-white/70" />
@@ -728,7 +728,7 @@ export const NutritionTracker: React.FC = () => {
                             </div>
                           </div>
                         </div>
-                        
+
                         <button
                           onClick={() => handleAddFood(food)}
                           disabled={addingFood}

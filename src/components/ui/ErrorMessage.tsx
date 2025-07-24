@@ -1,4 +1,3 @@
-import React from 'react';
 import { AlertCircle, RefreshCw, X } from 'lucide-react';
 import { ApiError } from '../../lib/api';
 
@@ -32,7 +31,7 @@ export const ErrorMessage: React.FC<ErrorMessageProps> = ({
   const code = getErrorCode(error);
 
   const baseClasses = "flex items-start space-x-3 text-red-700 dark:text-red-300";
-  
+
   const variantClasses = {
     inline: "p-3 bg-red-50 dark:bg-red-900/20 border border-red-200 dark:border-red-800 rounded-lg",
     card: "p-4 bg-red-50 dark:bg-red-900/20 border border-red-200 dark:border-red-800 rounded-xl shadow-sm",
@@ -42,16 +41,16 @@ export const ErrorMessage: React.FC<ErrorMessageProps> = ({
   return (
     <div className={`${baseClasses} ${variantClasses[variant]} ${className}`}>
       <AlertCircle className="w-5 h-5 text-red-500 flex-shrink-0 mt-0.5" />
-      
+
       <div className="flex-1 min-w-0">
         <p className="text-sm font-medium">{message}</p>
-        
+
         {code && (
           <p className="text-xs text-red-600 dark:text-red-400 mt-1">
             Error Code: {code}
           </p>
         )}
-        
+
         {(onRetry || onDismiss) && (
           <div className="flex items-center space-x-3 mt-3">
             {onRetry && (
@@ -63,7 +62,7 @@ export const ErrorMessage: React.FC<ErrorMessageProps> = ({
                 <span>Try Again</span>
               </button>
             )}
-            
+
             {onDismiss && (
               <button
                 onClick={onDismiss}
@@ -75,7 +74,7 @@ export const ErrorMessage: React.FC<ErrorMessageProps> = ({
           </div>
         )}
       </div>
-      
+
       {onDismiss && (
         <button
           onClick={onDismiss}

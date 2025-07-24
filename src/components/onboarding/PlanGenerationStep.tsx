@@ -1,54 +1,33 @@
-import React, { useState, useEffect } from 'react';
+import React from 'react';
 import { FitnessUser } from '../../../common/models/fitnessUser';
-import { generatePersonalizedPlan } from '../../services/planGenerationService';
-import { PersonalizedPlan } from '../../types';
+import { useQuery, useQueryClient } from '@tanstack/react-query';
+import { planService } from '../../services/planService';
+import { ErrorScreen } from '../ErrorScreen';
 
 interface PlanGenerationStepProps {
     userData: Partial<FitnessUser>;
-    onUpdate: (data: Partial<FitnessUser>) => void;
     onNext: () => void;
     onPrev: () => void;
 }
 
 export const PlanGenerationStep: React.FC<PlanGenerationStepProps> = ({
     userData,
-    onUpdate,
     onNext,
     onPrev,
 }) => {
-    const [isGenerating, setIsGenerating] = useState(false);
-    const [plan, setPlan] = useState<PersonalizedPlan | null>(null);
-    const [currentView, setCurrentView] = useState<'generating' | 'review'>('generating');
+    const queryClient = useQueryClient()
 
-    useEffect(() => {
-        generatePlan();
-    }, []);
-
-    const generatePlan = async () => {
-        setIsGenerating(true);
-
-        // Simulate AI processing time
-        setTimeout(() => {
-            const generatedPlan = generatePersonalizedPlan(userData);
-            setPlan(generatedPlan);
-            setIsGenerating(false);
-            setCurrentView('review');
-        }, 3000);
-    };
-
-    const handleAcceptPlan = () => {
-        if (plan) {
-            onUpdate({ personalizedPlan: plan });
-            onNext();
-        }
-    };
+    const { data, isLoading, error } = useQuery({
+        queryKey: ['genPlan', userData],
+        queryFn: () => planService.generatePlan(userData),
+        enabled: !!userData,
+    })
 
     const handleRegeneratePlan = () => {
-        setCurrentView('generating');
-        generatePlan();
+        queryClient.invalidateQueries({ queryKey: ['genPlan', userData] });
     };
 
-    if (currentView === 'generating' || isGenerating) {
+    if (isLoading) {
         return (
             <div className="bg-white dark:bg-gray-800 rounded-2xl shadow-xl p-8 max-w-2xl mx-auto">
                 <div className="text-center">
@@ -87,8 +66,14 @@ export const PlanGenerationStep: React.FC<PlanGenerationStepProps> = ({
         );
     }
 
-    if (!plan) return null;
+    if (!data) return <ErrorScreen message={`Failed to generate plan with error: ${error?.message}`} />;
 
+    const workoutDays = data.trainingRegimen.filter((day) =>
+        day.workout !== undefined
+    );
+    const restDays = data.trainingRegimen.filter((day) =>
+        day.workout === undefined
+    );
     return (
         <div className="bg-white dark:bg-gray-800 rounded-2xl shadow-xl p-8 max-w-4xl mx-auto">
             <div className="text-center mb-8">
@@ -112,34 +97,27 @@ export const PlanGenerationStep: React.FC<PlanGenerationStepProps> = ({
                         <div className="flex justify-between items-center">
                             <span className="text-blue-800 dark:text-blue-200">Workout Days:</span>
                             <span className="font-semibold text-blue-900 dark:text-blue-100">
-                                {plan.trainingRegimen.weeklySchedule.filter(day => !day.isRestDay).length} days/week
+                                {workoutDays.length} days/week
                             </span>
                         </div>
 
                         <div className="flex justify-between items-center">
                             <span className="text-blue-800 dark:text-blue-200">Rest Days:</span>
                             <span className="font-semibold text-blue-900 dark:text-blue-100">
-                                {plan.trainingRegimen.restDays} days/week
-                            </span>
-                        </div>
-
-                        <div className="flex justify-between items-center">
-                            <span className="text-blue-800 dark:text-blue-200">Weekly Calories Burned:</span>
-                            <span className="font-semibold text-blue-900 dark:text-blue-100">
-                                ~{plan.trainingRegimen.estimatedCaloriesBurned} cal
+                                {restDays.length} days/week
                             </span>
                         </div>
 
                         <div className="mt-4">
                             <h4 className="font-semibold text-blue-900 dark:text-blue-100 mb-2">Weekly Schedule:</h4>
                             <div className="space-y-1 text-sm">
-                                {plan.trainingRegimen.weeklySchedule.map((day, index) => (
+                                {workoutDays.map((day, index) => (
                                     <div key={index} className="flex justify-between">
                                         <span className="capitalize text-blue-800 dark:text-blue-200">
                                             {day.day}:
                                         </span>
                                         <span className="text-blue-900 dark:text-blue-100">
-                                            {day.isRestDay ? 'Rest' : day.workout?.name}
+                                            {day.workout ? day.workout[0].name : 'Rest'}
                                         </span>
                                     </div>
                                 ))}
@@ -159,43 +137,43 @@ export const PlanGenerationStep: React.FC<PlanGenerationStepProps> = ({
                         <div className="flex justify-between items-center">
                             <span className="text-green-800 dark:text-green-200">Daily Calories:</span>
                             <span className="font-semibold text-green-900 dark:text-green-100">
-                                {plan.nutritionRegimen.dailyCalorieTarget} cal
+                                {data.nutritionRegimen.dailyCalorieTarget} cal
                             </span>
                         </div>
 
                         <div className="flex justify-between items-center">
                             <span className="text-green-800 dark:text-green-200">Protein:</span>
                             <span className="font-semibold text-green-900 dark:text-green-100">
-                                {plan.nutritionRegimen.macroTargets.protein}g ({plan.nutritionRegimen.macroTargets.proteinPercentage}%)
+                                {data.nutritionRegimen.macroTargets.protein}g ({data.nutritionRegimen.macroTargets.proteinPercentage}%)
                             </span>
                         </div>
 
                         <div className="flex justify-between items-center">
                             <span className="text-green-800 dark:text-green-200">Carbs:</span>
                             <span className="font-semibold text-green-900 dark:text-green-100">
-                                {plan.nutritionRegimen.macroTargets.carbs}g ({plan.nutritionRegimen.macroTargets.carbsPercentage}%)
+                                {data.nutritionRegimen.macroTargets.carbs}g ({data.nutritionRegimen.macroTargets.carbsPercentage}%)
                             </span>
                         </div>
 
                         <div className="flex justify-between items-center">
                             <span className="text-green-800 dark:text-green-200">Fat:</span>
                             <span className="font-semibold text-green-900 dark:text-green-100">
-                                {plan.nutritionRegimen.macroTargets.fat}g ({plan.nutritionRegimen.macroTargets.fatPercentage}%)
+                                {data.nutritionRegimen.macroTargets.fat}g ({data.nutritionRegimen.macroTargets.fatPercentage}%)
                             </span>
                         </div>
 
                         <div className="flex justify-between items-center">
                             <span className="text-green-800 dark:text-green-200">Water Target:</span>
                             <span className="font-semibold text-green-900 dark:text-green-100">
-                                {plan.nutritionRegimen.hydrationTarget}L/day
+                                {data.nutritionRegimen.hydrationTarget}L/day
                             </span>
                         </div>
 
-                        {plan.nutritionRegimen.supplements && plan.nutritionRegimen.supplements.length > 0 && (
+                        {data.nutritionRegimen.supplements && data.nutritionRegimen.supplements.length > 0 && (
                             <div className="mt-4">
                                 <h4 className="font-semibold text-green-900 dark:text-green-100 mb-2">Recommended Supplements:</h4>
                                 <div className="flex flex-wrap gap-1">
-                                    {plan.nutritionRegimen.supplements.map((supplement, index) => (
+                                    {data.nutritionRegimen.supplements.map((supplement, index) => (
                                         <span key={index} className="bg-green-200 dark:bg-green-700 text-green-800 dark:text-green-200 px-2 py-1 rounded text-xs">
                                             {supplement}
                                         </span>
@@ -214,16 +192,13 @@ export const PlanGenerationStep: React.FC<PlanGenerationStepProps> = ({
                 </h3>
 
                 {(() => {
-                    const sampleWorkout = plan.trainingRegimen.weeklySchedule.find(day => day.workout);
-                    if (!sampleWorkout?.workout) return null;
+                    if (!workoutDays.length) return null;
+
 
                     return (
                         <div>
-                            <h4 className="font-semibold text-gray-800 dark:text-gray-200 mb-3">
-                                {sampleWorkout.workout.name} ({sampleWorkout.workout.duration} minutes)
-                            </h4>
                             <div className="grid gap-3">
-                                {sampleWorkout.workout.exercises.slice(0, 3).map((exercise, index) => (
+                                {workoutDays[0].workout?.slice(0, 3).map((exercise, index) => (
                                     <div key={index} className="bg-white dark:bg-gray-600 rounded-lg p-3">
                                         <div className="flex justify-between items-center mb-2">
                                             <span className="font-medium text-gray-900 dark:text-white">
@@ -262,7 +237,7 @@ export const PlanGenerationStep: React.FC<PlanGenerationStepProps> = ({
                     </button>
 
                     <button
-                        onClick={handleAcceptPlan}
+                        onClick={onNext}
                         className="px-8 py-3 bg-gradient-to-r from-emerald-500 to-emerald-600 text-white rounded-xl hover:from-emerald-600 hover:to-emerald-700 transition-all duration-200 font-semibold"
                     >
                         Accept Plan & Continue

@@ -1,4 +1,3 @@
-import React from 'react';
 import { Loader2 } from 'lucide-react';
 
 interface LoadingSpinnerProps {
@@ -7,10 +6,10 @@ interface LoadingSpinnerProps {
   text?: string;
 }
 
-export const LoadingSpinner: React.FC<LoadingSpinnerProps> = ({ 
-  size = 'md', 
+export const LoadingSpinner: React.FC<LoadingSpinnerProps> = ({
+  size = 'md',
   className = '',
-  text 
+  text
 }) => {
   const sizeClasses = {
     sm: 'w-4 h-4',
@@ -33,7 +32,7 @@ export const LoadingSpinner: React.FC<LoadingSpinnerProps> = ({
 // Inline loading spinner for buttons
 export const ButtonSpinner: React.FC<{ size?: 'sm' | 'md' }> = ({ size = 'sm' }) => {
   const sizeClass = size === 'sm' ? 'w-4 h-4' : 'w-5 h-5';
-  
+
   return (
     <Loader2 className={`${sizeClass} animate-spin`} />
   );
@@ -64,9 +63,9 @@ export const SkeletonCard: React.FC<{ className?: string }> = ({ className = '' 
   );
 };
 
-export const SkeletonList: React.FC<{ count?: number; className?: string }> = ({ 
-  count = 3, 
-  className = '' 
+export const SkeletonList: React.FC<{ count?: number; className?: string }> = ({
+  count = 3,
+  className = ''
 }) => {
   return (
     <div className={`space-y-4 ${className}`}>

@@ -1,25 +1,18 @@
 import React, { useState } from 'react';
-import { 
-  Camera, 
-  TrendingUp, 
-  Target, 
+import {
+  Camera,
+  Target,
   Award,
-  Calendar,
   Scale,
   Ruler,
-  Activity,
   Plus,
-  Edit3,
-  Trash2,
   Upload,
   BarChart3,
-  Trophy,
-  Zap,
-  Clock
+  Trophy
 } from 'lucide-react';
 import { useQuery, useMutation } from '../../hooks/useApi';
-import { progressService, ProgressPhoto, BodyMeasurement, UserGoal } from '../../services/progressService';
-import { LoadingSpinner, ButtonSpinner, SkeletonCard } from '../ui/LoadingSpinner';
+import { progressService } from '../../services/progressService';
+import { LoadingSpinner, SkeletonCard } from '../ui/LoadingSpinner';
 import { ErrorMessage } from '../ui/ErrorMessage';
 import { ErrorBoundary } from '../ui/ErrorBoundary';
 
@@ -41,18 +34,6 @@ export const ProgressTracker: React.FC = () => {
     loading: photosLoading,
     execute: refreshPhotos,
   } = useQuery(() => progressService.getProgressPhotos());
-
-  const {
-    data: measurements,
-    loading: measurementsLoading,
-    execute: refreshMeasurements,
-  } = useQuery(() => progressService.getBodyMeasurements());
-
-  const {
-    data: goals,
-    loading: goalsLoading,
-    execute: refreshGoals,
-  } = useQuery(() => progressService.getGoals());
 
   const {
     data: achievements,
@@ -103,8 +84,8 @@ export const ProgressTracker: React.FC = () => {
           <h3 className="font-semibold mb-1">Current Weight</h3>
           <p className="text-green-100 text-sm">
             {progressSummary?.weightChange ? (
-              progressSummary.weightChange > 0 ? 
-                `+${progressSummary.weightChange.toFixed(1)}kg` : 
+              progressSummary.weightChange > 0 ?
+                `+${progressSummary.weightChange.toFixed(1)}kg` :
                 `${progressSummary.weightChange.toFixed(1)}kg`
             ) : 'No change'}
           </p>
@@ -416,11 +397,10 @@ export const ProgressTracker: React.FC = () => {
               <button
                 key={id}
                 onClick={() => setActiveTab(id as any)}
-                className={`flex items-center space-x-2 px-4 py-3 rounded-xl font-medium transition-all duration-200 ${
-                  activeTab === id
-                    ? 'bg-gradient-to-r from-emerald-500 to-emerald-600 text-white shadow-lg'
-                    : 'text-gray-600 dark:text-gray-300 hover:text-gray-900 dark:hover:text-white hover:bg-gray-100 dark:hover:bg-gray-700'
-                }`}
+                className={`flex items-center space-x-2 px-4 py-3 rounded-xl font-medium transition-all duration-200 ${activeTab === id
+                  ? 'bg-gradient-to-r from-emerald-500 to-emerald-600 text-white shadow-lg'
+                  : 'text-gray-600 dark:text-gray-300 hover:text-gray-900 dark:hover:text-white hover:bg-gray-100 dark:hover:bg-gray-700'
+                  }`}
               >
                 <Icon className="w-4 h-4" />
                 <span>{label}</span>

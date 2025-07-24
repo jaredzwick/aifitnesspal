@@ -1,5 +1,6 @@
 import React, { useState } from 'react';
 import { FitnessUser } from '../../../common/models/fitnessUser';
+import { FITNESS_EXPERIENCE_LEVELS } from '../../../common/constants';
 
 interface FitnessLevelStepProps {
   userData: Partial<FitnessUser>;
@@ -10,21 +11,21 @@ interface FitnessLevelStepProps {
 
 const fitnessLevels = [
   {
-    level: 'beginner' as const,
+    level: FITNESS_EXPERIENCE_LEVELS.BEGINNER,
     title: 'Beginner',
-    description: 'New to fitness or getting back into it',
+    description: 'Less than 6 months of training',
     icon: '🌱',
   },
   {
-    level: 'intermediate' as const,
+    level: FITNESS_EXPERIENCE_LEVELS.INTERMEDIATE,
     title: 'Intermediate',
-    description: 'Regular exercise routine for 6+ months',
+    description: '6 months - 2 years of consistent training',
     icon: '💪',
   },
   {
-    level: 'advanced' as const,
+    level: FITNESS_EXPERIENCE_LEVELS.ADVANCED,
     title: 'Advanced',
-    description: 'Experienced with consistent training',
+    description: '2+ years of consistent training',
     icon: '🏆',
   },
 ];
@@ -49,7 +50,7 @@ export const FitnessLevelStep: React.FC<FitnessLevelStepProps> = ({
           What's your fitness level?
         </h2>
         <p className="text-gray-600 dark:text-gray-300">
-          This helps us recommend the right workout intensity for you.
+          This allows us to identify the most suited training program for you
         </p>
       </div>
 
@@ -58,11 +59,10 @@ export const FitnessLevelStep: React.FC<FitnessLevelStepProps> = ({
           <button
             key={level.level}
             onClick={() => setSelectedLevel(level.level)}
-            className={`p-6 rounded-xl border-2 transition-all duration-200 text-left hover:shadow-lg ${
-              selectedLevel === level.level
-                ? 'border-emerald-500 bg-emerald-50 dark:bg-emerald-900/20 shadow-lg'
-                : 'border-gray-200 dark:border-gray-700 bg-white dark:bg-gray-800 hover:border-emerald-300 dark:hover:border-emerald-600'
-            }`}
+            className={`p-6 rounded-xl border-2 transition-all duration-200 text-left hover:shadow-lg ${selectedLevel === level.level
+              ? 'border-emerald-500 bg-emerald-50 dark:bg-emerald-900/20 shadow-lg'
+              : 'border-gray-200 dark:border-gray-700 bg-white dark:bg-gray-800 hover:border-emerald-300 dark:hover:border-emerald-600'
+              }`}
           >
             <div className="text-3xl mb-3">{level.icon}</div>
             <h3 className="font-semibold text-gray-900 dark:text-white mb-2">
