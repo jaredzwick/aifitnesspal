@@ -10,6 +10,12 @@ interface PlanGenerationStepProps {
     onPrev: () => void;
 }
 
+const formatGoal = (goal?: string) => {
+    if (!goal) return '';
+    // make the goal title case
+    return goal.replace('_', ' ').replace(/\b\w/g, (char) => char.toUpperCase());
+}
+
 export const PlanGenerationStep: React.FC<PlanGenerationStepProps> = ({
     userData,
     onNext,
@@ -75,7 +81,7 @@ export const PlanGenerationStep: React.FC<PlanGenerationStepProps> = ({
                     Your Personalized Plan is Ready! 🎯
                 </h2>
                 <p className="text-gray-600 dark:text-gray-300 text-lg">
-                    Here's your custom training and nutrition regimen designed specifically for your {userData.goal?.replace('-', ' ')} goal.
+                    Here's your custom training and nutrition regimen designed specifically for your {formatGoal(userData.goal)} goal.
                 </p>
             </div>
 
