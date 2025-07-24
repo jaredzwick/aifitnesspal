@@ -1,6 +1,6 @@
 import React from 'react';
 import { FitnessUser } from '../../../common/models/fitnessUser';
-import { useQuery, useQueryClient } from '@tanstack/react-query';
+import { useQuery } from '@tanstack/react-query';
 import { planService } from '../../services/planService';
 import { ErrorScreen } from '../ErrorScreen';
 
@@ -15,17 +15,11 @@ export const PlanGenerationStep: React.FC<PlanGenerationStepProps> = ({
     onNext,
     onPrev,
 }) => {
-    const queryClient = useQueryClient()
-
     const { data, isLoading, error } = useQuery({
         queryKey: ['genPlan', userData],
         queryFn: () => planService.generatePlan(userData),
         enabled: !!userData,
     })
-
-    const handleRegeneratePlan = () => {
-        queryClient.invalidateQueries({ queryKey: ['genPlan', userData] });
-    };
 
     if (isLoading) {
         return (
@@ -108,21 +102,6 @@ export const PlanGenerationStep: React.FC<PlanGenerationStepProps> = ({
                             </span>
                         </div>
 
-                        <div className="mt-4">
-                            <h4 className="font-semibold text-blue-900 dark:text-blue-100 mb-2">Weekly Schedule:</h4>
-                            <div className="space-y-1 text-sm">
-                                {workoutDays.map((day, index) => (
-                                    <div key={index} className="flex justify-between">
-                                        <span className="capitalize text-blue-800 dark:text-blue-200">
-                                            {day.day}:
-                                        </span>
-                                        <span className="text-blue-900 dark:text-blue-100">
-                                            {day.workout ? day.workout[0].name : 'Rest'}
-                                        </span>
-                                    </div>
-                                ))}
-                            </div>
-                        </div>
                     </div>
                 </div>
 
@@ -229,13 +208,6 @@ export const PlanGenerationStep: React.FC<PlanGenerationStepProps> = ({
                 </button>
 
                 <div className="flex space-x-4">
-                    <button
-                        onClick={handleRegeneratePlan}
-                        className="px-6 py-3 border border-emerald-500 text-emerald-600 dark:text-emerald-400 rounded-xl hover:bg-emerald-50 dark:hover:bg-emerald-900 transition-colors"
-                    >
-                        Regenerate Plan
-                    </button>
-
                     <button
                         onClick={onNext}
                         className="px-8 py-3 bg-gradient-to-r from-emerald-500 to-emerald-600 text-white rounded-xl hover:from-emerald-600 hover:to-emerald-700 transition-all duration-200 font-semibold"
