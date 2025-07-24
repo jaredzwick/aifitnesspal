@@ -24,7 +24,7 @@ import { progressService } from '../services/progressService';
 import { SkeletonCard } from './ui/LoadingSpinner';
 import { User } from '@supabase/supabase-js';
 import { ErrorBoundary } from './ui/ErrorBoundary';
-import logo from '../assets/logo-3.png';
+import logo from '../assets/logo-navbar.png';
 
 interface DashboardProps {
   user: User;

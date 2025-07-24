@@ -1,11 +1,12 @@
 // Import required libraries and modules
 import { assert, assertEquals } from "jsr:@std/assert@1";
 import { createClient, SupabaseClient } from "npm:@supabase/supabase-js@2";
-import { recommendPlan } from "../../services/plan-recommendation-service.ts";
 import { mockFitnessUser } from "./mocks/mockFitnessUser.ts";
 // Will load the .env file to Deno.env
 import "jsr:@std/dotenv/load";
 import { FITNESS_GOALS } from "../../../common/constants.ts";
+import { createWeeklyTrainingSchedule } from "../../services/training/training.ts";
+import { generateNutritionRegimen } from "../../services/nutrition/nutrition.ts";
 
 // Set up the configuration for the Supabase client
 const supabaseUrl = Deno.env.get("SUPABASE_URL") ?? "";
@@ -65,28 +66,26 @@ const testHelloWorld = async () => {
   assertEquals(func_data.message, "Hello bar!");
 };
 
-const testPlanRecommendationService = async () => {
-  const result = await recommendPlan(mockFitnessUser);
-  console.log(result);
+const testPlanRecommendationService = () => {
+  const trainingRegimen = createWeeklyTrainingSchedule(mockFitnessUser);
+  console.log(trainingRegimen);
 
   // === TRAINING REGIMEN TESTS ===
   // Verify the training regimen has exactly 7 days
-  assertEquals(result.trainingRegimen.length, 7);
+  assertEquals(trainingRegimen.length, 7);
 
   // Count workout days and rest days
-  const workoutDays = result.trainingRegimen.filter((day) =>
+  const workoutDays = trainingRegimen.filter((day) =>
     day.workout !== undefined
   );
-  const restDays = result.trainingRegimen.filter((day) =>
-    day.workout === undefined
-  );
+  const restDays = trainingRegimen.filter((day) => day.workout === undefined);
 
   // Verify exactly 5 workout days and 2 rest days
   assertEquals(workoutDays.length, 4, "Should have exactly 4 workout days");
   assertEquals(restDays.length, 3, "Should have exactly 3 rest days");
 
   // Verify each day has a day property
-  result.trainingRegimen.forEach((day, index) => {
+  trainingRegimen.forEach((day, index) => {
     assert(day.day, `Day ${index + 1} should have a day property`);
   });
 
@@ -103,7 +102,7 @@ const testPlanRecommendationService = async () => {
   });
 
   // === NUTRITION REGIMEN TESTS ===
-  const nutrition = result.nutritionRegimen;
+  const nutrition = generateNutritionRegimen(mockFitnessUser);
 
   // Verify nutrition regimen exists and has required properties
   assert(nutrition, "Should have a nutrition regimen");
