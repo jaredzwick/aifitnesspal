@@ -24,7 +24,7 @@ import { progressService } from '../services/progressService';
 import { SkeletonCard } from './ui/LoadingSpinner';
 import { User } from '@supabase/supabase-js';
 import { ErrorBoundary } from './ui/ErrorBoundary';
-import logo from '../assets/logo-t.png';
+import logo from '../assets/logo-3.png';
 
 interface DashboardProps {
   user: User;
@@ -66,17 +66,17 @@ export const Dashboard: React.FC<DashboardProps> = ({ user }) => {
   const renderOverview = () => (
     <div className="space-y-6">
       {/* Welcome Header */}
-      <div className="bg-gradient-to-r from-emerald-500 to-blue-600 rounded-2xl p-6 text-white">
+      <div className="bg-white dark:bg-gray-800 rounded-2xl p-6 border border-gray-200 dark:border-gray-700">
         <div className="flex items-center justify-between">
           <div>
-            <h1 className="text-3xl font-bold mb-2">Welcome back, {user.user_metadata.name}! 👋</h1>
-            <p className="text-emerald-100">
+            <h1 className="text-3xl font-bold mb-2 text-gray-900 dark:text-white">Welcome back, {user.user_metadata.name}! 👋</h1>
+            <p className="text-gray-600 dark:text-gray-300">
               Ready to crush your fitness goals today?
             </p>
           </div>
           <div className="text-right">
-            <div className="text-2xl font-bold">{new Date().toLocaleDateString('en-US', { weekday: 'long' })}</div>
-            <div className="text-emerald-100">{new Date().toLocaleDateString()}</div>
+            <div className="text-2xl font-bold text-gray-900 dark:text-white">{new Date().toLocaleDateString('en-US', { weekday: 'long' })}</div>
+            <div className="text-gray-600 dark:text-gray-300">{new Date().toLocaleDateString()}</div>
           </div>
         </div>
       </div>
@@ -441,7 +441,7 @@ export const Dashboard: React.FC<DashboardProps> = ({ user }) => {
                     onClick={handleSignOut}
                     className="flex items-center space-x-2 px-3 py-2 text-sm font-medium text-gray-600 dark:text-gray-300 hover:text-gray-900 dark:hover:text-white hover:bg-gray-100 dark:hover:bg-gray-700 rounded-lg transition-colors"
                   >
-                    <div className="w-8 h-8 bg-gradient-to-br from-emerald-500 to-emerald-600 rounded-full flex items-center justify-center">
+                    <div className="w-8 h-8 bg-emerald-500 rounded-full flex items-center justify-center">
                       <span className="text-white text-sm font-semibold">
                         {user.user_metadata.name ? user.user_metadata.name.charAt(0).toUpperCase() : 'U'}
                       </span>

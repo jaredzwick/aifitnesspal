@@ -1,5 +1,5 @@
 import React, { useState } from 'react';
-import { FitnessUser } from '../../types';
+import { FitnessUser } from '../../../common/models/fitnessUser';
 
 interface HealthInfoStepProps {
   userData: Partial<FitnessUser>;

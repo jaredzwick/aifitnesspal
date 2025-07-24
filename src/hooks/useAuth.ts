@@ -1,7 +1,7 @@
 import { useState, useEffect } from 'react';
 import { User, Session } from '@supabase/supabase-js';
 import { supabase } from '../lib/supabase';
-import { FitnessUser } from '../types';
+import { FitnessUser } from '../../common/models/fitnessUser';
 
 export interface AuthState {
   user: User | null;

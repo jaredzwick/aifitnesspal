@@ -1,5 +1,5 @@
 import { useState } from 'react';
-import { FitnessUser } from '../types';
+import { FitnessUser } from '../../common/models/fitnessUser';
 
 export const useOnboarding = () => {
   const [step, setStep] = useState(0);

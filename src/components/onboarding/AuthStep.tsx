@@ -1,5 +1,5 @@
 import React, { useState } from 'react';
-import { FitnessUser } from '../../types';
+import { FitnessUser } from '../../../common/models/fitnessUser';
 import { AuthForm } from '../auth/AuthForm';
 import { ForgotPasswordForm } from '../auth/ForgotPasswordForm';
 import { ErrorScreen } from '../ErrorScreen';

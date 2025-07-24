@@ -1,5 +1,5 @@
 import React, { useState } from 'react';
-import { FitnessUser } from '../../types';
+import { FitnessUser } from '../../../common/models/fitnessUser';
 
 interface GoalsStepProps {
   userData: Partial<FitnessUser>;
@@ -57,7 +57,7 @@ export const GoalsStep: React.FC<GoalsStepProps> = ({
             key={goal.id}
             onClick={() => setSelectedGoal(goal.id)}
             className={`p-8 rounded-2xl border-2 transition-all duration-300 text-left hover:shadow-xl transform hover:scale-105 ${selectedGoal === goal.id
-              ? 'border-emerald-500 bg-gradient-to-br from-emerald-50 to-emerald-100 dark:from-emerald-900/20 dark:to-emerald-800/20 shadow-xl scale-105'
+              ? 'border-emerald-500 bg-emerald-50 dark:bg-emerald-900/20 shadow-xl scale-105'
               : 'border-gray-200 dark:border-gray-700 bg-white dark:bg-gray-800 hover:border-emerald-300 dark:hover:border-emerald-600'
               }`}
           >
@@ -111,7 +111,7 @@ export const GoalsStep: React.FC<GoalsStepProps> = ({
         <button
           onClick={handleSubmit}
           disabled={!selectedGoal}
-          className="flex-1 py-3 px-6 rounded-xl bg-gradient-to-r from-emerald-500 to-emerald-600 hover:from-emerald-600 hover:to-emerald-700 text-white font-semibold disabled:opacity-50 disabled:cursor-not-allowed transition-all duration-200"
+          className="flex-1 py-3 px-6 rounded-xl bg-emerald-500 hover:bg-emerald-600 text-white font-semibold disabled:opacity-50 disabled:cursor-not-allowed transition-all duration-200"
         >
           Continue
         </button>

@@ -1,6 +1,7 @@
 import React, { useState, useEffect } from 'react';
-import { FitnessUser, PersonalizedPlan } from '../../types';
+import { FitnessUser } from '../../../common/models/fitnessUser';
 import { generatePersonalizedPlan } from '../../services/planGenerationService';
+import { PersonalizedPlan } from '../../types';
 
 interface PlanGenerationStepProps {
     userData: Partial<FitnessUser>;

@@ -37,7 +37,7 @@ export const ErrorScreen: React.FC<ErrorScreenProps> = ({
           {showRetry && onRetry && (
             <button
               onClick={onRetry}
-              className="w-full flex items-center justify-center space-x-2 py-3 px-6 rounded-xl bg-gradient-to-r from-emerald-500 to-emerald-600 hover:from-emerald-600 hover:to-emerald-700 text-white font-semibold transition-all duration-200"
+              className="w-full flex items-center justify-center space-x-2 py-3 px-6 rounded-xl bg-emerald-500 hover:bg-emerald-600 text-white font-semibold transition-all duration-200"
             >
               <RefreshCw className="w-4 h-4" />
               <span>Try Again</span>

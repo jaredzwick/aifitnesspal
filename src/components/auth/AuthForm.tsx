@@ -1,7 +1,7 @@
 import React, { useState } from 'react';
 import { Eye, EyeOff, Mail, Lock, User, AlertCircle } from 'lucide-react';
 import { useAuth } from '../../hooks/useAuth';
-import { FitnessUser } from '../../types';
+import { FitnessUser } from '../../../common/models/fitnessUser';
 
 interface AuthFormProps {
   mode: 'signin' | 'signup';
@@ -89,7 +89,7 @@ export const AuthForm: React.FC<AuthFormProps> = ({
   return (
     <div className="w-full max-w-md">
       <div className="text-center mb-8">
-        <div className="w-16 h-16 bg-gradient-to-br from-emerald-500 to-emerald-600 rounded-full flex items-center justify-center mx-auto mb-4">
+        <div className="w-16 h-16 bg-emerald-500 rounded-full flex items-center justify-center mx-auto mb-4">
           <User className="w-8 h-8 text-white" />
         </div>
         <h2 className="text-3xl font-bold text-gray-900 dark:text-white mb-2">
@@ -186,7 +186,7 @@ export const AuthForm: React.FC<AuthFormProps> = ({
         <button
           type="submit"
           disabled={!isValid || loading}
-          className="w-full py-3 px-6 rounded-xl bg-gradient-to-r from-emerald-500 to-emerald-600 hover:from-emerald-600 hover:to-emerald-700 text-white font-semibold disabled:opacity-50 disabled:cursor-not-allowed transition-all duration-200 transform hover:scale-105"
+          className="w-full py-3 px-6 rounded-xl bg-emerald-500 hover:bg-emerald-600 text-white font-semibold disabled:opacity-50 disabled:cursor-not-allowed transition-all duration-200 transform hover:scale-105"
         >
           {loading ? (
             <div className="flex items-center justify-center space-x-2">

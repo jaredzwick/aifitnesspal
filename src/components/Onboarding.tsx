@@ -57,7 +57,7 @@ export const Onboarding: React.FC = () => {
     onUpdate={updateUserData}
     onNext={nextStep}
     onPrev={prevStep}
-  />,
+    />,
     <PhotosStep
       key="photos"
       userData={userData}
@@ -74,19 +74,14 @@ export const Onboarding: React.FC = () => {
   ];
 
   return (
-    <div className="min-h-screen bg-gradient-to-br from-gray-50 to-gray-100 dark:from-gray-900 dark:to-gray-800 flex items-center justify-center p-4">
+    <div className="min-h-screen bg-gray-50 dark:bg-gray-900 flex items-center justify-center p-4 py-16">
       <div className="w-full max-w-4xl">
         {/* Progress bar */}
         {step > 0 && (
           <div className="mb-8">
-            <div className="flex justify-center mb-2">
-              <span className="text-sm text-gray-600 dark:text-gray-300">
-                Step {step} of 9
-              </span>
-            </div>
             <div className="w-full bg-gray-200 dark:bg-gray-700 rounded-full h-2">
               <div
-                className="bg-gradient-to-r from-emerald-500 to-emerald-600 h-2 rounded-full transition-all duration-300"
+                className="bg-emerald-500 h-2 rounded-full transition-all duration-300"
                 style={{ width: `${(step / 9) * 100}%` }}
               />
             </div>

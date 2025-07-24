@@ -1,5 +1,5 @@
 import React, { useState } from 'react';
-import { FitnessUser } from '../../types';
+import { FitnessUser } from '../../../common/models/fitnessUser';
 
 interface PersonalInfoStepProps {
   userData: Partial<FitnessUser>;
@@ -337,7 +337,7 @@ export const PersonalInfoStep: React.FC<PersonalInfoStepProps> = ({
           <button
             type="submit"
             disabled={!isValid}
-            className="flex-1 py-3 px-6 rounded-xl bg-gradient-to-r from-emerald-500 to-emerald-600 hover:from-emerald-600 hover:to-emerald-700 text-white font-semibold disabled:opacity-50 disabled:cursor-not-allowed transition-all duration-200"
+            className="flex-1 py-3 px-6 rounded-xl bg-emerald-500 hover:bg-emerald-600 text-white font-semibold disabled:opacity-50 disabled:cursor-not-allowed transition-all duration-200"
           >
             Continue
           </button>
