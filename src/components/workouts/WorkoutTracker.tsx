@@ -20,7 +20,7 @@ import { useMutation } from '@tanstack/react-query';
 import { workoutService } from '../../services/workoutService';
 
 
-export const WorkoutTracker: React.FC<{ plan: PersonalizedPlan, inProgressWorkout?: WeeklyWorkoutPlan }> = ({ plan, inProgressWorkout }) => {
+export const WorkoutTracker: React.FC<{ plan: PersonalizedPlan, inProgressWorkout?: WeeklyWorkoutPlan, prefersMetric: boolean }> = ({ plan, inProgressWorkout, prefersMetric }) => {
 
   // //TODO: IF IN PROGRESS WORKOUT, SET ACTIVE WORKOUT TO IN PROGRESS WORKOUT, MUST PERSIST IT ON START WORKOUT
   const [activeWorkout, setActiveWorkout] = useState<WeeklyWorkoutPlan | null>(null);
@@ -166,7 +166,7 @@ export const WorkoutTracker: React.FC<{ plan: PersonalizedPlan, inProgressWorkou
 
     const newSet: WorkoutSet = {
       id: `set-${currentSetIndex}`,
-      set_number: currentSetIndex + 1,
+      set_number: currentExercise.userSets!.length + 1,
       reps: currentExercise.reps,
       duration: currentExercise.duration,
       completed: false,
@@ -307,10 +307,7 @@ export const WorkoutTracker: React.FC<{ plan: PersonalizedPlan, inProgressWorkou
                 Exercise {currentExerciseIndex + 1} of {activeWorkout?.workout?.length}
               </p>
             </div>
-            <div className="text-right">
-              <div className="text-3xl font-bold">{formatTime(workoutTimer)}</div>
-              <div className="text-emerald-100 text-sm">Total Time</div>
-            </div>
+
           </div>
 
           {/* Progress Bar */}
@@ -318,7 +315,7 @@ export const WorkoutTracker: React.FC<{ plan: PersonalizedPlan, inProgressWorkou
             <div
               className="bg-white h-2 rounded-full transition-all duration-300"
               style={{
-                // width: `${((currentExerciseIndex + (currentSetIndex / currentExercise!.numberOfSets!)) / activeWorkout?.workout?.length) * 100}%`
+                width: `${((currentExerciseIndex + (currentSetIndex / currentExercise!.numberOfSets!)) / activeWorkout?.workout?.length) * 100}%`
               }}
             />
           </div>
@@ -352,9 +349,6 @@ export const WorkoutTracker: React.FC<{ plan: PersonalizedPlan, inProgressWorkou
                 <h3 className="text-xl font-bold text-gray-900 dark:text-white">
                   {currentExercise.name}
                 </h3>
-                <p className="text-gray-600 dark:text-gray-300">
-                  {currentExercise.instructions}
-                </p>
               </div>
               <div className="flex items-center space-x-2">
                 {currentExercise.type === 'strength' && (
@@ -394,66 +388,111 @@ export const WorkoutTracker: React.FC<{ plan: PersonalizedPlan, inProgressWorkou
                 </div>
 
                 {isStrengthExercise && (
-                  <div className="grid grid-cols-2 gap-4 mb-6">
-                    <div>
-                      <label className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-2">
-                        Reps
-                      </label>
-                      <div className="flex items-center space-x-3">
+                  <div className="grid grid-cols-1 sm:grid-cols-2 gap-6 mb-8">
+                    {/* Reps Counter */}
+                    <div className="bg-white dark:bg-gray-800 rounded-2xl p-6 border border-gray-200 dark:border-gray-700 shadow-sm">
+                      <div className="text-center mb-4">
+                        <label className="block text-sm font-semibold text-gray-700 dark:text-gray-300 mb-2">
+                          Repetitions
+                        </label>
+                        <div className="text-xs text-emerald-600 dark:text-emerald-400 font-medium">
+                          Target: {currentExercise?.reps || 0} reps
+                        </div>
+                      </div>
+
+                      <div className="flex items-center justify-center space-x-4">
                         <button
                           onClick={() => updateSet({ reps: Math.max(0, (currentSet.reps || 0) - 1) })}
-                          className="w-10 h-10 bg-gray-200 dark:bg-gray-600 hover:bg-gray-300 dark:hover:bg-gray-500 rounded-lg flex items-center justify-center transition-colors"
+                          className="w-12 h-12 bg-gradient-to-br from-gray-100 to-gray-200 dark:from-gray-700 dark:to-gray-600 hover:from-gray-200 hover:to-gray-300 dark:hover:from-gray-600 dark:hover:to-gray-500 rounded-xl flex items-center justify-center transition-all duration-200 shadow-sm hover:shadow-md active:scale-95"
+                          aria-label="Decrease reps"
                         >
-                          <Minus className="w-4 h-4" />
+                          <Minus className="w-5 h-5 text-gray-600 dark:text-gray-300" />
                         </button>
-                        <div className="flex-1 text-center">
+
+                        <div className="flex-1 max-w-24">
                           <input
                             type="number"
+                            min="0"
                             value={currentSet.reps || 0}
-                            onChange={(e) => updateSet({ reps: parseInt(e.target.value) || 0 })}
-                            className="w-full text-center text-2xl font-bold bg-transparent border-none focus:outline-none text-gray-900 dark:text-white"
+                            onChange={(e) => updateSet({ reps: Math.max(0, parseInt(e.target.value) || 0) })}
+                            className="w-full text-center text-3xl font-bold bg-white dark:bg-gray-900 border-2 border-emerald-200 dark:border-emerald-700 rounded-xl py-3 focus:outline-none focus:ring-2 focus:ring-emerald-500 focus:border-emerald-500 text-gray-900 dark:text-white transition-all duration-200 [appearance:textfield] [&::-webkit-outer-spin-button]:appearance-none [&::-webkit-inner-spin-button]:appearance-none"
+                            aria-label="Number of repetitions"
                           />
-                          <div className="text-xs text-gray-500 dark:text-gray-400">
-                            Target: {currentExercise?.reps}
-                          </div>
                         </div>
+
                         <button
                           onClick={() => updateSet({ reps: (currentSet.reps || 0) + 1 })}
-                          className="w-10 h-10 bg-gray-200 dark:bg-gray-600 hover:bg-gray-300 dark:hover:bg-gray-500 rounded-lg flex items-center justify-center transition-colors"
+                          className="w-12 h-12 bg-gradient-to-br from-emerald-100 to-emerald-200 dark:from-emerald-800 dark:to-emerald-700 hover:from-emerald-200 hover:to-emerald-300 dark:hover:from-emerald-700 dark:hover:to-emerald-600 rounded-xl flex items-center justify-center transition-all duration-200 shadow-sm hover:shadow-md active:scale-95"
+                          aria-label="Increase reps"
                         >
-                          <Plus className="w-4 h-4" />
+                          <Plus className="w-5 h-5 text-emerald-600 dark:text-emerald-300" />
                         </button>
                       </div>
                     </div>
 
-                    <div>
-                      <label className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-2">
-                        Weight (kg)
-                      </label>
-                      <div className="flex items-center space-x-3">
+                    {/* Weight Counter */}
+                    <div className="bg-white dark:bg-gray-800 rounded-2xl p-6 border border-gray-200 dark:border-gray-700 shadow-sm">
+                      <div className="text-center mb-4">
+                        <label className="block text-sm font-semibold text-gray-700 dark:text-gray-300 mb-2">
+                          Weight ({prefersMetric ? 'kg' : 'lbs'})
+                        </label>
+                        <div className="text-xs text-blue-600 dark:text-blue-400 font-medium">
+                          Target: {prefersMetric ? '0 kg' : '0 lbs'}
+                        </div>
+                      </div>
+
+                      <div className="flex items-center justify-center space-x-4">
                         <button
-                          onClick={() => updateSet({ weight: Math.max(0, (currentSet.weight || 0) - 2.5) })}
-                          className="w-10 h-10 bg-gray-200 dark:bg-gray-600 hover:bg-gray-300 dark:hover:bg-gray-500 rounded-lg flex items-center justify-center transition-colors"
+                          onClick={() => {
+                            const decrement = prefersMetric ? 2.5 : 5;
+                            const currentWeight = prefersMetric
+                              ? (currentSet.weight || 0)
+                              : ((currentSet.weight || 0) * 2.20462);
+                            const newWeight = Math.max(0, currentWeight - decrement);
+                            updateSet({
+                              weight: prefersMetric ? newWeight : (newWeight / 2.20462)
+                            });
+                          }}
+                          className="w-12 h-12 bg-gradient-to-br from-gray-100 to-gray-200 dark:from-gray-700 dark:to-gray-600 hover:from-gray-200 hover:to-gray-300 dark:hover:from-gray-600 dark:hover:to-gray-500 rounded-xl flex items-center justify-center transition-all duration-200 shadow-sm hover:shadow-md active:scale-95"
+                          aria-label="Decrease weight"
                         >
-                          <Minus className="w-4 h-4" />
+                          <Minus className="w-5 h-5 text-gray-600 dark:text-gray-300" />
                         </button>
-                        <div className="flex-1 text-center">
+
+                        <div className="flex-1 max-w-28">
                           <input
                             type="number"
-                            step="0.5"
-                            value={currentSet.weight || 0}
-                            onChange={(e) => updateSet({ weight: parseFloat(e.target.value) || 0 })}
-                            className="w-full text-center text-2xl font-bold bg-transparent border-none focus:outline-none text-gray-900 dark:text-white"
+                            min="0"
+                            step={prefersMetric ? "0.5" : "1"}
+                            value={prefersMetric
+                              ? (currentSet.weight || 0).toFixed(1)
+                              : ((currentSet.weight || 0) * 2.20462).toFixed(0)
+                            }
+                            onChange={(e) => {
+                              const inputValue = parseFloat(e.target.value) || 0;
+                              const weightInKg = prefersMetric ? inputValue : (inputValue / 2.20462);
+                              updateSet({ weight: Math.max(0, weightInKg) });
+                            }}
+                            className="w-full text-center text-3xl font-bold bg-white dark:bg-gray-900 border-2 border-blue-200 dark:border-blue-700 rounded-xl py-3 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-blue-500 text-gray-900 dark:text-white transition-all duration-200 [appearance:textfield] [&::-webkit-outer-spin-button]:appearance-none [&::-webkit-inner-spin-button]:appearance-none"
+                            aria-label={`Weight in ${prefersMetric ? 'kilograms' : 'pounds'}`}
                           />
-                          <div className="text-xs text-gray-500 dark:text-gray-400">
-                            Target: {0}kg
-                          </div>
                         </div>
+
                         <button
-                          onClick={() => updateSet({ weight: (currentSet.weight || 0) + 2.5 })}
-                          className="w-10 h-10 bg-gray-200 dark:bg-gray-600 hover:bg-gray-300 dark:hover:bg-gray-500 rounded-lg flex items-center justify-center transition-colors"
+                          onClick={() => {
+                            const increment = prefersMetric ? 2.5 : 5;
+                            const currentWeight = prefersMetric
+                              ? (currentSet.weight || 0)
+                              : ((currentSet.weight || 0) * 2.20462);
+                            const newWeight = currentWeight + increment;
+                            updateSet({
+                              weight: prefersMetric ? newWeight : (newWeight / 2.20462)
+                            });
+                          }}
+                          className="w-12 h-12 bg-gradient-to-br from-blue-100 to-blue-200 dark:from-blue-800 dark:to-blue-700 hover:from-blue-200 hover:to-blue-300 dark:hover:from-blue-700 dark:hover:to-blue-600 rounded-xl flex items-center justify-center transition-all duration-200 shadow-sm hover:shadow-md active:scale-95"
+                          aria-label="Increase weight"
                         >
-                          <Plus className="w-4 h-4" />
+                          <Plus className="w-5 h-5 text-blue-600 dark:text-blue-300" />
                         </button>
                       </div>
                     </div>
@@ -461,39 +500,116 @@ export const WorkoutTracker: React.FC<{ plan: PersonalizedPlan, inProgressWorkou
                 )}
 
                 {isCardioExercise && (
-                  <div className="grid grid-cols-2 gap-4 mb-6">
-                    <div>
-                      <label className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-2">
-                        Duration (seconds)
-                      </label>
-                      <div className="text-center">
-                        <input
-                          type="number"
-                          value={currentSet.duration || 0}
-                          onChange={(e) => updateSet({ duration: parseInt(e.target.value) || 0 })}
-                          className="w-full text-center text-2xl font-bold bg-transparent border border-gray-300 dark:border-gray-600 rounded-lg p-2 focus:outline-none focus:ring-2 focus:ring-emerald-500 text-gray-900 dark:text-white"
-                        />
-                        <div className="text-xs text-gray-500 dark:text-gray-400 mt-1">
+                  <div className="grid grid-cols-1 sm:grid-cols-2 gap-6 mb-8">
+                    {/* Duration Counter */}
+                    <div className="bg-white dark:bg-gray-800 rounded-2xl p-6 border border-gray-200 dark:border-gray-700 shadow-sm">
+                      <div className="text-center mb-4">
+                        <label className="block text-sm font-semibold text-gray-700 dark:text-gray-300 mb-2">
+                          Duration
+                        </label>
+                        <div className="text-xs text-purple-600 dark:text-purple-400 font-medium">
                           Target: {formatTime(currentExercise.duration || 0)}
                         </div>
                       </div>
+
+                      <div className="flex items-center justify-center space-x-4">
+                        <button
+                          onClick={() => updateSet({ duration: Math.max(0, (currentSet.duration || 0) - 30) })}
+                          className="w-12 h-12 bg-gradient-to-br from-gray-100 to-gray-200 dark:from-gray-700 dark:to-gray-600 hover:from-gray-200 hover:to-gray-300 dark:hover:from-gray-600 dark:hover:to-gray-500 rounded-xl flex items-center justify-center transition-all duration-200 shadow-sm hover:shadow-md active:scale-95"
+                          aria-label="Decrease duration by 30 seconds"
+                        >
+                          <Minus className="w-5 h-5 text-gray-600 dark:text-gray-300" />
+                        </button>
+
+                        <div className="flex-1 max-w-32">
+                          <input
+                            type="number"
+                            min="0"
+                            step="15"
+                            value={currentSet.duration || 0}
+                            onChange={(e) => updateSet({ duration: Math.max(0, parseInt(e.target.value) || 0) })}
+                            className="w-full text-center text-2xl font-bold bg-white dark:bg-gray-900 border-2 border-purple-200 dark:border-purple-700 rounded-xl py-3 focus:outline-none focus:ring-2 focus:ring-purple-500 focus:border-purple-500 text-gray-900 dark:text-white transition-all duration-200 [appearance:textfield] [&::-webkit-outer-spin-button]:appearance-none [&::-webkit-inner-spin-button]:appearance-none"
+                            aria-label="Duration in seconds"
+                          />
+                          <div className="text-xs text-purple-600 dark:text-purple-400 mt-2 font-medium">
+                            {formatTime(currentSet.duration || 0)}
+                          </div>
+                        </div>
+
+                        <button
+                          onClick={() => updateSet({ duration: (currentSet.duration || 0) + 30 })}
+                          className="w-12 h-12 bg-gradient-to-br from-purple-100 to-purple-200 dark:from-purple-800 dark:to-purple-700 hover:from-purple-200 hover:to-purple-300 dark:hover:from-purple-700 dark:hover:to-purple-600 rounded-xl flex items-center justify-center transition-all duration-200 shadow-sm hover:shadow-md active:scale-95"
+                          aria-label="Increase duration by 30 seconds"
+                        >
+                          <Plus className="w-5 h-5 text-purple-600 dark:text-purple-300" />
+                        </button>
+                      </div>
                     </div>
 
-                    <div>
-                      <label className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-2">
-                        Distance (m)
-                      </label>
-                      <div className="text-center">
-                        <input
-                          type="number"
-                          value={currentSet.distance || 0}
-                          onChange={(e) => updateSet({ distance: parseInt(e.target.value) || 0 })}
-                          className="w-full text-center text-2xl font-bold bg-transparent border border-gray-300 dark:border-gray-600 rounded-lg p-2 focus:outline-none focus:ring-2 focus:ring-emerald-500 text-gray-900 dark:text-white"
-                        />
-                        <div className="text-xs text-gray-500 dark:text-gray-400 mt-1">
-                          Target: {0}m
-                          {/* //TODO: ADD TARGETS TO INDIVIDUAL SETS */}
+                    {/* Distance Counter */}
+                    <div className="bg-white dark:bg-gray-800 rounded-2xl p-6 border border-gray-200 dark:border-gray-700 shadow-sm">
+                      <div className="text-center mb-4">
+                        <label className="block text-sm font-semibold text-gray-700 dark:text-gray-300 mb-2">
+                          Distance ({prefersMetric ? 'm' : 'ft'})
+                        </label>
+                        <div className="text-xs text-orange-600 dark:text-orange-400 font-medium">
+                          Target: {prefersMetric ? '0 m' : '0 ft'}
                         </div>
+                      </div>
+
+                      <div className="flex items-center justify-center space-x-4">
+                        <button
+                          onClick={() => {
+                            const decrement = prefersMetric ? 50 : 50; // 50m or 50ft
+                            const currentDistance = prefersMetric
+                              ? (currentSet.distance || 0)
+                              : ((currentSet.distance || 0) * 3.28084);
+                            const newDistance = Math.max(0, currentDistance - decrement);
+                            updateSet({
+                              distance: prefersMetric ? newDistance : (newDistance / 3.28084)
+                            });
+                          }}
+                          className="w-12 h-12 bg-gradient-to-br from-gray-100 to-gray-200 dark:from-gray-700 dark:to-gray-600 hover:from-gray-200 hover:to-gray-300 dark:hover:from-gray-600 dark:hover:to-gray-500 rounded-xl flex items-center justify-center transition-all duration-200 shadow-sm hover:shadow-md active:scale-95"
+                          aria-label="Decrease distance"
+                        >
+                          <Minus className="w-5 h-5 text-gray-600 dark:text-gray-300" />
+                        </button>
+
+                        <div className="flex-1 max-w-32">
+                          <input
+                            type="number"
+                            min="0"
+                            step={prefersMetric ? "10" : "10"}
+                            value={prefersMetric
+                              ? Math.round(currentSet.distance || 0)
+                              : Math.round((currentSet.distance || 0) * 3.28084)
+                            }
+                            onChange={(e) => {
+                              const inputValue = parseInt(e.target.value) || 0;
+                              const distanceInMeters = prefersMetric ? inputValue : (inputValue / 3.28084);
+                              updateSet({ distance: Math.max(0, distanceInMeters) });
+                            }}
+                            className="w-full text-center text-3xl font-bold bg-white dark:bg-gray-900 border-2 border-orange-200 dark:border-orange-700 rounded-xl py-3 focus:outline-none focus:ring-2 focus:ring-orange-500 focus:border-orange-500 text-gray-900 dark:text-white transition-all duration-200 [appearance:textfield] [&::-webkit-outer-spin-button]:appearance-none [&::-webkit-inner-spin-button]:appearance-none"
+                            aria-label={`Distance in ${prefersMetric ? 'meters' : 'feet'}`}
+                          />
+                        </div>
+
+                        <button
+                          onClick={() => {
+                            const increment = prefersMetric ? 50 : 50; // 50m or 50ft
+                            const currentDistance = prefersMetric
+                              ? (currentSet.distance || 0)
+                              : ((currentSet.distance || 0) * 3.28084);
+                            const newDistance = currentDistance + increment;
+                            updateSet({
+                              distance: prefersMetric ? newDistance : (newDistance / 3.28084)
+                            });
+                          }}
+                          className="w-12 h-12 bg-gradient-to-br from-orange-100 to-orange-200 dark:from-orange-800 dark:to-orange-700 hover:from-orange-200 hover:to-orange-300 dark:hover:from-orange-700 dark:hover:to-orange-600 rounded-xl flex items-center justify-center transition-all duration-200 shadow-sm hover:shadow-md active:scale-95"
+                          aria-label="Increase distance"
+                        >
+                          <Plus className="w-5 h-5 text-orange-600 dark:text-orange-300" />
+                        </button>
                       </div>
                     </div>
                   </div>
@@ -533,7 +649,7 @@ export const WorkoutTracker: React.FC<{ plan: PersonalizedPlan, inProgressWorkou
               </div>
 
               <div className="grid gap-2">
-                {/* {currentExercise.sets.map((set, index) => (
+                {currentExercise?.userSets?.map((set, index) => (
                   <div
                     key={set.id}
                     className={`p-3 rounded-lg border-2 transition-all duration-200 ${index === currentSetIndex
@@ -574,7 +690,7 @@ export const WorkoutTracker: React.FC<{ plan: PersonalizedPlan, inProgressWorkou
                       </div>
                     </div>
                   </div>
-                ))} */}
+                ))}
               </div>
             </div>
           </div>

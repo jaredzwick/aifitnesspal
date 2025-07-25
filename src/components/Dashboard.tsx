@@ -23,6 +23,7 @@ import { FitnessUser, PersonalizedPlan, WeeklyWorkoutPlan, WORKOUT_STATUS } from
 import { TrainingRegimen } from './training/TrainingRegimen';
 import { workoutService } from '../services/workoutService';
 import { useQuery } from '@tanstack/react-query';
+import { LoadingSpinner } from './ui/LoadingSpinner';
 
 interface DashboardProps {
   user: User;
@@ -390,7 +391,7 @@ export const Dashboard: React.FC<DashboardProps> = ({ user }) => {
   const renderCurrentView = () => {
     switch (currentView) {
       case 'workout-tracker':
-        return <WorkoutTracker plan={user?.user_metadata.personalizedPlan as PersonalizedPlan} inProgressWorkout={activeWorkout?.exercises as WeeklyWorkoutPlan} />;
+        return <WorkoutTracker plan={user?.user_metadata.personalizedPlan as PersonalizedPlan} inProgressWorkout={activeWorkout?.exercises as WeeklyWorkoutPlan} prefersMetric={user?.user_metadata.prefersMetric as boolean} />;
       case 'training-regimen':
         return <TrainingRegimen plan={user?.user_metadata.personalizedPlan as PersonalizedPlan} />;
       case 'nutrition':
@@ -490,10 +491,15 @@ export const Dashboard: React.FC<DashboardProps> = ({ user }) => {
           </div>
         </nav>
 
-        {/* Main Content */}
-        <main className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8">
-          {renderCurrentView()}
-        </main>
+        {activeWorkoutLoading ? (
+          <div className="flex items-center justify-center min-h-screen">
+            <LoadingSpinner size="xxl" />
+          </div>
+        ) : (
+          <main className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8">
+            {renderCurrentView()}
+          </main>
+        )}
       </div>
     </ErrorBoundary>
   );
