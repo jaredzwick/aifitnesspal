@@ -1,4 +1,5 @@
 import { FITNESS_GOALS } from "../constants.ts";
+import { PersonalizedPlan } from "../types.ts";
 
 export interface FitnessUser {
   name: string;
@@ -20,6 +21,7 @@ export interface FitnessUser {
   sub: string;
   email_verified: boolean;
   phone_verified: boolean;
+  personalizedPlan?: PersonalizedPlan;
   progressPhotos?: Array<{
     type: "front" | "side" | "back";
     file: File;

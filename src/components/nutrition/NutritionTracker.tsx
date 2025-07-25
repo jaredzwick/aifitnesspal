@@ -1,6 +1,5 @@
-import React, { useState, useEffect } from 'react';
+import React, { useState } from 'react';
 import {
-  Calendar,
   Plus,
   Search,
   Camera,
@@ -24,8 +23,6 @@ import {
   Scale,
   Activity
 } from 'lucide-react';
-import { useQuery, useMutation } from '../../hooks/useApi';
-import { nutritionService, NutritionEntry, Food, Meal, MealFood } from '../../services/nutritionService';
 import { LoadingSpinner, ButtonSpinner, SkeletonCard } from '../ui/LoadingSpinner';
 import { ErrorMessage } from '../ui/ErrorMessage';
 import { ErrorBoundary } from '../ui/ErrorBoundary';
@@ -38,7 +35,7 @@ interface MacroTarget {
   fiber: number;
 }
 
-interface FoodSearchResult extends Food {
+interface FoodSearchResult {
   selected_quantity?: number;
   selected_unit?: string;
 }
@@ -60,95 +57,37 @@ export const NutritionTracker: React.FC = () => {
     fiber: 25,
   };
 
-  // Get nutrition entry for selected date
-  const {
-    data: nutritionEntry,
-    loading: entryLoading,
-    error: entryError,
-    execute: refreshEntry,
-  } = useQuery(
-    () => nutritionService.getNutritionEntry(selectedDate),
-    {
-      immediate: true,
-    }
-  );
+  const nutritionEntry = null;
+  const entryLoading = null;
+  const entryError = null;
+  const refreshEntry = () => { };
 
   // Search foods
-  const {
-    data: searchResults,
-    loading: searchLoading,
-    execute: searchFoods,
-    reset: resetSearch,
-  } = useMutation((query: string) => nutritionService.searchFoods(query));
+  const searchResults: FoodSearchResult[] = [];
+  const searchLoading = null;
+  const searchFoods = () => { };
+  const resetSearch = () => { };
 
   // Add food to meal
-  const {
-    execute: addFoodToMeal,
-    loading: addingFood,
-  } = useMutation(
-    async ({ food, quantity, unit, mealType }: {
-      food: Food;
-      quantity: number;
-      unit: string;
-      mealType: string;
-    }) => {
-      // Create meal if it doesn't exist, then add food
-      const result = await nutritionService.addFoodToMeal({
-        food,
-        quantity,
-        unit,
-        mealType,
-        date: selectedDate,
-      });
-      return result;
-    },
-    {
-      onSuccess: () => {
-        setShowFoodSearch(false);
-        setSearchQuery('');
-        resetSearch();
-        refreshEntry();
-      },
-    }
-  );
+  const addFoodToMeal = () => { };
+  const addingFood = null;
 
   // Update food quantity
-  const {
-    execute: updateFoodQuantity,
-    loading: updatingFood,
-  } = useMutation(
-    async ({ mealFoodId, quantity }: { mealFoodId: string; quantity: number }) => {
-      return nutritionService.updateMealFood(mealFoodId, { quantity });
-    },
-    {
-      onSuccess: () => {
-        setEditingFood(null);
-        refreshEntry();
-      },
-    }
-  );
+  const updateFoodQuantity = () => { };
+  const updatingFood = null;
 
   // Remove food from meal
-  const {
-    execute: removeFoodFromMeal,
-    loading: removingFood,
-  } = useMutation(
-    (mealFoodId: string) => nutritionService.removeMealFood(mealFoodId),
-    {
-      onSuccess: () => {
-        refreshEntry();
-      },
-    }
-  );
+  const removeFoodFromMeal = () => { };
+  const removingFood = null;
 
   const handleSearch = async () => {
     if (searchQuery.trim()) {
-      await searchFoods(searchQuery);
+      // await searchFoods(searchQuery);
     }
   };
 
-  const handleAddFood = async (food: Food, quantity: number = 100, unit: string = 'g') => {
-    await addFoodToMeal({ food, quantity, unit, mealType: selectedMealType });
+  const handleAddFood = async (food: any, quantity: number = 100, unit: string = 'g') => {
+    // await addFoodToMeal({ food, quantity, unit, mealType: selectedMealType });
   };
 
   const formatDate = (dateString: string) => {
@@ -202,10 +141,10 @@ export const NutritionTracker: React.FC = () => {
     }
   };
 
-  const calculateMealNutrition = (meal: Meal) => {
+  const calculateMealNutrition = (meal: any) => {
     if (!meal.meal_foods) return { calories: 0, protein: 0, carbs: 0, fat: 0, fiber: 0 };
 
-    return meal.meal_foods.reduce((totals, mealFood) => {
+    return meal.meal_foods.reduce((totals: any, mealFood: any) => {
       if (!mealFood.food) return totals;
 
       const factor = mealFood.quantity / 100; // Assuming per 100g values
@@ -270,7 +209,7 @@ export const NutritionTracker: React.FC = () => {
                 <span className="font-medium">Calories</span>
               </div>
               <div className="text-2xl font-bold">
-                {Math.round(nutritionEntry?.total_calories || 0)}
+                {/* {Math.round(nutritionEntry?.total_calories || 0)} */}0
               </div>
               <div className="text-sm text-orange-100">
                 of {targets.calories}
@@ -283,7 +222,7 @@ export const NutritionTracker: React.FC = () => {
                 <span className="font-medium">Protein</span>
               </div>
               <div className="text-2xl font-bold">
-                {Math.round(nutritionEntry?.total_protein || 0)}g
+                {/* {Math.round(nutritionEntry?.total_protein || 0)}g */}0g
               </div>
               <div className="text-sm text-orange-100">
                 of {targets.protein}g
@@ -296,7 +235,7 @@ export const NutritionTracker: React.FC = () => {
                 <span className="font-medium">Carbs</span>
               </div>
               <div className="text-2xl font-bold">
-                {Math.round(nutritionEntry?.total_carbs || 0)}g
+                {/* {Math.round(nutritionEntry?.total_carbs || 0)}g */}0g
               </div>
               <div className="text-sm text-orange-100">
                 of {targets.carbs}g
@@ -309,7 +248,7 @@ export const NutritionTracker: React.FC = () => {
                 <span className="font-medium">Fat</span>
               </div>
               <div className="text-2xl font-bold">
-                {Math.round(nutritionEntry?.total_fat || 0)}g
+                {/* {Math.round(nutritionEntry?.total_fat || 0)}g */}0g
               </div>
               <div className="text-sm text-orange-100">
                 of {targets.fat}g
@@ -340,17 +279,18 @@ export const NutritionTracker: React.FC = () => {
               <div className="flex items-center justify-between">
                 <span className="font-medium text-gray-900 dark:text-white">Calories</span>
                 <span className="text-sm text-gray-600 dark:text-gray-300">
-                  {Math.round(nutritionEntry?.total_calories || 0)} / {targets.calories}
+                  {/* {Math.round(nutritionEntry?.total_calories || 0)} / {targets.calories} */}
+                  0 / 0
                 </span>
               </div>
               <div className="w-full bg-gray-200 dark:bg-gray-700 rounded-full h-3">
                 <div
-                  className={`h-3 rounded-full transition-all duration-500 ${getProgressColor(nutritionEntry?.total_calories || 0, targets.calories)}`}
-                  style={{ width: `${calculateProgress(nutritionEntry?.total_calories || 0, targets.calories)}%` }}
+                // className={`h-3 rounded-full transition-all duration-500 ${getProgressColor(nutritionEntry?.total_calories || 0, targets.calories)}`}
+                // style={{ width: `${calculateProgress(nutritionEntry?.total_calories || 0, targets.calories)}%` }}
                 />
               </div>
               <div className="text-xs text-gray-500 dark:text-gray-400">
-                {Math.round(calculateProgress(nutritionEntry?.total_calories || 0, targets.calories))}% of goal
+                {Math.round(calculateProgress(0, targets.calories))}% of goal
               </div>
             </div>
 
@@ -359,17 +299,17 @@ export const NutritionTracker: React.FC = () => {
               <div className="flex items-center justify-between">
                 <span className="font-medium text-gray-900 dark:text-white">Protein</span>
                 <span className="text-sm text-gray-600 dark:text-gray-300">
-                  {Math.round(nutritionEntry?.total_protein || 0)}g / {targets.protein}g
+                  {/* {Math.round(nutritionEntry?.total_protein || 0)}g / {targets.protein}g */}
                 </span>
               </div>
               <div className="w-full bg-gray-200 dark:bg-gray-700 rounded-full h-3">
                 <div
-                  className={`h-3 rounded-full transition-all duration-500 ${getProgressColor(nutritionEntry?.total_protein || 0, targets.protein)}`}
-                  style={{ width: `${calculateProgress(nutritionEntry?.total_protein || 0, targets.protein)}%` }}
+                // className={`h-3 rounded-full transition-all duration-500 ${getProgressColor(nutritionEntry?.total_protein || 0, targets.protein)}`}
+                // style={{ width: `${calculateProgress(nutritionEntry?.total_protein || 0, targets.protein)}%` }}
                 />
               </div>
               <div className="text-xs text-gray-500 dark:text-gray-400">
-                {Math.round(calculateProgress(nutritionEntry?.total_protein || 0, targets.protein))}% of goal
+                {/* {Math.round(calculateProgress(nutritionEntry?.total_protein || 0, targets.protein))}% of goal */}
               </div>
             </div>
 
@@ -378,17 +318,17 @@ export const NutritionTracker: React.FC = () => {
               <div className="flex items-center justify-between">
                 <span className="font-medium text-gray-900 dark:text-white">Carbs</span>
                 <span className="text-sm text-gray-600 dark:text-gray-300">
-                  {Math.round(nutritionEntry?.total_carbs || 0)}g / {targets.carbs}g
+                  {/* {Math.round(nutritionEntry?.total_carbs || 0)}g / {targets.carbs}g */}
                 </span>
               </div>
               <div className="w-full bg-gray-200 dark:bg-gray-700 rounded-full h-3">
                 <div
-                  className={`h-3 rounded-full transition-all duration-500 ${getProgressColor(nutritionEntry?.total_carbs || 0, targets.carbs)}`}
-                  style={{ width: `${calculateProgress(nutritionEntry?.total_carbs || 0, targets.carbs)}%` }}
+                // className={`h-3 rounded-full transition-all duration-500 ${getProgressColor(nutritionEntry?.total_carbs || 0, targets.carbs)}`}
+                // style={{ width: `${calculateProgress(nutritionEntry?.total_carbs || 0, targets.carbs)}%` }}
                 />
               </div>
               <div className="text-xs text-gray-500 dark:text-gray-400">
-                {Math.round(calculateProgress(nutritionEntry?.total_carbs || 0, targets.carbs))}% of goal
+                {/* {Math.round(calculateProgress(nutritionEntry?.total_carbs || 0, targets.carbs))}% of goal */} 0 of goal
               </div>
             </div>
 
@@ -397,17 +337,17 @@ export const NutritionTracker: React.FC = () => {
               <div className="flex items-center justify-between">
                 <span className="font-medium text-gray-900 dark:text-white">Fat</span>
                 <span className="text-sm text-gray-600 dark:text-gray-300">
-                  {Math.round(nutritionEntry?.total_fat || 0)}g / {targets.fat}g
+                  {/* {Math.round(nutritionEntry?.total_fat || 0)}g / {targets.fat}g */}
                 </span>
               </div>
               <div className="w-full bg-gray-200 dark:bg-gray-700 rounded-full h-3">
                 <div
-                  className={`h-3 rounded-full transition-all duration-500 ${getProgressColor(nutritionEntry?.total_fat || 0, targets.fat)}`}
-                  style={{ width: `${calculateProgress(nutritionEntry?.total_fat || 0, targets.fat)}%` }}
+                // className={`h-3 rounded-full transition-all duration-500 ${getProgressColor(nutritionEntry?.total_fat || 0, targets.fat)}`}
+                // style={{ width: `${calculateProgress(nutritionEntry?.total_fat || 0, targets.fat)}%` }}
                 />
               </div>
               <div className="text-xs text-gray-500 dark:text-gray-400">
-                {Math.round(calculateProgress(nutritionEntry?.total_fat || 0, targets.fat))}% of goal
+                {/* {Math.round(calculateProgress(nutritionEntry?.total_fat || 0, targets.fat))}% of goal */}
               </div>
             </div>
           </div>
@@ -421,15 +361,15 @@ export const NutritionTracker: React.FC = () => {
                   <div className="space-y-2">
                     <div className="flex justify-between text-sm">
                       <span>Protein</span>
-                      <span>{Math.round(((nutritionEntry?.total_protein || 0) * 4 / (nutritionEntry?.total_calories || 1)) * 100)}%</span>
+                      {/* <span>{Math.round(((nutritionEntry?.total_protein || 0) * 4 / (nutritionEntry?.total_calories || 1)) * 100)}%</span> */}
                     </div>
                     <div className="flex justify-between text-sm">
                       <span>Carbs</span>
-                      <span>{Math.round(((nutritionEntry?.total_carbs || 0) * 4 / (nutritionEntry?.total_calories || 1)) * 100)}%</span>
+                      {/* <span>{Math.round(((nutritionEntry?.total_carbs || 0) * 4 / (nutritionEntry?.total_calories || 1)) * 100)}%</span> */}
                     </div>
                     <div className="flex justify-between text-sm">
                       <span>Fat</span>
-                      <span>{Math.round(((nutritionEntry?.total_fat || 0) * 9 / (nutritionEntry?.total_calories || 1)) * 100)}%</span>
+                      {/* <span>{Math.round(((nutritionEntry?.total_fat || 0) * 9 / (nutritionEntry?.total_calories || 1)) * 100)}%</span> */}
                     </div>
                   </div>
                 </div>
@@ -439,15 +379,15 @@ export const NutritionTracker: React.FC = () => {
                   <div className="space-y-2">
                     <div className="flex justify-between text-sm">
                       <span>Calories</span>
-                      <span>{Math.max(0, targets.calories - (nutritionEntry?.total_calories || 0))}</span>
+                      {/* <span>{Math.max(0, targets.calories - (nutritionEntry?.total_calories || 0))}</span> */}
                     </div>
                     <div className="flex justify-between text-sm">
                       <span>Protein</span>
-                      <span>{Math.max(0, targets.protein - (nutritionEntry?.total_protein || 0))}g</span>
+                      {/* <span>{Math.max(0, targets.protein - (nutritionEntry?.total_protein || 0))}g</span> */}
                     </div>
                     <div className="flex justify-between text-sm">
                       <span>Fiber</span>
-                      <span>{Math.max(0, targets.fiber - (nutritionEntry?.total_fiber || 0))}g</span>
+                      {/* <span>{Math.max(0, targets.fiber - (nutritionEntry?.total_fiber || 0))}g</span> */}
                     </div>
                   </div>
                 </div>
@@ -457,7 +397,7 @@ export const NutritionTracker: React.FC = () => {
                   <div className="space-y-2">
                     <div className="flex justify-between text-sm">
                       <span>Today</span>
-                      <span>{nutritionEntry?.water_intake || 0}ml</span>
+                      {/* <span>{nutritionEntry?.water_intake || 0}0ml</span> */}
                     </div>
                     <div className="flex justify-between text-sm">
                       <span>Goal</span>
@@ -466,7 +406,7 @@ export const NutritionTracker: React.FC = () => {
                     <div className="w-full bg-purple-200 dark:bg-purple-800 rounded-full h-2 mt-2">
                       <div
                         className="bg-purple-500 h-2 rounded-full transition-all duration-300"
-                        style={{ width: `${Math.min(((nutritionEntry?.water_intake || 0) / 2000) * 100, 100)}%` }}
+                      // style={{ width: `${Math.min(((nutritionEntry?.water_intake || 0) / 2000) * 100, 100)}%` }}
                       />
                     </div>
                   </div>
@@ -489,8 +429,8 @@ export const NutritionTracker: React.FC = () => {
         {!entryLoading && (
           <div className="space-y-6">
             {['breakfast', 'lunch', 'dinner', 'snack'].map((mealType) => {
-              const meal = nutritionEntry?.meals?.find(m => m.meal_type === mealType);
-              const mealNutrition = meal ? calculateMealNutrition(meal) : { calories: 0, protein: 0, carbs: 0, fat: 0, fiber: 0 };
+              // const meal = nutritionEntry?.meals?.find(m => m.meal_type === mealType);
+              const mealNutrition = { calories: 0, protein: 0, carbs: 0, fat: 0, fiber: 0 };
               const MealIcon = getMealIcon(mealType);
 
               return (
@@ -535,7 +475,7 @@ export const NutritionTracker: React.FC = () => {
                     </div>
 
                     {/* Meal Macros */}
-                    {meal && meal.meal_foods && meal.meal_foods.length > 0 && (
+                    {/* {meal && meal.meal_foods && meal.meal_foods.length > 0 && (
                       <div className="mt-4 grid grid-cols-4 gap-4">
                         <div className="text-center">
                           <div className="text-lg font-bold text-gray-900 dark:text-white">
@@ -566,10 +506,10 @@ export const NutritionTracker: React.FC = () => {
                   </div>
 
                   {/* Meal Foods */}
-                  <div className="p-6">
+                    {/* <div className="p-6">
                     {meal?.meal_foods && meal.meal_foods.length > 0 ? (
                       <div className="space-y-3">
-                        {meal.meal_foods.map((mealFood) => (
+                        {/* {meal.meal_foods.map((mealFood) => (
                           <div
                             key={mealFood.id}
                             className="flex items-center justify-between p-4 bg-gray-50 dark:bg-gray-700 rounded-xl hover:bg-gray-100 dark:hover:bg-gray-600 transition-colors"
@@ -606,7 +546,7 @@ export const NutritionTracker: React.FC = () => {
                                     onKeyPress={(e) => {
                                       if (e.key === 'Enter') {
                                         const newQuantity = parseFloat((e.target as HTMLInputElement).value);
-                                        updateFoodQuantity({ mealFoodId: mealFood.id, quantity: newQuantity });
+                                        // updateFoodQuantity({ mealFoodId: mealFood.id, quantity: newQuantity });
                                       }
                                     }}
                                   />
@@ -626,8 +566,8 @@ export const NutritionTracker: React.FC = () => {
                                     <Edit3 className="w-4 h-4" />
                                   </button>
                                   <button
-                                    onClick={() => removeFoodFromMeal(mealFood.id)}
-                                    disabled={removingFood}
+                                    // onClick={() => removeFoodFromMeal(mealFood.id)}
+                                    // disabled={removingFood}
                                     className="p-2 text-gray-400 hover:text-red-600 dark:hover:text-red-400 transition-colors disabled:opacity-50"
                                   >
                                     {removingFood ? (
@@ -640,15 +580,15 @@ export const NutritionTracker: React.FC = () => {
                               )}
                             </div>
                           </div>
-                        ))}
-                      </div>
-                    ) : (
-                      <div className="text-center py-12 text-gray-500 dark:text-gray-400">
-                        <Utensils className="w-12 h-12 mx-auto mb-3 opacity-50" />
-                        <p className="text-lg font-medium mb-2">No foods added yet</p>
-                        <p className="text-sm">Add foods to track your {mealType} nutrition</p>
-                      </div>
-                    )}
+                        ))} */}
+                    {/* </div> */}
+                    {/* ) : ( */}
+                    <div className="text-center py-12 text-gray-500 dark:text-gray-400">
+                      <Utensils className="w-12 h-12 mx-auto mb-3 opacity-50" />
+                      <p className="text-lg font-medium mb-2">No foods added yet</p>
+                      <p className="text-sm">Add foods to track your {mealType} nutrition</p>
+                    </div>
+                    {/* )} */}
                   </div>
                 </div>
               );
@@ -704,7 +644,6 @@ export const NutritionTracker: React.FC = () => {
                   <div className="space-y-3">
                     {searchResults.map((food) => (
                       <div
-                        key={food.id}
                         className="flex items-center justify-between p-4 border border-gray-200 dark:border-gray-600 rounded-xl hover:bg-gray-50 dark:hover:bg-gray-700 transition-colors"
                       >
                         <div className="flex items-center space-x-4">
@@ -713,25 +652,25 @@ export const NutritionTracker: React.FC = () => {
                           </div>
                           <div>
                             <p className="font-semibold text-gray-900 dark:text-white">
-                              {food.name}
+                              {/* {food.name} */}
                             </p>
-                            {food.brand && (
+                            {/* {food.brand && (
                               <p className="text-sm text-gray-600 dark:text-gray-300">
                                 {food.brand}
                               </p>
-                            )}
+                            )} */}
                             <div className="flex items-center space-x-4 text-sm text-gray-500 dark:text-gray-400">
-                              <span>{food.calories_per_100g} cal/100g</span>
+                              {/* <span>{food.calories_per_100g} cal/100g</span>
                               <span>P: {food.protein_per_100g}g</span>
                               <span>C: {food.carbs_per_100g}g</span>
-                              <span>F: {food.fat_per_100g}g</span>
+                              <span>F: {food.fat_per_100g}g</span> */}
                             </div>
                           </div>
                         </div>
 
                         <button
                           onClick={() => handleAddFood(food)}
-                          disabled={addingFood}
+                          // disabled={addingFood}
                           className="flex items-center space-x-2 px-4 py-2 bg-emerald-600 hover:bg-emerald-700 disabled:opacity-50 text-white rounded-lg font-medium transition-colors"
                         >
                           {addingFood ? (

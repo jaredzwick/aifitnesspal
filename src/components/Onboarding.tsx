@@ -92,6 +92,7 @@ export const Onboarding: React.FC = () => {
     <PlanGenerationStep
       key="plan-generation"
       userData={userData}
+      onUpdate={updateUserData}
       onNext={handleNextStep}
       onPrev={handlePrevStep}
     />,

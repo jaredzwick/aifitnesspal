@@ -14,51 +14,11 @@ import {
   Save,
   SkipForward
 } from 'lucide-react';
-import { useQuery, useMutation } from '../../hooks/useApi';
-import { workoutService, UserWorkout, Workout } from '../../services/workoutService';
 import { LoadingSpinner, ButtonSpinner } from '../ui/LoadingSpinner';
 import { ErrorMessage } from '../ui/ErrorMessage';
 import { ErrorBoundary } from '../ui/ErrorBoundary';
+import { ActiveWorkout, WorkoutSet, Workout } from '../../../common';
 
-interface WorkoutSet {
-  id: string;
-  exercise_id: string;
-  set_number: number;
-  reps?: number;
-  weight?: number;
-  duration?: number;
-  distance?: number;
-  rest_time?: number;
-  completed: boolean;
-  notes?: string;
-}
-
-interface WorkoutExercise {
-  id: string;
-  exercise_id: string;
-  order_index: number;
-  target_sets: number;
-  target_reps?: number;
-  target_weight?: number;
-  target_duration?: number;
-  target_distance?: number;
-  rest_time: number;
-  exercise: {
-    id: string;
-    name: string;
-    description?: string;
-    instructions: string[];
-    muscle_groups: string[];
-    exercise_type: 'strength' | 'cardio' | 'flexibility' | 'balance';
-  };
-  sets: WorkoutSet[];
-}
-
-interface ActiveWorkout extends UserWorkout {
-  workout: Workout & {
-    exercises: WorkoutExercise[];
-  };
-}
 
 export const WorkoutTracker: React.FC = () => {
   const [activeWorkout, setActiveWorkout] = useState<ActiveWorkout | null>(null);
@@ -70,138 +30,16 @@ export const WorkoutTracker: React.FC = () => {
   const [showWorkoutSelector, setShowWorkoutSelector] = useState(false);
 
   // Get available workouts
-  const {
-    data: workouts,
-    loading: workoutsLoading,
-    error: workoutsError,
-  } = useQuery(() => workoutService.getWorkouts({ is_template: true }));
+  const workouts: Workout[] = [];
+  const workoutsLoading = false;
+  const workoutsError = null;
 
   // Start workout mutation
-  const {
-    execute: startWorkout,
-    loading: startingWorkout,
-  } = useMutation(
-    async (workoutId: string) => {
-      const userWorkout = await workoutService.scheduleWorkout(workoutId, new Date().toISOString());
-      return workoutService.startWorkout(userWorkout.id);
-    },
-    {
-      onSuccess: (userWorkout) => {
-        // In a real app, this would fetch the full workout with exercises
-        // For now, we'll simulate the structure
-        const mockActiveWorkout: ActiveWorkout = {
-          ...userWorkout,
-          workout: {
-            id: userWorkout.workout_id,
-            name: 'Sample Workout',
-            description: 'A great workout to get started',
-            type: 'strength',
-            difficulty: 'intermediate',
-            duration_minutes: 45,
-            calories_burned_estimate: 300,
-            equipment_needed: ['dumbbells', 'bench'],
-            muscle_groups: ['chest', 'shoulders', 'triceps'],
-            is_template: true,
-            created_at: new Date().toISOString(),
-            updated_at: new Date().toISOString(),
-            exercises: [
-              {
-                id: '1',
-                exercise_id: 'push-ups',
-                order_index: 0,
-                target_sets: 3,
-                target_reps: 12,
-                rest_time: 60,
-                exercise: {
-                  id: 'push-ups',
-                  name: 'Push-ups',
-                  description: 'Classic bodyweight chest exercise',
-                  instructions: ['Start in plank position', 'Lower body to ground', 'Push back up'],
-                  muscle_groups: ['chest', 'shoulders', 'triceps'],
-                  exercise_type: 'strength',
-                },
-                sets: Array.from({ length: 3 }, (_, i) => ({
-                  id: `set-${i}`,
-                  exercise_id: 'push-ups',
-                  set_number: i + 1,
-                  reps: 0,
-                  weight: 0,
-                  completed: false,
-                })),
-              },
-              {
-                id: '2',
-                exercise_id: 'squats',
-                order_index: 1,
-                target_sets: 3,
-                target_reps: 15,
-                rest_time: 90,
-                exercise: {
-                  id: 'squats',
-                  name: 'Squats',
-                  description: 'Fundamental lower body exercise',
-                  instructions: ['Stand with feet shoulder-width apart', 'Lower into squat position', 'Return to standing'],
-                  muscle_groups: ['quadriceps', 'glutes', 'hamstrings'],
-                  exercise_type: 'strength',
-                },
-                sets: Array.from({ length: 3 }, (_, i) => ({
-                  id: `set-${i}`,
-                  exercise_id: 'squats',
-                  set_number: i + 1,
-                  reps: 0,
-                  weight: 0,
-                  completed: false,
-                })),
-              },
-              {
-                id: '3',
-                exercise_id: 'running',
-                order_index: 2,
-                target_sets: 1,
-                target_duration: 600, // 10 minutes
-                target_distance: 2000, // 2km
-                rest_time: 0,
-                exercise: {
-                  id: 'running',
-                  name: 'Running',
-                  description: 'Cardiovascular endurance exercise',
-                  instructions: ['Maintain steady pace', 'Focus on breathing', 'Keep good form'],
-                  muscle_groups: ['legs', 'cardiovascular'],
-                  exercise_type: 'cardio',
-                },
-                sets: [{
-                  id: 'cardio-set-1',
-                  exercise_id: 'running',
-                  set_number: 1,
-                  duration: 0,
-                  distance: 0,
-                  completed: false,
-                }],
-              },
-            ],
-          },
-        };
-        setActiveWorkout(mockActiveWorkout);
-        setShowWorkoutSelector(false);
-      },
-    }
-  );
+  const startWorkout = () => { };
 
-  // Complete workout mutation
-  const {
-    execute: completeWorkout,
-    loading: completingWorkout,
-  } = useMutation(
-    (notes?: string) => workoutService.completeWorkout(activeWorkout!.id, notes),
-    {
-      onSuccess: () => {
-        setActiveWorkout(null);
-        setCurrentExerciseIndex(0);
-        setCurrentSetIndex(0);
-        setWorkoutTimer(0);
-      },
-    }
-  );
+  const completeWorkout = () => { };
+  const completingWorkout = false;
+
 
   // Timer effects
   useEffect(() => {
@@ -356,7 +194,7 @@ export const WorkoutTracker: React.FC = () => {
                       {workouts?.map((workout) => (
                         <div
                           key={workout.id}
-                          onClick={() => startWorkout(workout.id)}
+                          onClick={() => startWorkout()}
                           className="p-4 border border-gray-200 dark:border-gray-600 rounded-xl hover:border-emerald-300 dark:hover:border-emerald-600 hover:bg-gray-50 dark:hover:bg-gray-700 cursor-pointer transition-all duration-200"
                         >
                           <div className="flex items-center justify-between mb-2">
@@ -660,10 +498,10 @@ export const WorkoutTracker: React.FC = () => {
                   <div
                     key={set.id}
                     className={`p-3 rounded-lg border-2 transition-all duration-200 ${index === currentSetIndex
-                        ? 'border-emerald-500 bg-emerald-50 dark:bg-emerald-900/20'
-                        : set.completed
-                          ? 'border-green-200 bg-green-50 dark:bg-green-900/20'
-                          : 'border-gray-200 dark:border-gray-600 bg-gray-50 dark:bg-gray-700'
+                      ? 'border-emerald-500 bg-emerald-50 dark:bg-emerald-900/20'
+                      : set.completed
+                        ? 'border-green-200 bg-green-50 dark:bg-green-900/20'
+                        : 'border-gray-200 dark:border-gray-600 bg-gray-50 dark:bg-gray-700'
                       }`}
                   >
                     <div className="flex items-center justify-between">

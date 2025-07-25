@@ -1,51 +1,5 @@
+import { UserWorkout, Workout, WorkoutFilters } from "../../common/types";
 import { apiClient } from "../lib/api";
-
-// Workout types
-export interface Workout {
-  id: string;
-  name: string;
-  description?: string;
-  type: string;
-  difficulty: "beginner" | "intermediate" | "advanced";
-  duration_minutes: number;
-  calories_burned_estimate: number;
-  equipment_needed: string[];
-  muscle_groups: string[];
-  is_template: boolean;
-  created_by?: string;
-  created_at: string;
-  updated_at: string;
-}
-
-export interface Exercise {
-  id: string;
-  name: string;
-  description?: string;
-  instructions: string[];
-  muscle_groups: string[];
-  equipment_needed: string[];
-  difficulty: "beginner" | "intermediate" | "advanced";
-  exercise_type: string;
-}
-
-export interface UserWorkout {
-  id: string;
-  user_id: string;
-  workout_id: string;
-  scheduled_for?: string;
-  started_at?: string;
-  completed_at?: string;
-  status: "scheduled" | "in_progress" | "completed" | "skipped";
-  notes?: string;
-  workout?: Workout;
-}
-
-export interface WorkoutFilters {
-  type?: string;
-  difficulty?: string;
-  is_template?: boolean;
-  muscle_groups?: string[];
-}
 
 // Workout service
 export const workoutService = {

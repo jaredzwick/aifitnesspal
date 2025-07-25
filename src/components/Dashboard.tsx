@@ -13,51 +13,24 @@ import {
 } from 'lucide-react';
 import { ThemeToggle } from './ThemeToggle';
 import { WorkoutTracker } from './workouts/WorkoutTracker';
-import { WorkoutList } from './workouts/WorkoutList';
 import { NutritionTracker } from './nutrition/NutritionTracker';
 import { ProgressTracker } from './progress/ProgressTracker';
 import { useAuth } from '../hooks/useAuth';
-import { useQuery } from '../hooks/useApi';
-import { workoutService } from '../services/workoutService';
-import { nutritionService } from '../services/nutritionService';
-import { progressService } from '../services/progressService';
-import { SkeletonCard } from './ui/LoadingSpinner';
 import { User } from '@supabase/supabase-js';
 import { ErrorBoundary } from './ui/ErrorBoundary';
 import logo from '../assets/logo-navbar.png';
+import { FitnessUser, PersonalizedPlan } from '../../common';
+import { TrainingRegimen } from './training/TrainingRegimen';
 
 interface DashboardProps {
   user: User;
 }
 
-type DashboardView = 'overview' | 'workout-tracker' | 'workouts' | 'nutrition' | 'progress';
+type DashboardView = 'overview' | 'training-regimen' | 'workout-tracker' | 'nutrition' | 'progress';
 
 export const Dashboard: React.FC<DashboardProps> = ({ user }) => {
   const { signOut } = useAuth();
   const [currentView, setCurrentView] = useState<DashboardView>('overview');
-
-  // Get today's data
-  const today = new Date().toISOString().split('T')[0];
-
-  const {
-    data: todayNutrition,
-    loading: nutritionLoading,
-  } = useQuery(() => nutritionService.getNutritionEntry(today));
-
-  const {
-    data: recentWorkouts,
-    loading: workoutsLoading,
-  } = useQuery(() => workoutService.getUserWorkouts());
-
-  const {
-    data: progressSummary,
-    loading: progressLoading,
-  } = useQuery(() => progressService.getProgressSummary());
-
-  const {
-    data: activeWorkout,
-    loading: activeWorkoutLoading,
-  } = useQuery(() => workoutService.getActiveWorkout());
 
   const handleSignOut = async () => {
     await signOut();
@@ -135,7 +108,7 @@ export const Dashboard: React.FC<DashboardProps> = ({ user }) => {
             <h3 className="font-medium text-gray-900 dark:text-white">Active Workout</h3>
             <Activity className="w-5 h-5 text-emerald-500" />
           </div>
-          {activeWorkoutLoading ? (
+          {/* {activeWorkoutLoading ? (
             <div className="animate-pulse">
               <div className="h-6 bg-gray-200 dark:bg-gray-700 rounded mb-2"></div>
               <div className="h-4 bg-gray-200 dark:bg-gray-700 rounded w-2/3"></div>
@@ -149,19 +122,20 @@ export const Dashboard: React.FC<DashboardProps> = ({ user }) => {
                 {activeWorkout.workout?.name || 'Current workout'}
               </p>
             </div>
-          ) : (
-            <div>
-              <div className="text-2xl font-bold text-gray-900 dark:text-white mb-1">
-                None
-              </div>
-              <button
-                onClick={() => setCurrentView('workout-tracker')}
-                className="text-sm text-emerald-600 dark:text-emerald-400 hover:underline"
-              >
-                Start workout
-              </button>
+          ) : ( */}
+          <div>
+            <div className="text-2xl font-bold text-gray-900 dark:text-white mb-1">
+              None
             </div>
-          )}
+            <button
+              onClick={() => setCurrentView('workout-tracker')}
+              className="text-sm text-emerald-600 dark:text-emerald-400 hover:underline"
+            >
+              Start workout
+            </button>
+          </div>
+          {/* )} */}
+          {/* //TODO: ADD ABILITY TO GO TO ACTIVE WORKOUT. SHOULD PROBABLY AUTO ROUTE THERE */}
         </div>
 
         {/* Today's Calories */}
@@ -170,21 +144,22 @@ export const Dashboard: React.FC<DashboardProps> = ({ user }) => {
             <h3 className="font-medium text-gray-900 dark:text-white">Calories Today</h3>
             <Zap className="w-5 h-5 text-orange-500" />
           </div>
-          {nutritionLoading ? (
+          {/* {nutritionLoading ? (
             <div className="animate-pulse">
               <div className="h-6 bg-gray-200 dark:bg-gray-700 rounded mb-2"></div>
               <div className="h-4 bg-gray-200 dark:bg-gray-700 rounded w-2/3"></div>
             </div>
-          ) : (
-            <div>
-              <div className="text-2xl font-bold text-gray-900 dark:text-white mb-1">
-                {todayNutrition?.total_calories || 0}
-              </div>
-              <p className="text-sm text-gray-600 dark:text-gray-300">
-                Goal: 2000 cal
-              </p>
+          ) : ( */}
+          <div>
+            <div className="text-2xl font-bold text-gray-900 dark:text-white mb-1">
+              0
+              {/* TODO: GET TODAY'S CALORIES */}
             </div>
-          )}
+            <p className="text-sm text-gray-600 dark:text-gray-300">
+              Goal: {(user.user_metadata as FitnessUser).personalizedPlan?.nutritionRegimen?.dailyCalorieTarget || 2000} cal
+            </p>
+          </div>
+          {/* )} */}
         </div>
 
         {/* Current Weight */}
@@ -193,14 +168,14 @@ export const Dashboard: React.FC<DashboardProps> = ({ user }) => {
             <h3 className="font-medium text-gray-900 dark:text-white">Current Weight</h3>
             <TrendingUp className="w-5 h-5 text-blue-500" />
           </div>
-          {progressLoading ? (
+          {/* {progressLoading ? (
             <div className="animate-pulse">
               <div className="h-6 bg-gray-200 dark:bg-gray-700 rounded mb-2"></div>
               <div className="h-4 bg-gray-200 dark:bg-gray-700 rounded w-2/3"></div>
             </div>
-          ) : (
-            <div>
-              <div className="text-2xl font-bold text-gray-900 dark:text-white mb-1">
+          ) : ( */}
+          <div>
+            {/* <div className="text-2xl font-bold text-gray-900 dark:text-white mb-1">
                 {progressSummary?.latestWeight || user.user_metadata.weight}kg
               </div>
               <p className="text-sm text-gray-600 dark:text-gray-300">
@@ -209,9 +184,10 @@ export const Dashboard: React.FC<DashboardProps> = ({ user }) => {
                     `+${progressSummary.weightChange.toFixed(1)}kg` :
                     `${progressSummary.weightChange.toFixed(1)}kg`
                 ) : 'No change'}
-              </p>
-            </div>
-          )}
+              </p> */}
+          </div>
+          {/* )} */}
+          {/* TODO: GET CURRENT WEIGHT */}
         </div>
 
         {/* Active Goals */}
@@ -220,21 +196,22 @@ export const Dashboard: React.FC<DashboardProps> = ({ user }) => {
             <h3 className="font-medium text-gray-900 dark:text-white">Active Goals</h3>
             <Target className="w-5 h-5 text-purple-500" />
           </div>
-          {progressLoading ? (
+          {/* {progressLoading ? (
             <div className="animate-pulse">
               <div className="h-6 bg-gray-200 dark:bg-gray-700 rounded mb-2"></div>
               <div className="h-4 bg-gray-200 dark:bg-gray-700 rounded w-2/3"></div>
             </div>
-          ) : (
-            <div>
-              <div className="text-2xl font-bold text-gray-900 dark:text-white mb-1">
+          ) : ( */}
+          <div>
+            {/* <div className="text-2xl font-bold text-gray-900 dark:text-white mb-1">
                 {progressSummary?.activeGoals || 0}
               </div>
               <p className="text-sm text-gray-600 dark:text-gray-300">
                 {progressSummary?.completedGoals || 0} completed
-              </p>
-            </div>
-          )}
+              </p> */}
+          </div>
+          {/* )} */}
+          {/* TODO: GET ACTIVE GOALS */}
         </div>
       </div>
 
@@ -242,27 +219,28 @@ export const Dashboard: React.FC<DashboardProps> = ({ user }) => {
       <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
         {/* Recent Workouts */}
         <div className="bg-white dark:bg-gray-800 rounded-xl border border-gray-200 dark:border-gray-700 p-6">
-          <div className="flex items-center justify-between mb-4">
+          {/* <div className="flex items-center justify-between mb-4">
             <h3 className="text-lg font-semibold text-gray-900 dark:text-white">
               Recent Workouts
             </h3>
             <button
-              onClick={() => setCurrentView('workouts')}
+              onClick={() => setCurrentView('w')}
               className="text-emerald-600 dark:text-emerald-400 hover:underline text-sm"
             >
               View all
             </button>
-          </div>
+          </div> */}
+          {/* TODO: GET RECENT WORKOUTS */}
 
-          {workoutsLoading ? (
+          {/* {workoutsLoading ? (
             <div className="space-y-3">
               {Array.from({ length: 3 }).map((_, i) => (
                 <SkeletonCard key={i} className="h-16" />
               ))}
             </div>
-          ) : recentWorkouts && recentWorkouts.length > 0 ? (
-            <div className="space-y-3">
-              {recentWorkouts.slice(0, 3).map((workout) => (
+          ) : recentWorkouts && recentWorkouts.length > 0 ? ( */}
+          {/* <div className="space-y-3">
+              {[].slice(0, 3).map((workout) => (
                 <div
                   key={workout.id}
                   className="flex items-center justify-between p-3 bg-gray-50 dark:bg-gray-700 rounded-lg"
@@ -296,19 +274,20 @@ export const Dashboard: React.FC<DashboardProps> = ({ user }) => {
                 </div>
               ))}
             </div>
-          ) : (
-            <div className="text-center py-8 text-gray-500 dark:text-gray-400">
-              <Dumbbell className="w-8 h-8 mx-auto mb-2 opacity-50" />
-              <p>No recent workouts</p>
-              <button
-                onClick={() => setCurrentView('workout-tracker')}
-                className="text-emerald-600 dark:text-emerald-400 hover:underline text-sm mt-1"
-              >
-                Start your first workout
-              </button>
-            </div>
-          )}
+          ) : ( */}
+          <div className="text-center py-8 text-gray-500 dark:text-gray-400">
+            <Dumbbell className="w-8 h-8 mx-auto mb-2 opacity-50" />
+            <p>No recent workouts</p>
+            <button
+              onClick={() => setCurrentView('workout-tracker')}
+              className="text-emerald-600 dark:text-emerald-400 hover:underline text-sm mt-1"
+            >
+              Start your first workout
+            </button>
+          </div>
+          {/* )} */}
         </div>
+        {/* TODO: GET RECENT WORKOUTS */}
 
         {/* Nutrition Summary */}
         <div className="bg-white dark:bg-gray-800 rounded-xl border border-gray-200 dark:border-gray-700 p-6">
@@ -324,64 +303,69 @@ export const Dashboard: React.FC<DashboardProps> = ({ user }) => {
             </button>
           </div>
 
-          {nutritionLoading ? (
+          {/* {nutritionLoading ? (
             <div className="space-y-4">
               {Array.from({ length: 3 }).map((_, i) => (
                 <SkeletonCard key={i} className="h-12" />
               ))}
             </div>
-          ) : todayNutrition ? (
-            <div className="space-y-4">
-              <div className="flex items-center justify-between">
-                <span className="text-gray-600 dark:text-gray-300">Calories</span>
-                <span className="font-semibold text-gray-900 dark:text-white">
-                  {todayNutrition.total_calories} / 2000
-                </span>
-              </div>
-              <div className="flex items-center justify-between">
-                <span className="text-gray-600 dark:text-gray-300">Protein</span>
-                <span className="font-semibold text-gray-900 dark:text-white">
-                  {todayNutrition.total_protein}g / 150g
-                </span>
-              </div>
-              <div className="flex items-center justify-between">
-                <span className="text-gray-600 dark:text-gray-300">Carbs</span>
-                <span className="font-semibold text-gray-900 dark:text-white">
-                  {todayNutrition.total_carbs}g / 250g
-                </span>
-              </div>
-              <div className="flex items-center justify-between">
-                <span className="text-gray-600 dark:text-gray-300">Fat</span>
-                <span className="font-semibold text-gray-900 dark:text-white">
-                  {todayNutrition.total_fat}g / 67g
-                </span>
-              </div>
+          ) : todayNutrition ? ( */}
+          <div className="space-y-4">
+            <div className="flex items-center justify-between">
+              <span className="text-gray-600 dark:text-gray-300">Calories</span>
+              <span className="font-semibold text-gray-900 dark:text-white">
+                {/* {todayNutrition?.total_calories || 0} / 2000 */}
+                0 / 2000
+              </span>
             </div>
-          ) : (
-            <div className="text-center py-8 text-gray-500 dark:text-gray-400">
-              <Apple className="w-8 h-8 mx-auto mb-2 opacity-50" />
-              <p>No food logged today</p>
-              <button
-                onClick={() => setCurrentView('nutrition')}
-                className="text-emerald-600 dark:text-emerald-400 hover:underline text-sm mt-1"
-              >
-                Log your first meal
-              </button>
+            <div className="flex items-center justify-between">
+              <span className="text-gray-600 dark:text-gray-300">Protein</span>
+              <span className="font-semibold text-gray-900 dark:text-white">
+                {/* {todayNutrition?.total_protein || 0}g / 150g */}
+                0 / 150g
+              </span>
             </div>
-          )}
+            <div className="flex items-center justify-between">
+              <span className="text-gray-600 dark:text-gray-300">Carbs</span>
+              <span className="font-semibold text-gray-900 dark:text-white">
+                {/* {todayNutrition.total_carbs}g / 250g */}
+                0 / 250g
+              </span>
+            </div>
+            <div className="flex items-center justify-between">
+              <span className="text-gray-600 dark:text-gray-300">Fat</span>
+              <span className="font-semibold text-gray-900 dark:text-white">
+                {/* {todayNutrition.total_fat}g / 67g */}
+                0 / 67g
+              </span>
+            </div>
+          </div>
+          {/* TODO: GET TODAY'S MACROS */}
+          {/* ) : ( */}
+          <div className="text-center py-8 text-gray-500 dark:text-gray-400">
+            <Apple className="w-8 h-8 mx-auto mb-2 opacity-50" />
+            <p>No food logged today</p>
+            <button
+              onClick={() => setCurrentView('nutrition')}
+              className="text-emerald-600 dark:text-emerald-400 hover:underline text-sm mt-1"
+            >
+              Log your first meal
+            </button>
+          </div>
+          {/* )} */}
         </div>
       </div>
 
 
-    </div>
+    </div >
   );
 
   const renderCurrentView = () => {
     switch (currentView) {
       case 'workout-tracker':
         return <WorkoutTracker />;
-      case 'workouts':
-        return <WorkoutList />;
+      case 'training-regimen':
+        return <TrainingRegimen plan={user?.user_metadata.personalizedPlan as PersonalizedPlan} />;
       case 'nutrition':
         return <NutritionTracker />;
       case 'progress':
@@ -414,8 +398,8 @@ export const Dashboard: React.FC<DashboardProps> = ({ user }) => {
               <div className="hidden md:flex items-center space-x-1">
                 {[
                   { id: 'overview', label: 'Overview', icon: Activity },
+                  { id: 'training-regimen', label: 'Training Regimen', icon: Calendar },
                   { id: 'workout-tracker', label: 'Workout', icon: Dumbbell },
-                  { id: 'workouts', label: 'Workouts', icon: Calendar },
                   { id: 'nutrition', label: 'Nutrition', icon: Apple },
                   { id: 'progress', label: 'Progress', icon: TrendingUp },
                 ].map(({ id, label, icon: Icon }) => (

@@ -10,7 +10,6 @@ import {
   BarChart3,
   Trophy
 } from 'lucide-react';
-import { useQuery, useMutation } from '../../hooks/useApi';
 import { progressService } from '../../services/progressService';
 import { LoadingSpinner, SkeletonCard } from '../ui/LoadingSpinner';
 import { ErrorMessage } from '../ui/ErrorMessage';
@@ -21,45 +20,24 @@ export const ProgressTracker: React.FC = () => {
   const [showAddGoal, setShowAddGoal] = useState(false);
   const [showAddMeasurement, setShowAddMeasurement] = useState(false);
 
-  // Get progress data
-  const {
-    data: progressSummary,
-    loading: summaryLoading,
-    error: summaryError,
-    execute: refreshSummary,
-  } = useQuery(() => progressService.getProgressSummary());
+  const progressSummary = null;
+  const summaryLoading = null;
+  const summaryError = null;
+  const refreshSummary = () => { };
+  const progressPhotos: any[] = [];
+  const photosLoading = null;
+  const refreshPhotos = null;
+  const achievements: any[] = [];
+  const achievementsLoading = null;
+  const uploadPhoto = () => { };
+  const uploadingPhoto = null;
 
-  const {
-    data: progressPhotos,
-    loading: photosLoading,
-    execute: refreshPhotos,
-  } = useQuery(() => progressService.getProgressPhotos());
 
-  const {
-    data: achievements,
-    loading: achievementsLoading,
-  } = useQuery(() => progressService.getAchievements());
-
-  // Upload progress photo
-  const {
-    execute: uploadPhoto,
-    loading: uploadingPhoto,
-  } = useMutation(
-    async (file: File) => {
-      return progressService.uploadProgressPhoto(file, 'front', 'Progress update');
-    },
-    {
-      onSuccess: () => {
-        refreshPhotos();
-        refreshSummary();
-      },
-    }
-  );
 
   const handlePhotoUpload = (event: React.ChangeEvent<HTMLInputElement>) => {
     const file = event.target.files?.[0];
     if (file) {
-      uploadPhoto(file);
+      uploadPhoto();
     }
   };
 
@@ -70,7 +48,7 @@ export const ProgressTracker: React.FC = () => {
         <div className="bg-gradient-to-br from-blue-500 to-blue-600 rounded-2xl p-6 text-white">
           <div className="flex items-center justify-between mb-4">
             <Camera className="w-8 h-8" />
-            <span className="text-2xl font-bold">{progressSummary?.totalPhotos || 0}</span>
+            <span className="text-2xl font-bold">{0}</span>
           </div>
           <h3 className="font-semibold mb-1">Progress Photos</h3>
           <p className="text-blue-100 text-sm">Visual journey</p>
@@ -79,31 +57,27 @@ export const ProgressTracker: React.FC = () => {
         <div className="bg-gradient-to-br from-green-500 to-green-600 rounded-2xl p-6 text-white">
           <div className="flex items-center justify-between mb-4">
             <Scale className="w-8 h-8" />
-            <span className="text-2xl font-bold">{progressSummary?.latestWeight || 0}kg</span>
+            <span className="text-2xl font-bold">{0}kg</span>
           </div>
           <h3 className="font-semibold mb-1">Current Weight</h3>
           <p className="text-green-100 text-sm">
-            {progressSummary?.weightChange ? (
-              progressSummary.weightChange > 0 ?
-                `+${progressSummary.weightChange.toFixed(1)}kg` :
-                `${progressSummary.weightChange.toFixed(1)}kg`
-            ) : 'No change'}
+            {'No change'}
           </p>
         </div>
 
         <div className="bg-gradient-to-br from-purple-500 to-purple-600 rounded-2xl p-6 text-white">
           <div className="flex items-center justify-between mb-4">
             <Target className="w-8 h-8" />
-            <span className="text-2xl font-bold">{progressSummary?.activeGoals || 0}</span>
+            <span className="text-2xl font-bold">{0}</span>
           </div>
           <h3 className="font-semibold mb-1">Active Goals</h3>
-          <p className="text-purple-100 text-sm">{progressSummary?.completedGoals || 0} completed</p>
+          <p className="text-purple-100 text-sm">{0} completed</p>
         </div>
 
         <div className="bg-gradient-to-br from-orange-500 to-orange-600 rounded-2xl p-6 text-white">
           <div className="flex items-center justify-between mb-4">
             <Award className="w-8 h-8" />
-            <span className="text-2xl font-bold">{progressSummary?.achievements || 0}</span>
+            <span className="text-2xl font-bold">{0}</span>
           </div>
           <h3 className="font-semibold mb-1">Achievements</h3>
           <p className="text-orange-100 text-sm">Milestones reached</p>

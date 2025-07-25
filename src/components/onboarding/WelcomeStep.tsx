@@ -1,12 +1,46 @@
-import React from 'react';
-import { Dumbbell, Heart, Target } from 'lucide-react';
+import React, { useState } from 'react';
+import { Dumbbell, Heart, Target, LogIn } from 'lucide-react';
 import logo from '../../assets/logo-t.png';
+import { AuthForm } from '../auth/AuthForm';
+import { useAuth } from '../../hooks/useAuth';
 
 interface WelcomeStepProps {
   onNext: () => void;
 }
 
 export const WelcomeStep: React.FC<WelcomeStepProps> = ({ onNext }) => {
+  const [showSignIn, setShowSignIn] = useState(false);
+  const { user } = useAuth();
+
+  // If user is already signed in, they shouldn't see the welcome step
+  if (user) {
+    return null;
+  }
+
+  if (showSignIn) {
+    return (
+      <div className="max-w-md mx-auto py-8">
+        <AuthForm
+          mode="signin"
+          onToggleMode={() => setShowSignIn(false)}
+          onForgotPassword={() => {/* Handle forgot password */ }}
+          onSuccess={() => {
+            // User will be redirected automatically by auth state change
+          }}
+        />
+
+        <div className="mt-6 text-center">
+          <button
+            onClick={() => setShowSignIn(false)}
+            className="text-gray-600 dark:text-gray-300 hover:text-gray-900 dark:hover:text-white text-sm font-medium transition-colors"
+          >
+            ← Back to welcome
+          </button>
+        </div>
+      </div>
+    );
+  }
+
   return (
     <div className="text-center space-y-8 py-8">
       <div className="space-y-4">
@@ -59,12 +93,25 @@ export const WelcomeStep: React.FC<WelcomeStepProps> = ({ onNext }) => {
         </div>
       </div>
 
-      <button
-        onClick={onNext}
-        className="bg-emerald-500 hover:bg-emerald-600 text-white font-semibold py-4 px-8 rounded-xl shadow-lg hover:shadow-xl transform hover:scale-105 transition-all duration-200"
-      >
-        Start your fitness transformation for free!
-      </button>
+      <div className="space-y-4">
+        <button
+          onClick={onNext}
+          className="bg-emerald-500 hover:bg-emerald-600 text-white font-semibold py-4 px-8 rounded-xl shadow-lg hover:shadow-xl transform hover:scale-105 transition-all duration-200"
+        >
+          Start your fitness transformation for free!
+        </button>
+
+        <div className="text-gray-600 dark:text-gray-300">
+          <span className="text-sm">Already have an account? </span>
+          <button
+            onClick={() => setShowSignIn(true)}
+            className="inline-flex items-center space-x-1 text-emerald-600 dark:text-emerald-400 hover:text-emerald-700 dark:hover:text-emerald-300 font-medium text-sm transition-colors"
+          >
+            <LogIn className="w-4 h-4" />
+            <span>Sign In</span>
+          </button>
+        </div>
+      </div>
     </div>
   );
 };
