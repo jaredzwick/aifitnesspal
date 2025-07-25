@@ -19,6 +19,7 @@ function App() {
     );
   }
 
+  console.log('~user ', user)
   return (
     <QueryClientProvider client={queryClient}>
       <Router>
