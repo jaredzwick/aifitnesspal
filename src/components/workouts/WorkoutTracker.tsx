@@ -6,7 +6,6 @@ import {
   Timer,
   Heart,
   Activity,
-  TrendingUp,
   Save,
   SkipForward,
   CheckCircle2,
@@ -15,14 +14,13 @@ import {
 import { ButtonSpinner } from '../ui/LoadingSpinner';
 import { ErrorMessage } from '../ui/ErrorMessage';
 import { ErrorBoundary } from '../ui/ErrorBoundary';
-import { WorkoutSet, PersonalizedPlan, WeeklyWorkoutPlan } from '../../../common';
+import { WorkoutSet, PersonalizedPlan, WeeklyWorkoutPlan, UserWorkout } from '../../../common';
 import { useMutation } from '@tanstack/react-query';
 import { workoutService } from '../../services/workoutService';
 
 
-export const WorkoutTracker: React.FC<{ plan: PersonalizedPlan, inProgressWorkout?: WeeklyWorkoutPlan, prefersMetric: boolean }> = ({ plan, inProgressWorkout, prefersMetric }) => {
+export const WorkoutTracker: React.FC<{ plan: PersonalizedPlan, inProgressUserWorkout?: UserWorkout, prefersMetric: boolean }> = ({ plan, inProgressUserWorkout, prefersMetric }) => {
 
-  // //TODO: IF IN PROGRESS WORKOUT, SET ACTIVE WORKOUT TO IN PROGRESS WORKOUT, MUST PERSIST IT ON START WORKOUT
   const [activeWorkout, setActiveWorkout] = useState<WeeklyWorkoutPlan | null>(null);
   const [currentExerciseIndex, setCurrentExerciseIndex] = useState(0);
   const [currentSetIndex, setCurrentSetIndex] = useState(0);
@@ -32,13 +30,12 @@ export const WorkoutTracker: React.FC<{ plan: PersonalizedPlan, inProgressWorkou
   const [showWorkoutSelector, setShowWorkoutSelector] = useState(false);
 
 
-  // Set activeWorkout when inProgressWorkout changes
+  // Set activeWorkout when inProgressUserWorkout changes
   useEffect(() => {
-    console.log('inProgressWorkout', inProgressWorkout)
-    if (inProgressWorkout) {
-      setActiveWorkout(inProgressWorkout);
+    if (inProgressUserWorkout) {
+      setActiveWorkout(inProgressUserWorkout.exercises as WeeklyWorkoutPlan);
     }
-  }, [inProgressWorkout]);
+  }, [inProgressUserWorkout]);
 
 
   // Get available workouts
@@ -52,22 +49,41 @@ export const WorkoutTracker: React.FC<{ plan: PersonalizedPlan, inProgressWorkou
     }
   })
 
-  // Start workout mutation
+  const persistCompletedSetMutation = useMutation({
+    mutationFn: workoutService.persistCompletedSet,
+    onError: (error: Error) => {
+      console.error(error);
+      workoutsError = error;
+    }
+  })
+
+  const completeWorkoutMutation = useMutation({
+    mutationFn: workoutService.completeWorkout,
+    onError: (error: Error) => {
+      console.error(error);
+      workoutsError = error;
+    }
+  })
+
   const startWorkout = () => {
-    //setActiveWorkout to the workout with day == today
     const today = new Date().toLocaleDateString('en-US', { weekday: 'long' }).toLowerCase();
     console.log(today)
-    if (plan.trainingRegimen!.find(workout => workout.day === today)) {
-      const activeWorkout = plan.trainingRegimen!.find(workout => workout.day === today)!
-      startWorkoutMutation.mutate({ day: today, workout: activeWorkout });
-      setActiveWorkout(activeWorkout);
+    const todaysWorkout = plan.trainingRegimen!.find(workout => workout.day === today)
+    if (todaysWorkout) {
+      startWorkoutMutation.mutate({ day: today, workout: todaysWorkout });
+      setActiveWorkout(todaysWorkout);
     }
   };
 
-  const completeWorkout = () => { };
-  const completingWorkout = false;
-
-
+  const completeWorkout = () => {
+    if (activeWorkout && inProgressUserWorkout) {
+      completeWorkoutMutation.mutate({
+        activeWorkout,
+        userWorkout: inProgressUserWorkout
+      });
+      setActiveWorkout(null);
+    }
+  };
   // Timer effects
   useEffect(() => {
     let interval: NodeJS.Timeout;
@@ -128,18 +144,16 @@ export const WorkoutTracker: React.FC<{ plan: PersonalizedPlan, inProgressWorkou
       if (!prev) return prev;
 
       const newWorkout = { ...prev };
-      const exercise = newWorkout.workout ? newWorkout.workout[currentExerciseIndex] : null;
-      const set = exercise?.userSets ? exercise.userSets[currentSetIndex] : null;
-
-      Object.assign(set!, updates);
-
+      const set = currentExercise?.userSets?.[currentSetIndex] || null;
+      newWorkout.workout![currentExerciseIndex].userSets![currentSetIndex] = {
+        ...set,
+        ...updates
+      };
       return newWorkout;
     });
   };
 
   const completeSet = () => {
-    // if (!currentSet) return;
-
     updateSet({ completed: true });
 
     // Move to next set or exercise
@@ -154,33 +168,15 @@ export const WorkoutTracker: React.FC<{ plan: PersonalizedPlan, inProgressWorkou
       setCurrentExerciseIndex(prev => prev + 1);
       setCurrentSetIndex(0);
     }
+    persistCompletedSetMutation.mutate({
+      activeWorkout: activeWorkout!,
+      userWorkout: inProgressUserWorkout!
+    });
   };
 
   const skipRest = () => {
     setIsResting(false);
     setRestTimer(0);
-  };
-
-  const addSet = () => {
-    if (!activeWorkout || !currentExercise) return;
-
-    const newSet: WorkoutSet = {
-      id: `set-${currentSetIndex}`,
-      set_number: currentExercise.userSets!.length + 1,
-      reps: currentExercise.reps,
-      duration: currentExercise.duration,
-      completed: false,
-      exercise_id: '1'
-    };
-
-    setActiveWorkout(prev => {
-      if (!prev) return prev;
-
-      const newWorkout = { ...prev };
-      newWorkout.workout![currentExerciseIndex].userSets!.push(newSet);
-
-      return newWorkout;
-    });
   };
 
   if (workoutsError) {
@@ -639,19 +635,12 @@ export const WorkoutTracker: React.FC<{ plan: PersonalizedPlan, inProgressWorkou
             <div className="space-y-3">
               <div className="flex items-center justify-between">
                 <h4 className="font-medium text-gray-900 dark:text-white">All Sets</h4>
-                <button
-                  onClick={addSet}
-                  className="flex items-center space-x-1 text-emerald-600 dark:text-emerald-400 hover:underline text-sm"
-                >
-                  <Plus className="w-4 h-4" />
-                  <span>Add Set</span>
-                </button>
               </div>
 
               <div className="grid gap-2">
                 {currentExercise?.userSets?.map((set, index) => (
                   <div
-                    key={set.id}
+                    key={index}
                     className={`p-3 rounded-lg border-2 transition-all duration-200 ${index === currentSetIndex
                       ? 'border-emerald-500 bg-emerald-50 dark:bg-emerald-900/20'
                       : set.completed
@@ -661,7 +650,7 @@ export const WorkoutTracker: React.FC<{ plan: PersonalizedPlan, inProgressWorkou
                   >
                     <div className="flex items-center justify-between">
                       <span className="font-medium text-gray-900 dark:text-white">
-                        Set {set.set_number}
+                        Set {index + 1}
                       </span>
                       <div className="flex items-center space-x-4 text-sm">
                         {isStrengthExercise && (
@@ -670,7 +659,10 @@ export const WorkoutTracker: React.FC<{ plan: PersonalizedPlan, inProgressWorkou
                               {set.reps || 0} reps
                             </span>
                             <span className="text-gray-600 dark:text-gray-300">
-                              {set.weight || 0}kg
+                              {prefersMetric
+                                ? `${set.weight?.toFixed(0) || 0}kg`
+                                : `${Math.round(((set.weight || 0) * 2.20462) * 10) / 10}lbs`
+                              }
                             </span>
                           </>
                         )}
@@ -680,7 +672,10 @@ export const WorkoutTracker: React.FC<{ plan: PersonalizedPlan, inProgressWorkou
                               {formatTime(set.duration || 0)}
                             </span>
                             <span className="text-gray-600 dark:text-gray-300">
-                              {set.distance || 0}m
+                              {prefersMetric
+                                ? `${set.distance?.toFixed(0) || 0}m`
+                                : `${Math.round(((set.distance || 0) * 3.28084) * 10) / 10}ft`
+                              }
                             </span>
                           </>
                         )}
@@ -698,32 +693,19 @@ export const WorkoutTracker: React.FC<{ plan: PersonalizedPlan, inProgressWorkou
 
         {/* Workout Controls */}
         <div className="bg-white dark:bg-gray-800 rounded-2xl border border-gray-200 dark:border-gray-700 p-6">
-          <div className="flex items-center justify-between">
-            <div className="flex items-center space-x-4">
-              <button
-                onClick={() => completeWorkout()}
-                disabled={completingWorkout}
-                className="flex items-center space-x-2 px-6 py-3 bg-gradient-to-r from-green-500 to-green-600 hover:from-green-600 hover:to-green-700 disabled:opacity-50 text-white rounded-xl font-semibold transition-all duration-200"
-              >
-                {completingWorkout ? (
-                  <ButtonSpinner />
-                ) : (
-                  <Save className="w-5 h-5" />
-                )}
-                <span>Complete Workout</span>
-              </button>
-            </div>
-
-            <div className="flex items-center space-x-2 text-sm text-gray-600 dark:text-gray-300">
-              <TrendingUp className="w-4 h-4" />
-              <span>
-                {/* {activeWorkout?.workout?.reduce((total, ex) =>
-                  total + (ex.userSets?.filter(s => s.completed).length || 0), 0
-                )} / {activeWorkout?.workout?.reduce((total, ex) =>
-                  total + (ex.userSets?.length || 0), 0  )}
-                */} sets completed
-              </span>
-            </div>
+          <div className="flex items-center justify-center">
+            <button
+              onClick={() => completeWorkout()}
+              disabled={completeWorkoutMutation.isPending}
+              className="flex items-center space-x-2 px-6 py-3 bg-gradient-to-r from-emerald-500 to-emerald-600 hover:from-emerald-600 hover:to-emerald-700 disabled:opacity-50 text-white rounded-xl font-semibold transition-all duration-200"
+            >
+              {completeWorkoutMutation.isPending ? (
+                <ButtonSpinner />
+              ) : (
+                <Save className="w-5 h-5" />
+              )}
+              <span>Complete Workout</span>
+            </button>
           </div>
         </div>
       </div>

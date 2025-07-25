@@ -7,6 +7,16 @@ interface StartWorkoutParams {
   workout: WeeklyWorkoutPlan;
 }
 
+interface PersistCompletedSetParams {
+  activeWorkout: WeeklyWorkoutPlan;
+  userWorkout: UserWorkout;
+}
+
+interface CompleteWorkoutParams {
+  activeWorkout: WeeklyWorkoutPlan;
+  userWorkout: UserWorkout;
+}
+
 // Workout service
 export const workoutService = {
   // Start workout
@@ -23,5 +33,21 @@ export const workoutService = {
   },
   getActiveWorkout: (): Promise<UserWorkout> => {
     return apiClient.get<UserWorkout>(`/user-workouts`);
+  },
+  persistCompletedSet: ({
+    activeWorkout,
+    userWorkout,
+  }: PersistCompletedSetParams) => {
+    return apiClient.put(`/user-workouts/${userWorkout.id}`, activeWorkout);
+  },
+  completeWorkout: ({
+    activeWorkout,
+    userWorkout,
+  }: CompleteWorkoutParams) => {
+    return apiClient.put(`/user-workouts/${userWorkout.id}`, {
+      activeWorkout,
+      status: WORKOUT_STATUS.COMPLETED,
+      completed_at: new Date().toISOString(),
+    });
   },
 };

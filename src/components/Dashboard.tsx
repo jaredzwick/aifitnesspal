@@ -19,7 +19,7 @@ import { useAuth } from '../hooks/useAuth';
 import { User } from '@supabase/supabase-js';
 import { ErrorBoundary } from './ui/ErrorBoundary';
 import logo from '../assets/logo-navbar.png';
-import { FitnessUser, PersonalizedPlan, WeeklyWorkoutPlan, WORKOUT_STATUS } from '../../common';
+import { FitnessUser, PersonalizedPlan, UserWorkout, WeeklyWorkoutPlan, WORKOUT_STATUS } from '../../common';
 import { TrainingRegimen } from './training/TrainingRegimen';
 import { workoutService } from '../services/workoutService';
 import { useQuery } from '@tanstack/react-query';
@@ -391,7 +391,7 @@ export const Dashboard: React.FC<DashboardProps> = ({ user }) => {
   const renderCurrentView = () => {
     switch (currentView) {
       case 'workout-tracker':
-        return <WorkoutTracker plan={user?.user_metadata.personalizedPlan as PersonalizedPlan} inProgressWorkout={activeWorkout?.exercises as WeeklyWorkoutPlan} prefersMetric={user?.user_metadata.prefersMetric as boolean} />;
+        return <WorkoutTracker plan={user?.user_metadata.personalizedPlan as PersonalizedPlan} inProgressUserWorkout={activeWorkout as UserWorkout} prefersMetric={user?.user_metadata.prefersMetric as boolean} />;
       case 'training-regimen':
         return <TrainingRegimen plan={user?.user_metadata.personalizedPlan as PersonalizedPlan} />;
       case 'nutrition':

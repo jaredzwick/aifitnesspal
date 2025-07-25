@@ -20,7 +20,7 @@ export type ExerciseTemplate = {
     beginner?: string;
     advanced?: string;
   };
-  userSets?: WorkoutSet[];
+  userSets?: Partial<WorkoutSet>[];
 };
 
 export type NutritionRegimen = {
