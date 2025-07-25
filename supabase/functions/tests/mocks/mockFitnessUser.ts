@@ -23,6 +23,7 @@ export const mockFitnessUser: FitnessUser = {
   progressPhotos: [],
   trainDaysPerWeek: 3,
   cardioDaysPerWeek: 1,
+  prefersMetric: true,
   dietaryRestrictions: [
     "asdf",
     "Vegetarian",

@@ -95,6 +95,7 @@ export type UserWorkout = {
   completed_at?: string;
   status: "scheduled" | "in_progress" | "completed" | "skipped";
   notes?: string;
+  name: string;
 };
 
 export type WorkoutFilters = {

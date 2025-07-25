@@ -21,6 +21,8 @@ import { ErrorBoundary } from './ui/ErrorBoundary';
 import logo from '../assets/logo-navbar.png';
 import { FitnessUser, PersonalizedPlan } from '../../common';
 import { TrainingRegimen } from './training/TrainingRegimen';
+import { workoutService } from '../services/workoutService';
+import { useQuery } from '@tanstack/react-query';
 
 interface DashboardProps {
   user: User;
@@ -31,7 +33,10 @@ type DashboardView = 'overview' | 'training-regimen' | 'workout-tracker' | 'nutr
 export const Dashboard: React.FC<DashboardProps> = ({ user }) => {
   const { signOut } = useAuth();
   const [currentView, setCurrentView] = useState<DashboardView>('overview');
-
+  const { data: activeWorkout, isLoading: activeWorkoutLoading, error: activeWorkoutError } = useQuery({
+    queryKey: ['getActiveWorkout'],
+    queryFn: () => workoutService.getActiveWorkout(),
+  })
   const handleSignOut = async () => {
     await signOut();
   };
@@ -81,7 +86,7 @@ export const Dashboard: React.FC<DashboardProps> = ({ user }) => {
           >
             <Play className="w-6 h-6 text-emerald-600 dark:text-emerald-400" />
             <span className="text-sm font-medium text-emerald-700 dark:text-emerald-300">
-              Start Workout
+              {activeWorkout ? 'Resume Workout' : 'Start Workout'}
             </span>
           </button>
 
@@ -124,7 +129,7 @@ export const Dashboard: React.FC<DashboardProps> = ({ user }) => {
             <h3 className="font-medium text-gray-900 dark:text-white">Active Workout</h3>
             <Activity className="w-5 h-5 text-emerald-500" />
           </div>
-          {/* {activeWorkoutLoading ? (
+          {activeWorkoutLoading ? (
             <div className="animate-pulse">
               <div className="h-6 bg-gray-200 dark:bg-gray-700 rounded mb-2"></div>
               <div className="h-4 bg-gray-200 dark:bg-gray-700 rounded w-2/3"></div>
@@ -135,22 +140,22 @@ export const Dashboard: React.FC<DashboardProps> = ({ user }) => {
                 In Progress
               </div>
               <p className="text-sm text-gray-600 dark:text-gray-300">
-                {activeWorkout.workout?.name || 'Current workout'}
+                {activeWorkout.name.charAt(0).toUpperCase() + activeWorkout.name.slice(1) || 'Current workout'}
               </p>
             </div>
-          ) : ( */}
-          <div>
-            <div className="text-2xl font-bold text-gray-900 dark:text-white mb-1">
-              None
+          ) : (
+            <div>
+              <div className="text-2xl font-bold text-gray-900 dark:text-white mb-1">
+                None
+              </div>
+              <button
+                onClick={() => setCurrentView('workout-tracker')}
+                className="text-sm text-emerald-600 dark:text-emerald-400 hover:underline"
+              >
+                Start workout
+              </button>
             </div>
-            <button
-              onClick={() => setCurrentView('workout-tracker')}
-              className="text-sm text-emerald-600 dark:text-emerald-400 hover:underline"
-            >
-              Start workout
-            </button>
-          </div>
-          {/* )} */}
+          )}
           {/* //TODO: ADD ABILITY TO GO TO ACTIVE WORKOUT. SHOULD PROBABLY AUTO ROUTE THERE */}
         </div>
 

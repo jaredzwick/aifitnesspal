@@ -15,10 +15,12 @@ import {
 import { ButtonSpinner } from '../ui/LoadingSpinner';
 import { ErrorMessage } from '../ui/ErrorMessage';
 import { ErrorBoundary } from '../ui/ErrorBoundary';
-import { WorkoutSet, PersonalizedPlan, WeeklyWorkoutPlan } from '../../../common';
+import { WorkoutSet, PersonalizedPlan, WeeklyWorkoutPlan, UserWorkout } from '../../../common';
+import { useMutation } from '@tanstack/react-query';
+import { workoutService } from '../../services/workoutService';
 
 
-export const WorkoutTracker: React.FC<{ plan: PersonalizedPlan }> = ({ plan }) => {
+export const WorkoutTracker: React.FC<{ plan: PersonalizedPlan, inProgressWorkout?: UserWorkout }> = ({ plan, inProgressWorkout }) => {
   const [activeWorkout, setActiveWorkout] = useState<WeeklyWorkoutPlan | null>(null);
   const [currentExerciseIndex, setCurrentExerciseIndex] = useState(0);
   const [currentSetIndex, setCurrentSetIndex] = useState(0);
@@ -28,14 +30,23 @@ export const WorkoutTracker: React.FC<{ plan: PersonalizedPlan }> = ({ plan }) =
   const [showWorkoutSelector, setShowWorkoutSelector] = useState(false);
 
   // Get available workouts
-  const workoutsError = null;
+  let workoutsError: Error | null = null;
+
+  const startWorkoutMutation = useMutation({
+    mutationFn: workoutService.startWorkout,
+    onError: (error: Error) => {
+      console.error(error);
+      workoutsError = error;
+    }
+  })
 
   // Start workout mutation
   const startWorkout = () => {
     //setActiveWorkout to the workout with day == today
-    const today = new Date().toLocaleDateString('en-US', { weekday: 'long' }).toLowerCase()
+    const today = new Date().toLocaleDateString('en-US', { weekday: 'long' }).toLowerCase();
     console.log(today)
     if (plan.trainingRegimen!.find(workout => workout.day === today)) {
+      startWorkoutMutation.mutate(today);
       setActiveWorkout(plan.trainingRegimen!.find(workout => workout.day === today)!);
     }
   };
