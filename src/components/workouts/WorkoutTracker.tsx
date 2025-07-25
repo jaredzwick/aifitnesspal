@@ -21,6 +21,8 @@ import { workoutService } from '../../services/workoutService';
 
 
 export const WorkoutTracker: React.FC<{ plan: PersonalizedPlan, inProgressWorkout?: UserWorkout }> = ({ plan, inProgressWorkout }) => {
+
+  // //TODO: IF IN PROGRESS WORKOUT, SET ACTIVE WORKOUT TO IN PROGRESS WORKOUT, MUST PERSIST IT ON START WORKOUT
   const [activeWorkout, setActiveWorkout] = useState<WeeklyWorkoutPlan | null>(null);
   const [currentExerciseIndex, setCurrentExerciseIndex] = useState(0);
   const [currentSetIndex, setCurrentSetIndex] = useState(0);
