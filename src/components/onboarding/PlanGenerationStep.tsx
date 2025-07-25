@@ -110,12 +110,44 @@ export const PlanGenerationStep: React.FC<PlanGenerationStepProps> = ({
                             </span>
                         </div>
 
+                        {/* Show specific workout days */}
+                        <div className="space-y-2">
+                            <span className="text-sm text-blue-700 dark:text-blue-300 font-medium">Training Schedule:</span>
+                            <div className="flex flex-wrap gap-2">
+                                {workoutDays.map((day, index) => (
+                                    <span
+                                        key={index}
+                                        className="px-3 py-1 bg-blue-200 dark:bg-blue-800 text-blue-800 dark:text-blue-200 text-sm font-medium rounded-full"
+                                    >
+                                        {day.day}
+                                    </span>
+                                ))}
+                            </div>
+                        </div>
+
                         <div className="flex justify-between items-center">
                             <span className="text-blue-800 dark:text-blue-200">Rest Days:</span>
                             <span className="font-semibold text-blue-900 dark:text-blue-100">
                                 {restDays.length} days/week
                             </span>
                         </div>
+
+                        {/* Show specific rest days */}
+                        {restDays.length > 0 && (
+                            <div className="space-y-2">
+                                <span className="text-sm text-blue-700 dark:text-blue-300 font-medium">Rest Days:</span>
+                                <div className="flex flex-wrap gap-2">
+                                    {restDays.map((day, index) => (
+                                        <span
+                                            key={index}
+                                            className="px-3 py-1 bg-gray-200 dark:bg-gray-700 text-gray-600 dark:text-gray-400 text-sm font-medium rounded-full"
+                                        >
+                                            {day.day}
+                                        </span>
+                                    ))}
+                                </div>
+                            </div>
+                        )}
 
                     </div>
                 </div>

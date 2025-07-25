@@ -36,6 +36,22 @@ export const Dashboard: React.FC<DashboardProps> = ({ user }) => {
     await signOut();
   };
 
+  const formatWeight = () => {
+    // format to lbs or kg whether user_metadata.prefersMetric is true or false
+    const weight = (user.user_metadata as FitnessUser).weight;
+    if (!weight) return 'N/A';
+    if ((user.user_metadata as FitnessUser).prefersMetric) {
+      return `${weight.toFixed(0)} kg`;
+    } else {
+      const lbs = convertWeightToLbs(weight);
+      return `${lbs.toFixed(0)} lbs`;
+    }
+  };
+
+  const convertWeightToLbs = (kg: number) => {
+    return kg * 2.20462;
+  };
+
   const renderOverview = () => (
     <div className="space-y-6">
       {/* Welcome Header */}
@@ -175,16 +191,12 @@ export const Dashboard: React.FC<DashboardProps> = ({ user }) => {
             </div>
           ) : ( */}
           <div>
-            {/* <div className="text-2xl font-bold text-gray-900 dark:text-white mb-1">
-                {progressSummary?.latestWeight || user.user_metadata.weight}kg
-              </div>
-              <p className="text-sm text-gray-600 dark:text-gray-300">
-                {progressSummary?.weightChange ? (
-                  progressSummary.weightChange > 0 ?
-                    `+${progressSummary.weightChange.toFixed(1)}kg` :
-                    `${progressSummary.weightChange.toFixed(1)}kg`
-                ) : 'No change'}
-              </p> */}
+            <div className="text-2xl font-bold text-gray-900 dark:text-white mb-1">
+              {formatWeight()}
+            </div>
+            <p className="text-sm text-gray-600 dark:text-gray-300">
+              No change
+            </p>
           </div>
           {/* )} */}
           {/* TODO: GET CURRENT WEIGHT */}

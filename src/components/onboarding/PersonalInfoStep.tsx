@@ -14,6 +14,9 @@ export const PersonalInfoStep: React.FC<PersonalInfoStepProps> = ({
   onNext,
   onPrev,
 }) => {
+  // Initialize unit preferences based on userData.prefersMetric (default to imperial/false)
+  const prefersMetric = userData.prefersMetric ?? false;
+
   const [formData, setFormData] = useState({
     name: userData.name || '',
     email: userData.email || '',
@@ -25,8 +28,9 @@ export const PersonalInfoStep: React.FC<PersonalInfoStepProps> = ({
     heightInches: '',
   });
 
-  const [heightUnit, setHeightUnit] = useState<'cm' | 'ft'>('ft');
-  const [weightUnit, setWeightUnit] = useState<'kg' | 'lbs'>('lbs');
+  const [heightUnit, setHeightUnit] = useState<'cm' | 'ft'>(prefersMetric ? 'cm' : 'ft');
+  const [weightUnit, setWeightUnit] = useState<'kg' | 'lbs'>(prefersMetric ? 'kg' : 'lbs');
+  const [isMetric, setIsMetric] = useState(prefersMetric);
 
   // Convert height from feet/inches to cm
   const convertHeightToCm = (feet: number, inches: number) => {
@@ -96,6 +100,23 @@ export const PersonalInfoStep: React.FC<PersonalInfoStepProps> = ({
     }
   };
 
+  const handleMetricToggle = () => {
+    const newIsMetric = !isMetric;
+    setIsMetric(newIsMetric);
+
+    // Update userData with new preference
+    onUpdate({ prefersMetric: newIsMetric });
+
+    // Switch units based on new preference
+    if (newIsMetric) {
+      handleHeightUnitChange('cm');
+      handleWeightUnitChange('kg');
+    } else {
+      handleHeightUnitChange('ft');
+      handleWeightUnitChange('lbs');
+    }
+  };
+
   const handleSubmit = (e: React.FormEvent) => {
     e.preventDefault();
 
@@ -119,6 +140,7 @@ export const PersonalInfoStep: React.FC<PersonalInfoStepProps> = ({
       gender: formData.gender as 'male' | 'female' | 'other',
       height: finalHeight,
       weight: finalWeight,
+      prefersMetric: isMetric,
     });
     onNext();
   };
@@ -137,6 +159,35 @@ export const PersonalInfoStep: React.FC<PersonalInfoStepProps> = ({
         <p className="text-gray-600 dark:text-gray-300">
           Our intelligent systems use this information to create your custom-fit plan
         </p>
+      </div>
+
+      {/* Unit System Toggle */}
+      <div className="flex items-center justify-center space-x-4 p-4 bg-gray-50 dark:bg-gray-800 rounded-xl">
+        <span className="text-sm font-medium text-gray-700 dark:text-gray-300">
+          Unit System:
+        </span>
+        <div className="flex bg-white dark:bg-gray-700 rounded-lg p-1 shadow-sm">
+          <button
+            type="button"
+            onClick={() => isMetric && handleMetricToggle()}
+            className={`px-4 py-2 text-sm font-medium rounded-md transition-colors ${!isMetric
+                ? 'bg-emerald-500 text-white shadow-sm'
+                : 'text-gray-600 dark:text-gray-300 hover:text-gray-900 dark:hover:text-white'
+              }`}
+          >
+            Imperial (ft/lb)
+          </button>
+          <button
+            type="button"
+            onClick={() => !isMetric && handleMetricToggle()}
+            className={`px-4 py-2 text-sm font-medium rounded-md transition-colors ${isMetric
+                ? 'bg-emerald-500 text-white shadow-sm'
+                : 'text-gray-600 dark:text-gray-300 hover:text-gray-900 dark:hover:text-white'
+              }`}
+          >
+            Metric (cm/kg)
+          </button>
+        </div>
       </div>
 
       <form onSubmit={handleSubmit} className="space-y-6">
@@ -203,8 +254,8 @@ export const PersonalInfoStep: React.FC<PersonalInfoStepProps> = ({
                 type="button"
                 onClick={() => handleHeightUnitChange('cm')}
                 className={`px-3 py-1 text-sm font-medium rounded-md transition-colors ${heightUnit === 'cm'
-                    ? 'bg-emerald-500 text-white'
-                    : 'text-gray-600 dark:text-gray-300 hover:text-gray-900 dark:hover:text-white'
+                  ? 'bg-emerald-500 text-white'
+                  : 'text-gray-600 dark:text-gray-300 hover:text-gray-900 dark:hover:text-white'
                   }`}
               >
                 cm
@@ -213,8 +264,8 @@ export const PersonalInfoStep: React.FC<PersonalInfoStepProps> = ({
                 type="button"
                 onClick={() => handleHeightUnitChange('ft')}
                 className={`px-3 py-1 text-sm font-medium rounded-md transition-colors ${heightUnit === 'ft'
-                    ? 'bg-emerald-500 text-white'
-                    : 'text-gray-600 dark:text-gray-300 hover:text-gray-900 dark:hover:text-white'
+                  ? 'bg-emerald-500 text-white'
+                  : 'text-gray-600 dark:text-gray-300 hover:text-gray-900 dark:hover:text-white'
                   }`}
               >
                 ft/in
@@ -290,8 +341,8 @@ export const PersonalInfoStep: React.FC<PersonalInfoStepProps> = ({
                 type="button"
                 onClick={() => handleWeightUnitChange('kg')}
                 className={`px-3 py-1 text-sm font-medium rounded-md transition-colors ${weightUnit === 'kg'
-                    ? 'bg-emerald-500 text-white'
-                    : 'text-gray-600 dark:text-gray-300 hover:text-gray-900 dark:hover:text-white'
+                  ? 'bg-emerald-500 text-white'
+                  : 'text-gray-600 dark:text-gray-300 hover:text-gray-900 dark:hover:text-white'
                   }`}
               >
                 kg
@@ -300,8 +351,8 @@ export const PersonalInfoStep: React.FC<PersonalInfoStepProps> = ({
                 type="button"
                 onClick={() => handleWeightUnitChange('lbs')}
                 className={`px-3 py-1 text-sm font-medium rounded-md transition-colors ${weightUnit === 'lbs'
-                    ? 'bg-emerald-500 text-white'
-                    : 'text-gray-600 dark:text-gray-300 hover:text-gray-900 dark:hover:text-white'
+                  ? 'bg-emerald-500 text-white'
+                  : 'text-gray-600 dark:text-gray-300 hover:text-gray-900 dark:hover:text-white'
                   }`}
               >
                 lbs

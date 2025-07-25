@@ -22,6 +22,7 @@ export interface FitnessUser {
   email_verified: boolean;
   phone_verified: boolean;
   personalizedPlan?: PersonalizedPlan;
+  prefersMetric: boolean;
   progressPhotos?: Array<{
     type: "front" | "side" | "back";
     file: File;
