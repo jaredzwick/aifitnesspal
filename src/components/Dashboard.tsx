@@ -375,7 +375,7 @@ export const Dashboard: React.FC<DashboardProps> = ({ user }) => {
   const renderCurrentView = () => {
     switch (currentView) {
       case 'workout-tracker':
-        return <WorkoutTracker />;
+        return <WorkoutTracker plan={user?.user_metadata.personalizedPlan as PersonalizedPlan} />;
       case 'training-regimen':
         return <TrainingRegimen plan={user?.user_metadata.personalizedPlan as PersonalizedPlan} />;
       case 'nutrition':

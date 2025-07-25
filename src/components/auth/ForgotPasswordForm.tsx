@@ -32,7 +32,7 @@ export const ForgotPasswordForm: React.FC<ForgotPasswordFormProps> = ({ onBack, 
         setSuccess(true);
       }
     } catch (err) {
-      const errorMessage = 'An unexpected error occurred. Please try again.';
+      const errorMessage = (err as Error).message || 'An unexpected error occurred. Please try again.';
       if (onError) {
         onError(errorMessage);
       } else {

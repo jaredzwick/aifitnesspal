@@ -11,7 +11,7 @@ export type WeeklyWorkoutPlan = {
 export type ExerciseTemplate = {
   name: string;
   type: "strength" | "cardio" | "flexibility";
-  sets?: number;
+  numberOfSets?: number;
   reps?: number;
   duration?: number; // for cardio/time-based exercises
   restTime: number;
@@ -20,6 +20,7 @@ export type ExerciseTemplate = {
     beginner?: string;
     advanced?: string;
   };
+  userSets?: WorkoutSet[];
 };
 
 export type NutritionRegimen = {
@@ -74,50 +75,6 @@ export type WorkoutSet = {
   notes?: string;
 };
 
-export type WorkoutExercise = {
-  id: string;
-  exercise_id: string;
-  order_index: number;
-  target_sets: number;
-  target_reps?: number;
-  target_weight?: number;
-  target_duration?: number;
-  target_distance?: number;
-  rest_time: number;
-  exercise: {
-    id: string;
-    name: string;
-    description?: string;
-    instructions: string[];
-    muscle_groups: string[];
-    exercise_type: "strength" | "cardio" | "flexibility" | "balance";
-  };
-  sets: WorkoutSet[];
-};
-
-export type ActiveWorkout = UserWorkout & {
-  workout: Workout & {
-    exercises: WorkoutExercise[];
-  };
-};
-
-// Workout types
-export type Workout = {
-  id: string;
-  name: string;
-  description?: string;
-  type: string;
-  difficulty: "beginner" | "intermediate" | "advanced";
-  duration_minutes: number;
-  calories_burned_estimate: number;
-  equipment_needed: string[];
-  muscle_groups: string[];
-  is_template: boolean;
-  created_by?: string;
-  created_at: string;
-  updated_at: string;
-};
-
 export type Exercise = {
   id: string;
   name: string;
@@ -138,7 +95,6 @@ export type UserWorkout = {
   completed_at?: string;
   status: "scheduled" | "in_progress" | "completed" | "skipped";
   notes?: string;
-  workout?: Workout;
 };
 
 export type WorkoutFilters = {

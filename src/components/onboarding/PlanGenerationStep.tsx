@@ -254,7 +254,7 @@ export const PlanGenerationStep: React.FC<PlanGenerationStepProps> = ({
                                             </h4>
                                             <div className="bg-emerald-100 dark:bg-emerald-900/50 px-3 py-1 rounded-full">
                                                 <span className="text-sm font-medium text-emerald-700 dark:text-emerald-300">
-                                                    {exercise.sets ? `${exercise.sets} × ${exercise.reps}` : `${exercise.duration}s`}
+                                                    {exercise.numberOfSets ? `${exercise.numberOfSets} × ${exercise.reps}` : `${exercise.duration}s`}
                                                 </span>
                                             </div>
                                         </div>

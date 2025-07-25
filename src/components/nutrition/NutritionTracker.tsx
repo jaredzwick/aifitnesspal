@@ -2,28 +2,21 @@ import React, { useState } from 'react';
 import {
   Plus,
   Search,
-  Camera,
   Utensils,
   Clock,
   Zap,
   Target,
-  TrendingUp,
-  Edit3,
-  Trash2,
   BarChart3,
   Apple,
   Coffee,
   Sandwich,
   Cookie,
   X,
-  Check,
   ChevronDown,
   ChevronUp,
-  Timer,
-  Scale,
   Activity
 } from 'lucide-react';
-import { LoadingSpinner, ButtonSpinner, SkeletonCard } from '../ui/LoadingSpinner';
+import { ButtonSpinner, SkeletonCard } from '../ui/LoadingSpinner';
 import { ErrorMessage } from '../ui/ErrorMessage';
 import { ErrorBoundary } from '../ui/ErrorBoundary';
 
@@ -46,7 +39,6 @@ export const NutritionTracker: React.FC = () => {
   const [selectedMealType, setSelectedMealType] = useState<'breakfast' | 'lunch' | 'dinner' | 'snack'>('breakfast');
   const [searchQuery, setSearchQuery] = useState('');
   const [showMacroDetails, setShowMacroDetails] = useState(false);
-  const [editingFood, setEditingFood] = useState<{ mealId: string; foodId: string } | null>(null);
 
   // Mock targets - would come from user profile/goals
   const targets: MacroTarget = {
@@ -57,7 +49,6 @@ export const NutritionTracker: React.FC = () => {
     fiber: 25,
   };
 
-  const nutritionEntry = null;
   const entryLoading = null;
   const entryError = null;
   const refreshEntry = () => { };

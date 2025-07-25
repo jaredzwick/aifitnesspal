@@ -6,7 +6,7 @@ import { ErrorScreen } from '../ErrorScreen';
 
 interface AuthStepProps {
   userData: Partial<FitnessUser>;
-  onComplete: (user: any) => void;
+  onComplete: () => void;
   onPrev: () => void;
 }
 
@@ -48,8 +48,8 @@ export const AuthStep: React.FC<AuthStepProps> = ({ userData, onComplete, onPrev
       </div>
 
       {currentView === 'forgot-password' ? (
-        <ForgotPasswordForm 
-          onBack={() => setCurrentView('signin')} 
+        <ForgotPasswordForm
+          onBack={() => setCurrentView('signin')}
           onError={handleAuthError}
         />
       ) : (

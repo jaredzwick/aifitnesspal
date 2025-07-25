@@ -2,26 +2,24 @@ import React, { useState, useEffect } from 'react';
 import {
   Play,
   Plus,
-  Minus,
-  Clock,
-  Zap,
   Target,
-  CheckCircle2,
   Timer,
   Heart,
   Activity,
   TrendingUp,
   Save,
-  SkipForward
+  SkipForward,
+  CheckCircle2,
+  Minus
 } from 'lucide-react';
-import { LoadingSpinner, ButtonSpinner } from '../ui/LoadingSpinner';
+import { ButtonSpinner } from '../ui/LoadingSpinner';
 import { ErrorMessage } from '../ui/ErrorMessage';
 import { ErrorBoundary } from '../ui/ErrorBoundary';
-import { ActiveWorkout, WorkoutSet, Workout } from '../../../common';
+import { WorkoutSet, PersonalizedPlan, WeeklyWorkoutPlan } from '../../../common';
 
 
-export const WorkoutTracker: React.FC = () => {
-  const [activeWorkout, setActiveWorkout] = useState<ActiveWorkout | null>(null);
+export const WorkoutTracker: React.FC<{ plan: PersonalizedPlan }> = ({ plan }) => {
+  const [activeWorkout, setActiveWorkout] = useState<WeeklyWorkoutPlan | null>(null);
   const [currentExerciseIndex, setCurrentExerciseIndex] = useState(0);
   const [currentSetIndex, setCurrentSetIndex] = useState(0);
   const [isResting, setIsResting] = useState(false);
@@ -30,12 +28,17 @@ export const WorkoutTracker: React.FC = () => {
   const [showWorkoutSelector, setShowWorkoutSelector] = useState(false);
 
   // Get available workouts
-  const workouts: Workout[] = [];
-  const workoutsLoading = false;
   const workoutsError = null;
 
   // Start workout mutation
-  const startWorkout = () => { };
+  const startWorkout = () => {
+    //setActiveWorkout to the workout with day == today
+    const today = new Date().toLocaleDateString('en-US', { weekday: 'long' }).toLowerCase()
+    console.log(today)
+    if (plan.trainingRegimen!.find(workout => workout.day === today)) {
+      setActiveWorkout(plan.trainingRegimen!.find(workout => workout.day === today)!);
+    }
+  };
 
   const completeWorkout = () => { };
   const completingWorkout = false;
@@ -74,10 +77,25 @@ export const WorkoutTracker: React.FC = () => {
     return `${mins.toString().padStart(2, '0')}:${secs.toString().padStart(2, '0')}`;
   };
 
-  const currentExercise = activeWorkout?.workout.exercises[currentExerciseIndex];
-  const currentSet = currentExercise?.sets[currentSetIndex];
-  const isStrengthExercise = currentExercise?.exercise.exercise_type === 'strength';
-  const isCardioExercise = currentExercise?.exercise.exercise_type === 'cardio';
+  const currentExercise = activeWorkout?.workout ? activeWorkout.workout[currentExerciseIndex] : null;
+
+  // Initialize userSets if it doesn't exist
+  if (currentExercise && !currentExercise.userSets) {
+    currentExercise.userSets = [];
+  }
+
+  // Get current set or create a default one
+  const currentSet = currentExercise?.userSets?.[currentSetIndex] || {
+    id: `set-${currentSetIndex}`,
+    set_number: currentSetIndex + 1,
+    reps: currentExercise?.reps,
+    duration: currentExercise?.duration,
+    completed: false,
+    exercise_id: '1'
+  };
+
+  const isStrengthExercise = currentExercise?.type === 'strength';
+  const isCardioExercise = currentExercise?.type === 'cardio';
 
   const updateSet = (updates: Partial<WorkoutSet>) => {
     if (!activeWorkout || !currentSet) return;
@@ -86,29 +104,29 @@ export const WorkoutTracker: React.FC = () => {
       if (!prev) return prev;
 
       const newWorkout = { ...prev };
-      const exercise = newWorkout.workout.exercises[currentExerciseIndex];
-      const set = exercise.sets[currentSetIndex];
+      const exercise = newWorkout.workout ? newWorkout.workout[currentExerciseIndex] : null;
+      const set = exercise?.userSets ? exercise.userSets[currentSetIndex] : null;
 
-      Object.assign(set, updates);
+      Object.assign(set!, updates);
 
       return newWorkout;
     });
   };
 
   const completeSet = () => {
-    if (!currentSet) return;
+    // if (!currentSet) return;
 
     updateSet({ completed: true });
 
     // Move to next set or exercise
-    if (currentSetIndex < currentExercise!.sets.length - 1) {
+    if (currentSetIndex < (currentExercise!.numberOfSets! - 1)) {
       setCurrentSetIndex(prev => prev + 1);
       // Start rest timer if not the last set
-      if (currentExercise!.rest_time > 0) {
-        setRestTimer(currentExercise!.rest_time);
+      if (currentExercise!.restTime > 0) {
+        setRestTimer(currentExercise!.restTime);
         setIsResting(true);
       }
-    } else if (currentExerciseIndex < activeWorkout!.workout.exercises.length - 1) {
+    } else if (currentExerciseIndex < activeWorkout!.workout!.length - 1) {
       setCurrentExerciseIndex(prev => prev + 1);
       setCurrentSetIndex(0);
     }
@@ -123,21 +141,19 @@ export const WorkoutTracker: React.FC = () => {
     if (!activeWorkout || !currentExercise) return;
 
     const newSet: WorkoutSet = {
-      id: `set-${currentExercise.sets.length}`,
-      exercise_id: currentExercise.exercise_id,
-      set_number: currentExercise.sets.length + 1,
-      reps: isStrengthExercise ? currentExercise.target_reps : undefined,
-      weight: isStrengthExercise ? currentExercise.target_weight : undefined,
-      duration: isCardioExercise ? currentExercise.target_duration : undefined,
-      distance: isCardioExercise ? currentExercise.target_distance : undefined,
+      id: `set-${currentSetIndex}`,
+      set_number: currentSetIndex + 1,
+      reps: currentExercise.reps,
+      duration: currentExercise.duration,
       completed: false,
+      exercise_id: '1'
     };
 
     setActiveWorkout(prev => {
       if (!prev) return prev;
 
       const newWorkout = { ...prev };
-      newWorkout.workout.exercises[currentExerciseIndex].sets.push(newSet);
+      newWorkout.workout![currentExerciseIndex].userSets!.push(newSet);
 
       return newWorkout;
     });
@@ -166,7 +182,7 @@ export const WorkoutTracker: React.FC = () => {
               </p>
             </div>
             <button
-              onClick={() => setShowWorkoutSelector(true)}
+              onClick={() => startWorkout()}
               className="flex items-center space-x-2 px-6 py-3 bg-gradient-to-r from-emerald-500 to-emerald-600 hover:from-emerald-600 hover:to-emerald-700 text-white rounded-xl font-semibold shadow-lg hover:shadow-xl transform hover:scale-105 transition-all duration-200"
             >
               <Play className="w-5 h-5" />
@@ -174,67 +190,6 @@ export const WorkoutTracker: React.FC = () => {
             </button>
           </div>
 
-          {/* Workout Selection Modal */}
-          {showWorkoutSelector && (
-            <div className="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center p-4 z-50">
-              <div className="bg-white dark:bg-gray-800 rounded-2xl max-w-2xl w-full max-h-[80vh] overflow-hidden">
-                <div className="p-6 border-b border-gray-200 dark:border-gray-700">
-                  <h3 className="text-xl font-bold text-gray-900 dark:text-white">
-                    Choose a Workout
-                  </h3>
-                </div>
-
-                <div className="p-6 max-h-96 overflow-y-auto">
-                  {workoutsLoading ? (
-                    <div className="flex justify-center py-8">
-                      <LoadingSpinner size="lg" text="Loading workouts..." />
-                    </div>
-                  ) : (
-                    <div className="grid gap-4">
-                      {workouts?.map((workout) => (
-                        <div
-                          key={workout.id}
-                          onClick={() => startWorkout()}
-                          className="p-4 border border-gray-200 dark:border-gray-600 rounded-xl hover:border-emerald-300 dark:hover:border-emerald-600 hover:bg-gray-50 dark:hover:bg-gray-700 cursor-pointer transition-all duration-200"
-                        >
-                          <div className="flex items-center justify-between mb-2">
-                            <h4 className="font-semibold text-gray-900 dark:text-white">
-                              {workout.name}
-                            </h4>
-                            <span className="px-2 py-1 bg-emerald-100 dark:bg-emerald-900/20 text-emerald-700 dark:text-emerald-300 text-xs rounded-full">
-                              {workout.difficulty}
-                            </span>
-                          </div>
-                          <p className="text-gray-600 dark:text-gray-300 text-sm mb-3">
-                            {workout.description}
-                          </p>
-                          <div className="flex items-center space-x-4 text-sm text-gray-500 dark:text-gray-400">
-                            <div className="flex items-center space-x-1">
-                              <Clock className="w-4 h-4" />
-                              <span>{workout.duration_minutes} min</span>
-                            </div>
-                            <div className="flex items-center space-x-1">
-                              <Zap className="w-4 h-4" />
-                              <span>{workout.calories_burned_estimate} cal</span>
-                            </div>
-                          </div>
-                        </div>
-                      ))}
-                    </div>
-                  )}
-                </div>
-
-                <div className="p-6 border-t border-gray-200 dark:border-gray-700">
-                  <button
-                    onClick={() => setShowWorkoutSelector(false)}
-                    className="w-full py-3 px-4 border border-gray-300 dark:border-gray-600 text-gray-700 dark:text-gray-300 rounded-xl hover:bg-gray-50 dark:hover:bg-gray-700 transition-colors"
-                  >
-                    Cancel
-                  </button>
-                </div>
-              </div>
-            </div>
-          )}
 
           {/* Recent Workouts */}
           <div className="bg-white dark:bg-gray-800 rounded-2xl border border-gray-200 dark:border-gray-700 p-6">
@@ -252,6 +207,70 @@ export const WorkoutTracker: React.FC = () => {
     );
   }
 
+  if (!activeWorkout?.workout) {
+    return (
+      <div className="min-h-screen bg-gradient-to-br from-blue-50 to-indigo-100 dark:from-gray-900 dark:to-gray-800 p-6">
+        <div className="max-w-4xl mx-auto">
+          <div className="bg-white dark:bg-gray-800 rounded-3xl shadow-xl border border-gray-200 dark:border-gray-700 overflow-hidden">
+            {/* Header */}
+            <div className="bg-gradient-to-r from-blue-500 to-purple-600 p-8 text-center">
+              <div className="w-20 h-20 bg-white/20 rounded-full flex items-center justify-center mx-auto mb-4">
+                <Heart className="w-10 h-10 text-white" />
+              </div>
+              <h1 className="text-3xl font-bold text-white mb-2">Rest Day</h1>
+              <p className="text-blue-100 text-lg">Your body grows stronger during recovery</p>
+            </div>
+
+            {/* Content */}
+            <div className="p-8">
+              <div className="text-center mb-8">
+                <h2 className="text-2xl font-semibold text-gray-900 dark:text-white mb-4">
+                  Today is your recovery day
+                </h2>
+                <p className="text-gray-600 dark:text-gray-300 text-lg leading-relaxed max-w-2xl mx-auto">
+                  Rest days are just as important as workout days. Your muscles repair and grow stronger during recovery periods.
+                </p>
+              </div>
+
+              {/* Rest Day Activities */}
+              <div className="grid md:grid-cols-3 gap-6 mb-8">
+                <div className="bg-gradient-to-br from-green-50 to-emerald-100 dark:from-green-900/20 dark:to-emerald-900/20 rounded-2xl p-6 text-center">
+                  <div className="w-12 h-12 bg-green-500 rounded-full flex items-center justify-center mx-auto mb-4">
+                    <Activity className="w-6 h-6 text-white" />
+                  </div>
+                  <h3 className="font-semibold text-gray-900 dark:text-white mb-2">Light Movement</h3>
+                  <p className="text-gray-600 dark:text-gray-300 text-sm">
+                    Take a gentle walk or do some light stretching
+                  </p>
+                </div>
+
+                <div className="bg-gradient-to-br from-blue-50 to-cyan-100 dark:from-blue-900/20 dark:to-cyan-900/20 rounded-2xl p-6 text-center">
+                  <div className="w-12 h-12 bg-blue-500 rounded-full flex items-center justify-center mx-auto mb-4">
+                    <Timer className="w-6 h-6 text-white" />
+                  </div>
+                  <h3 className="font-semibold text-gray-900 dark:text-white mb-2">Hydration</h3>
+                  <p className="text-gray-600 dark:text-gray-300 text-sm">
+                    Stay hydrated and focus on proper nutrition
+                  </p>
+                </div>
+
+                <div className="bg-gradient-to-br from-purple-50 to-violet-100 dark:from-purple-900/20 dark:to-violet-900/20 rounded-2xl p-6 text-center">
+                  <div className="w-12 h-12 bg-purple-500 rounded-full flex items-center justify-center mx-auto mb-4">
+                    <Heart className="w-6 h-6 text-white" />
+                  </div>
+                  <h3 className="font-semibold text-gray-900 dark:text-white mb-2">Sleep Well</h3>
+                  <p className="text-gray-600 dark:text-gray-300 text-sm">
+                    Prioritize quality sleep for optimal recovery
+                  </p>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    );
+  }
+
   return (
     <ErrorBoundary>
       <div className="space-y-6">
@@ -259,9 +278,9 @@ export const WorkoutTracker: React.FC = () => {
         <div className="bg-gradient-to-r from-emerald-500 to-blue-600 rounded-2xl p-6 text-white">
           <div className="flex items-center justify-between mb-4">
             <div>
-              <h2 className="text-2xl font-bold">{activeWorkout.workout.name}</h2>
+              <h2 className="text-2xl font-bold">{activeWorkout?.workout?.[currentExerciseIndex].name}</h2>
               <p className="text-emerald-100">
-                Exercise {currentExerciseIndex + 1} of {activeWorkout.workout.exercises.length}
+                Exercise {currentExerciseIndex + 1} of {activeWorkout?.workout?.length}
               </p>
             </div>
             <div className="text-right">
@@ -275,7 +294,7 @@ export const WorkoutTracker: React.FC = () => {
             <div
               className="bg-white h-2 rounded-full transition-all duration-300"
               style={{
-                width: `${((currentExerciseIndex + (currentSetIndex / currentExercise!.sets.length)) / activeWorkout.workout.exercises.length) * 100}%`
+                // width: `${((currentExerciseIndex + (currentSetIndex / currentExercise!.numberOfSets!)) / activeWorkout?.workout?.length) * 100}%`
               }}
             />
           </div>
@@ -307,17 +326,17 @@ export const WorkoutTracker: React.FC = () => {
             <div className="flex items-center justify-between mb-4">
               <div>
                 <h3 className="text-xl font-bold text-gray-900 dark:text-white">
-                  {currentExercise.exercise.name}
+                  {currentExercise.name}
                 </h3>
                 <p className="text-gray-600 dark:text-gray-300">
-                  {currentExercise.exercise.description}
+                  {currentExercise.instructions}
                 </p>
               </div>
               <div className="flex items-center space-x-2">
-                {currentExercise.exercise.exercise_type === 'strength' && (
+                {currentExercise.type === 'strength' && (
                   <Target className="w-5 h-5 text-blue-500" />
                 )}
-                {currentExercise.exercise.exercise_type === 'cardio' && (
+                {currentExercise.type === 'cardio' && (
                   <Heart className="w-5 h-5 text-red-500" />
                 )}
               </div>
@@ -327,7 +346,7 @@ export const WorkoutTracker: React.FC = () => {
             <div className="mb-6">
               <h4 className="font-medium text-gray-900 dark:text-white mb-2">Instructions:</h4>
               <ul className="space-y-1">
-                {currentExercise.exercise.instructions.map((instruction, index) => (
+                {currentExercise.instructions.map((instruction, index) => (
                   <li key={index} className="text-gray-600 dark:text-gray-300 text-sm flex items-start">
                     <span className="w-5 h-5 bg-emerald-100 dark:bg-emerald-900/20 text-emerald-600 dark:text-emerald-400 rounded-full flex items-center justify-center text-xs font-medium mr-2 mt-0.5 flex-shrink-0">
                       {index + 1}
@@ -343,7 +362,7 @@ export const WorkoutTracker: React.FC = () => {
               <div className="bg-gray-50 dark:bg-gray-700 rounded-xl p-6 mb-6">
                 <div className="flex items-center justify-between mb-4">
                   <h4 className="text-lg font-semibold text-gray-900 dark:text-white">
-                    Set {currentSet.set_number} of {currentExercise.sets.length}
+                    Set {currentSet.set_number} of {currentExercise.numberOfSets}
                   </h4>
                   {currentSet.completed && (
                     <CheckCircle2 className="w-6 h-6 text-green-500" />
@@ -352,7 +371,6 @@ export const WorkoutTracker: React.FC = () => {
 
                 {isStrengthExercise && (
                   <div className="grid grid-cols-2 gap-4 mb-6">
-                    {/* Reps */}
                     <div>
                       <label className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-2">
                         Reps
@@ -372,7 +390,7 @@ export const WorkoutTracker: React.FC = () => {
                             className="w-full text-center text-2xl font-bold bg-transparent border-none focus:outline-none text-gray-900 dark:text-white"
                           />
                           <div className="text-xs text-gray-500 dark:text-gray-400">
-                            Target: {currentExercise.target_reps}
+                            Target: {currentExercise?.reps}
                           </div>
                         </div>
                         <button
@@ -384,7 +402,6 @@ export const WorkoutTracker: React.FC = () => {
                       </div>
                     </div>
 
-                    {/* Weight */}
                     <div>
                       <label className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-2">
                         Weight (kg)
@@ -405,7 +422,7 @@ export const WorkoutTracker: React.FC = () => {
                             className="w-full text-center text-2xl font-bold bg-transparent border-none focus:outline-none text-gray-900 dark:text-white"
                           />
                           <div className="text-xs text-gray-500 dark:text-gray-400">
-                            Target: {currentExercise.target_weight || 0}kg
+                            Target: {0}kg
                           </div>
                         </div>
                         <button
@@ -421,7 +438,6 @@ export const WorkoutTracker: React.FC = () => {
 
                 {isCardioExercise && (
                   <div className="grid grid-cols-2 gap-4 mb-6">
-                    {/* Duration */}
                     <div>
                       <label className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-2">
                         Duration (seconds)
@@ -434,12 +450,11 @@ export const WorkoutTracker: React.FC = () => {
                           className="w-full text-center text-2xl font-bold bg-transparent border border-gray-300 dark:border-gray-600 rounded-lg p-2 focus:outline-none focus:ring-2 focus:ring-emerald-500 text-gray-900 dark:text-white"
                         />
                         <div className="text-xs text-gray-500 dark:text-gray-400 mt-1">
-                          Target: {formatTime(currentExercise.target_duration || 0)}
+                          Target: {formatTime(currentExercise.duration || 0)}
                         </div>
                       </div>
                     </div>
 
-                    {/* Distance */}
                     <div>
                       <label className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-2">
                         Distance (m)
@@ -452,14 +467,14 @@ export const WorkoutTracker: React.FC = () => {
                           className="w-full text-center text-2xl font-bold bg-transparent border border-gray-300 dark:border-gray-600 rounded-lg p-2 focus:outline-none focus:ring-2 focus:ring-emerald-500 text-gray-900 dark:text-white"
                         />
                         <div className="text-xs text-gray-500 dark:text-gray-400 mt-1">
-                          Target: {currentExercise.target_distance || 0}m
+                          Target: {0}m
+                          {/* //TODO: ADD TARGETS TO INDIVIDUAL SETS */}
                         </div>
                       </div>
                     </div>
                   </div>
                 )}
 
-                {/* Complete Set Button */}
                 <button
                   onClick={completeSet}
                   disabled={currentSet.completed}
@@ -494,7 +509,7 @@ export const WorkoutTracker: React.FC = () => {
               </div>
 
               <div className="grid gap-2">
-                {currentExercise.sets.map((set, index) => (
+                {/* {currentExercise.sets.map((set, index) => (
                   <div
                     key={set.id}
                     className={`p-3 rounded-lg border-2 transition-all duration-200 ${index === currentSetIndex
@@ -535,7 +550,7 @@ export const WorkoutTracker: React.FC = () => {
                       </div>
                     </div>
                   </div>
-                ))}
+                ))} */}
               </div>
             </div>
           </div>
@@ -562,11 +577,11 @@ export const WorkoutTracker: React.FC = () => {
             <div className="flex items-center space-x-2 text-sm text-gray-600 dark:text-gray-300">
               <TrendingUp className="w-4 h-4" />
               <span>
-                {activeWorkout.workout.exercises.reduce((total, ex) =>
-                  total + ex.sets.filter(s => s.completed).length, 0
-                )} / {activeWorkout.workout.exercises.reduce((total, ex) =>
-                  total + ex.sets.length, 0
-                )} sets completed
+                {/* {activeWorkout?.workout?.reduce((total, ex) =>
+                  total + (ex.userSets?.filter(s => s.completed).length || 0), 0
+                )} / {activeWorkout?.workout?.reduce((total, ex) =>
+                  total + (ex.userSets?.length || 0), 0  )}
+                */} sets completed
               </span>
             </div>
           </div>

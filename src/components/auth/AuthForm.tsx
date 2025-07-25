@@ -7,7 +7,7 @@ interface AuthFormProps {
   mode: 'signin' | 'signup';
   onToggleMode: () => void;
   onForgotPassword: () => void;
-  onSuccess?: (user: any) => void;
+  onSuccess?: () => void;
   defaultEmail?: string;
   onError?: (error: string) => void;
   userData?: Partial<FitnessUser>;
@@ -55,7 +55,7 @@ export const AuthForm: React.FC<AuthFormProps> = ({
             setError(errorMessage);
           }
         } else if (onSuccess) {
-          onSuccess({ email: formData.email });
+          onSuccess();
         }
       } else {
         const { error } = await signIn(formData.email, formData.password);
@@ -67,11 +67,11 @@ export const AuthForm: React.FC<AuthFormProps> = ({
             setError(errorMessage);
           }
         } else if (onSuccess) {
-          onSuccess({ email: formData.email });
+          onSuccess();
         }
       }
     } catch (err) {
-      const errorMessage = 'An unexpected error occurred. Please try again.';
+      const errorMessage = (err as Error).message || 'An unexpected error occurred. ';
       if (onError) {
         onError(errorMessage);
       } else {

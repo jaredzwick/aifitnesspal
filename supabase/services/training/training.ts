@@ -77,7 +77,7 @@ const generateExercises = (
                     {
                         name: "Bodyweight Squats",
                         type: "strength" as const,
-                        sets: 3,
+                        numberOfSets: 3,
                         reps: 15,
                         restTime: 45,
                         instructions: [
@@ -94,7 +94,7 @@ const generateExercises = (
                     {
                         name: "Modified Push-ups",
                         type: "strength" as const,
-                        sets: 3,
+                        numberOfSets: 3,
                         reps: 12,
                         restTime: 45,
                         instructions: [
@@ -110,7 +110,7 @@ const generateExercises = (
                     {
                         name: "High Knees",
                         type: "cardio" as const,
-                        sets: 3,
+                        numberOfSets: 3,
                         duration: 30,
                         restTime: 30,
                         instructions: [
@@ -129,7 +129,7 @@ const generateExercises = (
                     {
                         name: "Arm Circles",
                         type: "cardio" as const,
-                        sets: 3,
+                        numberOfSets: 3,
                         duration: 30,
                         restTime: 30,
                         instructions: [
@@ -145,7 +145,7 @@ const generateExercises = (
                     {
                         name: "Wall Push-ups",
                         type: "strength" as const,
-                        sets: 3,
+                        numberOfSets: 3,
                         reps: 15,
                         restTime: 45,
                         instructions: [
@@ -161,7 +161,7 @@ const generateExercises = (
                     {
                         name: "Jumping Jacks",
                         type: "cardio" as const,
-                        sets: 3,
+                        numberOfSets: 3,
                         duration: 30,
                         restTime: 30,
                         instructions: [
@@ -180,7 +180,7 @@ const generateExercises = (
                     {
                         name: "Glute Bridges",
                         type: "strength" as const,
-                        sets: 3,
+                        numberOfSets: 3,
                         reps: 15,
                         restTime: 45,
                         instructions: [
@@ -196,7 +196,7 @@ const generateExercises = (
                     {
                         name: "Lunges",
                         type: "strength" as const,
-                        sets: 3,
+                        numberOfSets: 3,
                         reps: 12,
                         restTime: 45,
                         instructions: [
@@ -212,7 +212,7 @@ const generateExercises = (
                     {
                         name: "Calf Raises",
                         type: "strength" as const,
-                        sets: 3,
+                        numberOfSets: 3,
                         reps: 20,
                         restTime: 30,
                         instructions: [
@@ -231,7 +231,7 @@ const generateExercises = (
                     {
                         name: "Modified Plank",
                         type: "strength" as const,
-                        sets: 3,
+                        numberOfSets: 3,
                         duration: 30,
                         restTime: 45,
                         instructions: [
@@ -247,7 +247,7 @@ const generateExercises = (
                     {
                         name: "Mountain Climbers",
                         type: "cardio" as const,
-                        sets: 3,
+                        numberOfSets: 3,
                         duration: 30,
                         restTime: 45,
                         instructions: [
@@ -263,7 +263,7 @@ const generateExercises = (
                     {
                         name: "Dead Bug",
                         type: "strength" as const,
-                        sets: 3,
+                        numberOfSets: 3,
                         reps: 10,
                         restTime: 45,
                         instructions: [
@@ -282,7 +282,7 @@ const generateExercises = (
                     {
                         name: "Squat to Stand",
                         type: "strength" as const,
-                        sets: 3,
+                        numberOfSets: 3,
                         reps: 12,
                         restTime: 45,
                         instructions: [
@@ -298,7 +298,7 @@ const generateExercises = (
                     {
                         name: "Knee Push-ups",
                         type: "strength" as const,
-                        sets: 3,
+                        numberOfSets: 3,
                         reps: 10,
                         restTime: 45,
                         instructions: [
@@ -314,7 +314,7 @@ const generateExercises = (
                     {
                         name: "Standing Marches",
                         type: "cardio" as const,
-                        sets: 3,
+                        numberOfSets: 3,
                         duration: 30,
                         restTime: 30,
                         instructions: [
@@ -333,7 +333,7 @@ const generateExercises = (
                     {
                         name: "Gentle Stretching",
                         type: "flexibility" as const,
-                        sets: 1,
+                        numberOfSets: 1,
                         duration: 300,
                         restTime: 0,
                         instructions: [
@@ -349,7 +349,7 @@ const generateExercises = (
                     {
                         name: "Walking",
                         type: "cardio" as const,
-                        sets: 1,
+                        numberOfSets: 1,
                         duration: 900,
                         restTime: 0,
                         instructions: [
@@ -368,7 +368,7 @@ const generateExercises = (
                     {
                         name: "Cat-Cow Stretch",
                         type: "flexibility" as const,
-                        sets: 3,
+                        numberOfSets: 3,
                         reps: 10,
                         restTime: 30,
                         instructions: [
@@ -384,7 +384,7 @@ const generateExercises = (
                     {
                         name: "Shoulder Rolls",
                         type: "flexibility" as const,
-                        sets: 3,
+                        numberOfSets: 3,
                         reps: 10,
                         restTime: 30,
                         instructions: [
@@ -400,7 +400,7 @@ const generateExercises = (
                     {
                         name: "Hip Circles",
                         type: "flexibility" as const,
-                        sets: 3,
+                        numberOfSets: 3,
                         reps: 10,
                         restTime: 30,
                         instructions: [
@@ -421,7 +421,7 @@ const generateExercises = (
                     {
                         name: "Jump Squats",
                         type: "strength" as const,
-                        sets: 4,
+                        numberOfSets: 4,
                         reps: 12,
                         restTime: 60,
                         instructions: [
@@ -437,7 +437,7 @@ const generateExercises = (
                     {
                         name: "Burpees",
                         type: "strength" as const,
-                        sets: 3,
+                        numberOfSets: 3,
                         reps: 8,
                         restTime: 60,
                         instructions: [
@@ -454,7 +454,7 @@ const generateExercises = (
                     {
                         name: "High Intensity Intervals",
                         type: "cardio" as const,
-                        sets: 4,
+                        numberOfSets: 4,
                         duration: 45,
                         restTime: 45,
                         instructions: [
@@ -473,7 +473,7 @@ const generateExercises = (
                     {
                         name: "Push-up Variations",
                         type: "strength" as const,
-                        sets: 4,
+                        numberOfSets: 4,
                         reps: 10,
                         restTime: 60,
                         instructions: [
@@ -489,7 +489,7 @@ const generateExercises = (
                     {
                         name: "Pike Push-ups",
                         type: "strength" as const,
-                        sets: 3,
+                        numberOfSets: 3,
                         reps: 8,
                         restTime: 60,
                         instructions: [
@@ -505,7 +505,7 @@ const generateExercises = (
                     {
                         name: "Battle Rope Simulation",
                         type: "cardio" as const,
-                        sets: 4,
+                        numberOfSets: 4,
                         duration: 30,
                         restTime: 45,
                         instructions: [
@@ -524,7 +524,7 @@ const generateExercises = (
                     {
                         name: "Single Leg Squats",
                         type: "strength" as const,
-                        sets: 3,
+                        numberOfSets: 3,
                         reps: 8,
                         restTime: 75,
                         instructions: [
@@ -540,7 +540,7 @@ const generateExercises = (
                     {
                         name: "Plyometric Lunges",
                         type: "strength" as const,
-                        sets: 3,
+                        numberOfSets: 3,
                         reps: 12,
                         restTime: 60,
                         instructions: [
@@ -556,7 +556,7 @@ const generateExercises = (
                     {
                         name: "Box Jumps (or Step-ups)",
                         type: "strength" as const,
-                        sets: 4,
+                        numberOfSets: 4,
                         reps: 10,
                         restTime: 75,
                         instructions: [
@@ -575,7 +575,7 @@ const generateExercises = (
                     {
                         name: "Plank to Push-up",
                         type: "strength" as const,
-                        sets: 3,
+                        numberOfSets: 3,
                         reps: 10,
                         restTime: 60,
                         instructions: [
@@ -591,7 +591,7 @@ const generateExercises = (
                     {
                         name: "Russian Twists",
                         type: "strength" as const,
-                        sets: 3,
+                        numberOfSets: 3,
                         reps: 20,
                         restTime: 45,
                         instructions: [
@@ -607,7 +607,7 @@ const generateExercises = (
                     {
                         name: "Bicycle Crunches",
                         type: "strength" as const,
-                        sets: 3,
+                        numberOfSets: 3,
                         reps: 20,
                         restTime: 45,
                         instructions: [
@@ -626,7 +626,7 @@ const generateExercises = (
                     {
                         name: "Squat Thrusts",
                         type: "strength" as const,
-                        sets: 4,
+                        numberOfSets: 4,
                         reps: 12,
                         restTime: 45,
                         instructions: [
@@ -642,7 +642,7 @@ const generateExercises = (
                     {
                         name: "Dips (Chair/Bench)",
                         type: "strength" as const,
-                        sets: 3,
+                        numberOfSets: 3,
                         reps: 10,
                         restTime: 60,
                         instructions: [
@@ -658,7 +658,7 @@ const generateExercises = (
                     {
                         name: "Sprint Intervals",
                         type: "cardio" as const,
-                        sets: 5,
+                        numberOfSets: 5,
                         duration: 30,
                         restTime: 60,
                         instructions: [
@@ -677,7 +677,7 @@ const generateExercises = (
                     {
                         name: "Dynamic Stretching",
                         type: "flexibility" as const,
-                        sets: 1,
+                        numberOfSets: 1,
                         duration: 600,
                         restTime: 0,
                         instructions: [
@@ -693,7 +693,7 @@ const generateExercises = (
                     {
                         name: "Light Cardio",
                         type: "cardio" as const,
-                        sets: 1,
+                        numberOfSets: 1,
                         duration: 1200,
                         restTime: 0,
                         instructions: [
@@ -712,7 +712,7 @@ const generateExercises = (
                     {
                         name: "Yoga Flow",
                         type: "flexibility" as const,
-                        sets: 3,
+                        numberOfSets: 3,
                         duration: 120,
                         restTime: 30,
                         instructions: [
@@ -728,7 +728,7 @@ const generateExercises = (
                     {
                         name: "Core Stability",
                         type: "strength" as const,
-                        sets: 3,
+                        numberOfSets: 3,
                         reps: 15,
                         restTime: 45,
                         instructions: [
@@ -749,7 +749,7 @@ const generateExercises = (
                     {
                         name: "Weighted Jump Squats",
                         type: "strength" as const,
-                        sets: 5,
+                        numberOfSets: 5,
                         reps: 10,
                         restTime: 90,
                         instructions: [
@@ -766,7 +766,7 @@ const generateExercises = (
                     {
                         name: "Burpee Box Jumps",
                         type: "strength" as const,
-                        sets: 4,
+                        numberOfSets: 4,
                         reps: 8,
                         restTime: 90,
                         instructions: [
@@ -783,7 +783,7 @@ const generateExercises = (
                     {
                         name: "Tabata Intervals",
                         type: "cardio" as const,
-                        sets: 8,
+                        numberOfSets: 8,
                         duration: 20,
                         restTime: 10,
                         instructions: [
@@ -802,7 +802,7 @@ const generateExercises = (
                     {
                         name: "Clapping Push-ups",
                         type: "strength" as const,
-                        sets: 4,
+                        numberOfSets: 4,
                         reps: 8,
                         restTime: 90,
                         instructions: [
@@ -819,7 +819,7 @@ const generateExercises = (
                     {
                         name: "Handstand Push-ups",
                         type: "strength" as const,
-                        sets: 3,
+                        numberOfSets: 3,
                         reps: 5,
                         restTime: 120,
                         instructions: [
@@ -835,7 +835,7 @@ const generateExercises = (
                     {
                         name: "Battle Rope HIIT",
                         type: "cardio" as const,
-                        sets: 6,
+                        numberOfSets: 6,
                         duration: 30,
                         restTime: 30,
                         instructions: [
@@ -854,7 +854,7 @@ const generateExercises = (
                     {
                         name: "Pistol Squats",
                         type: "strength" as const,
-                        sets: 4,
+                        numberOfSets: 4,
                         reps: 6,
                         restTime: 120,
                         instructions: [
@@ -871,7 +871,7 @@ const generateExercises = (
                     {
                         name: "Depth Jumps",
                         type: "strength" as const,
-                        sets: 4,
+                        numberOfSets: 4,
                         reps: 6,
                         restTime: 120,
                         instructions: [
@@ -888,7 +888,7 @@ const generateExercises = (
                     {
                         name: "Single Leg Bounds",
                         type: "strength" as const,
-                        sets: 4,
+                        numberOfSets: 4,
                         reps: 10,
                         restTime: 90,
                         instructions: [
@@ -908,7 +908,7 @@ const generateExercises = (
                     {
                         name: "Weighted Russian Twists",
                         type: "strength" as const,
-                        sets: 4,
+                        numberOfSets: 4,
                         reps: 20,
                         restTime: 60,
                         instructions: [
@@ -925,7 +925,7 @@ const generateExercises = (
                     {
                         name: "Dragon Flags",
                         type: "strength" as const,
-                        sets: 3,
+                        numberOfSets: 3,
                         reps: 8,
                         restTime: 120,
                         instructions: [
@@ -942,7 +942,7 @@ const generateExercises = (
                     {
                         name: "Plank Up-Downs",
                         type: "strength" as const,
-                        sets: 4,
+                        numberOfSets: 4,
                         reps: 15,
                         restTime: 60,
                         instructions: [
@@ -962,7 +962,7 @@ const generateExercises = (
                     {
                         name: "Thrusters",
                         type: "strength" as const,
-                        sets: 5,
+                        numberOfSets: 5,
                         reps: 12,
                         restTime: 60,
                         instructions: [
@@ -979,7 +979,7 @@ const generateExercises = (
                     {
                         name: "Man Makers",
                         type: "strength" as const,
-                        sets: 4,
+                        numberOfSets: 4,
                         reps: 8,
                         restTime: 90,
                         instructions: [
@@ -997,7 +997,7 @@ const generateExercises = (
                     {
                         name: "Kettlebell Swings",
                         type: "cardio" as const,
-                        sets: 5,
+                        numberOfSets: 5,
                         reps: 20,
                         restTime: 45,
                         instructions: [
@@ -1017,7 +1017,7 @@ const generateExercises = (
                     {
                         name: "Advanced Mobility Flow",
                         type: "flexibility" as const,
-                        sets: 1,
+                        numberOfSets: 1,
                         duration: 900,
                         restTime: 0,
                         instructions: [
@@ -1033,7 +1033,7 @@ const generateExercises = (
                     {
                         name: "Recovery Cardio",
                         type: "cardio" as const,
-                        sets: 1,
+                        numberOfSets: 1,
                         duration: 1800,
                         restTime: 0,
                         instructions: [
@@ -1052,7 +1052,7 @@ const generateExercises = (
                     {
                         name: "Power Yoga Flow",
                         type: "flexibility" as const,
-                        sets: 4,
+                        numberOfSets: 4,
                         duration: 180,
                         restTime: 60,
                         instructions: [
@@ -1069,7 +1069,7 @@ const generateExercises = (
                     {
                         name: "Explosive Core Finisher",
                         type: "strength" as const,
-                        sets: 3,
+                        numberOfSets: 3,
                         reps: 12,
                         restTime: 60,
                         instructions: [
@@ -1093,7 +1093,7 @@ const generateExercises = (
                     {
                         name: "Push-ups",
                         type: "strength" as const,
-                        sets: 3,
+                        numberOfSets: 3,
                         reps: 8,
                         restTime: 90,
                         instructions: [
@@ -1110,7 +1110,7 @@ const generateExercises = (
                     {
                         name: "Pike Push-ups",
                         type: "strength" as const,
-                        sets: 3,
+                        numberOfSets: 3,
                         reps: 6,
                         restTime: 90,
                         instructions: [
@@ -1127,7 +1127,7 @@ const generateExercises = (
                     {
                         name: "Tricep Dips",
                         type: "strength" as const,
-                        sets: 3,
+                        numberOfSets: 3,
                         reps: 8,
                         restTime: 90,
                         instructions: [
@@ -1146,7 +1146,7 @@ const generateExercises = (
                     {
                         name: "Bodyweight Squats",
                         type: "strength" as const,
-                        sets: 3,
+                        numberOfSets: 3,
                         reps: 12,
                         restTime: 90,
                         instructions: [
@@ -1163,7 +1163,7 @@ const generateExercises = (
                     {
                         name: "Lunges",
                         type: "strength" as const,
-                        sets: 3,
+                        numberOfSets: 3,
                         reps: 10,
                         restTime: 90,
                         instructions: [
@@ -1180,7 +1180,7 @@ const generateExercises = (
                     {
                         name: "Glute Bridges",
                         type: "strength" as const,
-                        sets: 3,
+                        numberOfSets: 3,
                         reps: 15,
                         restTime: 90,
                         instructions: [
@@ -1200,7 +1200,7 @@ const generateExercises = (
                     {
                         name: "Inverted Rows",
                         type: "strength" as const,
-                        sets: 3,
+                        numberOfSets: 3,
                         reps: 8,
                         restTime: 90,
                         instructions: [
@@ -1217,7 +1217,7 @@ const generateExercises = (
                     {
                         name: "Superman",
                         type: "strength" as const,
-                        sets: 3,
+                        numberOfSets: 3,
                         reps: 12,
                         restTime: 90,
                         instructions: [
@@ -1234,7 +1234,7 @@ const generateExercises = (
                     {
                         name: "Reverse Fly",
                         type: "strength" as const,
-                        sets: 3,
+                        numberOfSets: 3,
                         reps: 12,
                         restTime: 90,
                         instructions: [
@@ -1254,7 +1254,7 @@ const generateExercises = (
                     {
                         name: "Squat to Press",
                         type: "strength" as const,
-                        sets: 3,
+                        numberOfSets: 3,
                         reps: 10,
                         restTime: 90,
                         instructions: [
@@ -1271,7 +1271,7 @@ const generateExercises = (
                     {
                         name: "Modified Burpee",
                         type: "strength" as const,
-                        sets: 3,
+                        numberOfSets: 3,
                         reps: 6,
                         restTime: 90,
                         instructions: [
@@ -1288,7 +1288,7 @@ const generateExercises = (
                     {
                         name: "Plank Hold",
                         type: "strength" as const,
-                        sets: 3,
+                        numberOfSets: 3,
                         duration: 45,
                         restTime: 90,
                         instructions: [
@@ -1308,7 +1308,7 @@ const generateExercises = (
                     {
                         name: "Wall Handstand",
                         type: "strength" as const,
-                        sets: 3,
+                        numberOfSets: 3,
                         duration: 30,
                         restTime: 90,
                         instructions: [
@@ -1325,7 +1325,7 @@ const generateExercises = (
                     {
                         name: "Arm Circles",
                         type: "strength" as const,
-                        sets: 3,
+                        numberOfSets: 3,
                         reps: 15,
                         restTime: 60,
                         instructions: [
@@ -1342,7 +1342,7 @@ const generateExercises = (
                     {
                         name: "Isometric Bicep Hold",
                         type: "strength" as const,
-                        sets: 3,
+                        numberOfSets: 3,
                         duration: 30,
                         restTime: 90,
                         instructions: [
@@ -1362,7 +1362,7 @@ const generateExercises = (
                     {
                         name: "Gentle Movement Flow",
                         type: "flexibility" as const,
-                        sets: 1,
+                        numberOfSets: 1,
                         duration: 600,
                         restTime: 0,
                         instructions: [
@@ -1380,7 +1380,7 @@ const generateExercises = (
                     {
                         name: "Recovery Walk",
                         type: "cardio" as const,
-                        sets: 1,
+                        numberOfSets: 1,
                         duration: 900,
                         restTime: 0,
                         instructions: [
@@ -1400,7 +1400,7 @@ const generateExercises = (
                     {
                         name: "Basic Yoga Flow",
                         type: "flexibility" as const,
-                        sets: 3,
+                        numberOfSets: 3,
                         duration: 120,
                         restTime: 30,
                         instructions: [
@@ -1417,7 +1417,7 @@ const generateExercises = (
                     {
                         name: "Dead Bug",
                         type: "strength" as const,
-                        sets: 3,
+                        numberOfSets: 3,
                         reps: 10,
                         restTime: 60,
                         instructions: [
@@ -1434,7 +1434,7 @@ const generateExercises = (
                     {
                         name: "Cat-Cow Stretch",
                         type: "flexibility" as const,
-                        sets: 3,
+                        numberOfSets: 3,
                         reps: 10,
                         restTime: 30,
                         instructions: [
@@ -1456,7 +1456,7 @@ const generateExercises = (
                     {
                         name: "Dumbbell Bench Press",
                         type: "strength" as const,
-                        sets: 4,
+                        numberOfSets: 4,
                         reps: 8,
                         restTime: 120,
                         instructions: [
@@ -1473,7 +1473,7 @@ const generateExercises = (
                     {
                         name: "Overhead Dumbbell Press",
                         type: "strength" as const,
-                        sets: 4,
+                        numberOfSets: 4,
                         reps: 10,
                         restTime: 90,
                         instructions: [
@@ -1490,7 +1490,7 @@ const generateExercises = (
                     {
                         name: "Dumbbell Tricep Extensions",
                         type: "strength" as const,
-                        sets: 3,
+                        numberOfSets: 3,
                         reps: 12,
                         restTime: 90,
                         instructions: [
@@ -1508,7 +1508,7 @@ const generateExercises = (
                     {
                         name: "Dumbbell Flyes",
                         type: "strength" as const,
-                        sets: 3,
+                        numberOfSets: 3,
                         reps: 12,
                         restTime: 90,
                         instructions: [
@@ -1528,7 +1528,7 @@ const generateExercises = (
                     {
                         name: "Barbell Squats",
                         type: "strength" as const,
-                        sets: 4,
+                        numberOfSets: 4,
                         reps: 8,
                         restTime: 150,
                         instructions: [
@@ -1545,7 +1545,7 @@ const generateExercises = (
                     {
                         name: "Romanian Deadlifts",
                         type: "strength" as const,
-                        sets: 4,
+                        numberOfSets: 4,
                         reps: 10,
                         restTime: 120,
                         instructions: [
@@ -1562,7 +1562,7 @@ const generateExercises = (
                     {
                         name: "Dumbbell Lunges",
                         type: "strength" as const,
-                        sets: 3,
+                        numberOfSets: 3,
                         reps: 12,
                         restTime: 90,
                         instructions: [
@@ -1579,7 +1579,7 @@ const generateExercises = (
                     {
                         name: "Calf Raises",
                         type: "strength" as const,
-                        sets: 4,
+                        numberOfSets: 4,
                         reps: 15,
                         restTime: 60,
                         instructions: [
@@ -1599,7 +1599,7 @@ const generateExercises = (
                     {
                         name: "Barbell Rows",
                         type: "strength" as const,
-                        sets: 4,
+                        numberOfSets: 4,
                         reps: 8,
                         restTime: 120,
                         instructions: [
@@ -1616,7 +1616,7 @@ const generateExercises = (
                     {
                         name: "Lat Pulldowns",
                         type: "strength" as const,
-                        sets: 4,
+                        numberOfSets: 4,
                         reps: 10,
                         restTime: 90,
                         instructions: [
@@ -1633,7 +1633,7 @@ const generateExercises = (
                     {
                         name: "Dumbbell Bicep Curls",
                         type: "strength" as const,
-                        sets: 3,
+                        numberOfSets: 3,
                         reps: 12,
                         restTime: 90,
                         instructions: [
@@ -1650,7 +1650,7 @@ const generateExercises = (
                     {
                         name: "Face Pulls",
                         type: "strength" as const,
-                        sets: 3,
+                        numberOfSets: 3,
                         reps: 15,
                         restTime: 60,
                         instructions: [
@@ -1670,7 +1670,7 @@ const generateExercises = (
                     {
                         name: "Dumbbell Thrusters",
                         type: "strength" as const,
-                        sets: 4,
+                        numberOfSets: 4,
                         reps: 10,
                         restTime: 120,
                         instructions: [
@@ -1687,7 +1687,7 @@ const generateExercises = (
                     {
                         name: "Renegade Rows",
                         type: "strength" as const,
-                        sets: 3,
+                        numberOfSets: 3,
                         reps: 8,
                         restTime: 120,
                         instructions: [
@@ -1704,7 +1704,7 @@ const generateExercises = (
                     {
                         name: "Dumbbell Step-ups",
                         type: "strength" as const,
-                        sets: 3,
+                        numberOfSets: 3,
                         reps: 12,
                         restTime: 90,
                         instructions: [
@@ -1724,7 +1724,7 @@ const generateExercises = (
                     {
                         name: "Barbell Curls",
                         type: "strength" as const,
-                        sets: 4,
+                        numberOfSets: 4,
                         reps: 10,
                         restTime: 90,
                         instructions: [
@@ -1741,7 +1741,7 @@ const generateExercises = (
                     {
                         name: "Close-Grip Bench Press",
                         type: "strength" as const,
-                        sets: 4,
+                        numberOfSets: 4,
                         reps: 8,
                         restTime: 120,
                         instructions: [
@@ -1758,7 +1758,7 @@ const generateExercises = (
                     {
                         name: "Lateral Raises",
                         type: "strength" as const,
-                        sets: 3,
+                        numberOfSets: 3,
                         reps: 12,
                         restTime: 60,
                         instructions: [
@@ -1775,7 +1775,7 @@ const generateExercises = (
                     {
                         name: "Dips",
                         type: "strength" as const,
-                        sets: 3,
+                        numberOfSets: 3,
                         reps: 10,
                         restTime: 90,
                         instructions: [
@@ -1795,7 +1795,7 @@ const generateExercises = (
                     {
                         name: "Deadlifts",
                         type: "strength" as const,
-                        sets: 4,
+                        numberOfSets: 4,
                         reps: 6,
                         restTime: 150,
                         instructions: [
@@ -1812,7 +1812,7 @@ const generateExercises = (
                     {
                         name: "Dumbbell Clean and Press",
                         type: "strength" as const,
-                        sets: 3,
+                        numberOfSets: 3,
                         reps: 8,
                         restTime: 120,
                         instructions: [
@@ -1829,7 +1829,7 @@ const generateExercises = (
                     {
                         name: "Farmer's Walks",
                         type: "strength" as const,
-                        sets: 3,
+                        numberOfSets: 3,
                         duration: 45,
                         restTime: 90,
                         instructions: [
@@ -1849,7 +1849,7 @@ const generateExercises = (
                     {
                         name: "Light Dumbbell Complex",
                         type: "strength" as const,
-                        sets: 3,
+                        numberOfSets: 3,
                         reps: 10,
                         restTime: 60,
                         instructions: [
@@ -1866,7 +1866,7 @@ const generateExercises = (
                     {
                         name: "Resistance Band Stretches",
                         type: "flexibility" as const,
-                        sets: 2,
+                        numberOfSets: 2,
                         duration: 300,
                         restTime: 60,
                         instructions: [
@@ -1883,7 +1883,7 @@ const generateExercises = (
                     {
                         name: "Foam Rolling",
                         type: "flexibility" as const,
-                        sets: 1,
+                        numberOfSets: 1,
                         duration: 600,
                         restTime: 0,
                         instructions: [
@@ -1905,7 +1905,7 @@ const generateExercises = (
                     {
                         name: "Barbell Bench Press",
                         type: "strength" as const,
-                        sets: 5,
+                        numberOfSets: 5,
                         reps: 5,
                         restTime: 180,
                         instructions: [
@@ -1922,7 +1922,7 @@ const generateExercises = (
                     {
                         name: "Weighted Dips",
                         type: "strength" as const,
-                        sets: 4,
+                        numberOfSets: 4,
                         reps: 6,
                         restTime: 150,
                         instructions: [
@@ -1939,7 +1939,7 @@ const generateExercises = (
                     {
                         name: "Overhead Barbell Press",
                         type: "strength" as const,
-                        sets: 4,
+                        numberOfSets: 4,
                         reps: 6,
                         restTime: 150,
                         instructions: [
@@ -1956,7 +1956,7 @@ const generateExercises = (
                     {
                         name: "Close-Grip Barbell Press",
                         type: "strength" as const,
-                        sets: 4,
+                        numberOfSets: 4,
                         reps: 8,
                         restTime: 120,
                         instructions: [
@@ -1973,7 +1973,7 @@ const generateExercises = (
                     {
                         name: "Heavy Dumbbell Flyes",
                         type: "strength" as const,
-                        sets: 3,
+                        numberOfSets: 3,
                         reps: 10,
                         restTime: 90,
                         instructions: [
@@ -1993,7 +1993,7 @@ const generateExercises = (
                     {
                         name: "Weighted Pull-ups",
                         type: "strength" as const,
-                        sets: 5,
+                        numberOfSets: 5,
                         reps: 5,
                         restTime: 180,
                         instructions: [
@@ -2010,7 +2010,7 @@ const generateExercises = (
                     {
                         name: "Barbell Rows (Pendlay)",
                         type: "strength" as const,
-                        sets: 4,
+                        numberOfSets: 4,
                         reps: 6,
                         restTime: 150,
                         instructions: [
@@ -2027,7 +2027,7 @@ const generateExercises = (
                     {
                         name: "Heavy Dumbbell Rows",
                         type: "strength" as const,
-                        sets: 4,
+                        numberOfSets: 4,
                         reps: 8,
                         restTime: 120,
                         instructions: [
@@ -2044,7 +2044,7 @@ const generateExercises = (
                     {
                         name: "Barbell Curls (Heavy)",
                         type: "strength" as const,
-                        sets: 4,
+                        numberOfSets: 4,
                         reps: 6,
                         restTime: 120,
                         instructions: [
@@ -2061,7 +2061,7 @@ const generateExercises = (
                     {
                         name: "Shrugs (Barbell)",
                         type: "strength" as const,
-                        sets: 3,
+                        numberOfSets: 3,
                         reps: 12,
                         restTime: 90,
                         instructions: [
@@ -2081,7 +2081,7 @@ const generateExercises = (
                     {
                         name: "Barbell Back Squats (Heavy)",
                         type: "strength" as const,
-                        sets: 5,
+                        numberOfSets: 5,
                         reps: 5,
                         restTime: 180,
                         instructions: [
@@ -2098,7 +2098,7 @@ const generateExercises = (
                     {
                         name: "Conventional Deadlifts",
                         type: "strength" as const,
-                        sets: 4,
+                        numberOfSets: 4,
                         reps: 5,
                         restTime: 180,
                         instructions: [
@@ -2115,7 +2115,7 @@ const generateExercises = (
                     {
                         name: "Bulgarian Split Squats (Weighted)",
                         type: "strength" as const,
-                        sets: 4,
+                        numberOfSets: 4,
                         reps: 8,
                         restTime: 120,
                         instructions: [
@@ -2132,7 +2132,7 @@ const generateExercises = (
                     {
                         name: "Walking Lunges (Heavy)",
                         type: "strength" as const,
-                        sets: 3,
+                        numberOfSets: 3,
                         reps: 12,
                         restTime: 120,
                         instructions: [
@@ -2149,7 +2149,7 @@ const generateExercises = (
                     {
                         name: "Barbell Hip Thrusts",
                         type: "strength" as const,
-                        sets: 4,
+                        numberOfSets: 4,
                         reps: 10,
                         restTime: 90,
                         instructions: [
@@ -2169,7 +2169,7 @@ const generateExercises = (
                     {
                         name: "Incline Barbell Press",
                         type: "strength" as const,
-                        sets: 4,
+                        numberOfSets: 4,
                         reps: 8,
                         restTime: 150,
                         instructions: [
@@ -2186,7 +2186,7 @@ const generateExercises = (
                     {
                         name: "T-Bar Rows",
                         type: "strength" as const,
-                        sets: 4,
+                        numberOfSets: 4,
                         reps: 8,
                         restTime: 120,
                         instructions: [
@@ -2203,7 +2203,7 @@ const generateExercises = (
                     {
                         name: "Dumbbell Shoulder Press (Heavy)",
                         type: "strength" as const,
-                        sets: 4,
+                        numberOfSets: 4,
                         reps: 8,
                         restTime: 120,
                         instructions: [
@@ -2220,7 +2220,7 @@ const generateExercises = (
                     {
                         name: "Weighted Tricep Dips",
                         type: "strength" as const,
-                        sets: 3,
+                        numberOfSets: 3,
                         reps: 10,
                         restTime: 90,
                         instructions: [
@@ -2240,7 +2240,7 @@ const generateExercises = (
                     {
                         name: "Power Cleans",
                         type: "strength" as const,
-                        sets: 5,
+                        numberOfSets: 5,
                         reps: 3,
                         restTime: 180,
                         instructions: [
@@ -2257,7 +2257,7 @@ const generateExercises = (
                     {
                         name: "Front Squats (Heavy)",
                         type: "strength" as const,
-                        sets: 4,
+                        numberOfSets: 4,
                         reps: 6,
                         restTime: 150,
                         instructions: [
@@ -2274,7 +2274,7 @@ const generateExercises = (
                     {
                         name: "Push Press",
                         type: "strength" as const,
-                        sets: 4,
+                        numberOfSets: 4,
                         reps: 5,
                         restTime: 150,
                         instructions: [
@@ -2291,7 +2291,7 @@ const generateExercises = (
                     {
                         name: "Barbell Rows (Explosive)",
                         type: "strength" as const,
-                        sets: 4,
+                        numberOfSets: 4,
                         reps: 6,
                         restTime: 120,
                         instructions: [
@@ -2308,7 +2308,7 @@ const generateExercises = (
                     {
                         name: "Farmer's Walk (Heavy)",
                         type: "strength" as const,
-                        sets: 3,
+                        numberOfSets: 3,
                         duration: 60,
                         restTime: 120,
                         instructions: [
@@ -2328,7 +2328,7 @@ const generateExercises = (
                     {
                         name: "Weighted Pistol Squats",
                         type: "strength" as const,
-                        sets: 4,
+                        numberOfSets: 4,
                         reps: 5,
                         restTime: 150,
                         instructions: [
@@ -2345,7 +2345,7 @@ const generateExercises = (
                     {
                         name: "Muscle-ups (Weighted)",
                         type: "strength" as const,
-                        sets: 4,
+                        numberOfSets: 4,
                         reps: 3,
                         restTime: 180,
                         instructions: [
@@ -2362,7 +2362,7 @@ const generateExercises = (
                     {
                         name: "Handstand Push-ups (Weighted)",
                         type: "strength" as const,
-                        sets: 4,
+                        numberOfSets: 4,
                         reps: 5,
                         restTime: 180,
                         instructions: [
@@ -2379,7 +2379,7 @@ const generateExercises = (
                     {
                         name: "Weighted Chin-ups",
                         type: "strength" as const,
-                        sets: 4,
+                        numberOfSets: 4,
                         reps: 6,
                         restTime: 150,
                         instructions: [
@@ -2399,7 +2399,7 @@ const generateExercises = (
                     {
                         name: "Light Barbell Complex",
                         type: "strength" as const,
-                        sets: 3,
+                        numberOfSets: 3,
                         reps: 8,
                         restTime: 90,
                         instructions: [
@@ -2416,7 +2416,7 @@ const generateExercises = (
                     {
                         name: "Dumbbell Accessory Circuit",
                         type: "strength" as const,
-                        sets: 3,
+                        numberOfSets: 3,
                         reps: 12,
                         restTime: 60,
                         instructions: [
@@ -2433,7 +2433,7 @@ const generateExercises = (
                     {
                         name: "Advanced Stretching",
                         type: "flexibility" as const,
-                        sets: 2,
+                        numberOfSets: 2,
                         duration: 600,
                         restTime: 60,
                         instructions: [
@@ -2450,7 +2450,7 @@ const generateExercises = (
                     {
                         name: "Mobility and Activation",
                         type: "flexibility" as const,
-                        sets: 1,
+                        numberOfSets: 1,
                         duration: 900,
                         restTime: 0,
                         instructions: [

@@ -102,7 +102,6 @@ export const TrainingRegimen: React.FC<{ plan: PersonalizedPlan }> = ({ plan }) 
                         {plan.trainingRegimen.map((dayPlan, dayIndex) => {
                             const isExpanded = expandedDays.has(dayIndex);
                             const isRestDay = !dayPlan.workout || dayPlan.workout.length === 0;
-
                             return (
                                 <div
                                     key={dayIndex}
@@ -132,10 +131,6 @@ export const TrainingRegimen: React.FC<{ plan: PersonalizedPlan }> = ({ plan }) 
                                                         ) : (
                                                             <>
                                                                 <span>{dayPlan.workout?.length} exercises</span>
-                                                                <span>•</span>
-                                                                <span>
-                                                                    ~{dayPlan.workout?.reduce((total, ex) => total + (ex.duration || (ex.sets || 1) * 45), 0) || 0} min
-                                                                </span>
                                                             </>
                                                         )}
                                                     </div>
@@ -173,7 +168,7 @@ export const TrainingRegimen: React.FC<{ plan: PersonalizedPlan }> = ({ plan }) 
                                                                     </h4>
                                                                     <div className="flex items-center space-x-4 text-sm text-gray-600 dark:text-gray-300 mb-2">
                                                                         <span className="capitalize">{exercise.type}</span>
-                                                                        {exercise.sets && <span>{exercise.sets} sets</span>}
+                                                                        {exercise.numberOfSets && <span>{exercise.numberOfSets} sets</span>}
                                                                         {exercise.reps && <span>{exercise.reps} reps</span>}
                                                                         {exercise.duration && <span>{formatDuration(exercise.duration)}</span>}
                                                                         <span>{exercise.restTime}s rest</span>
