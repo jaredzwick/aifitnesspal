@@ -86,18 +86,6 @@ export type Exercise = {
   exercise_type: string;
 };
 
-export type UserWorkout = {
-  id: string;
-  user_id: string;
-  workout_id: string;
-  scheduled_for?: string;
-  started_at?: string;
-  completed_at?: string;
-  status: "scheduled" | "in_progress" | "completed" | "skipped";
-  notes?: string;
-  name: string;
-};
-
 export type WorkoutFilters = {
   type?: string;
   difficulty?: string;

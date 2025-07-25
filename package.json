@@ -10,7 +10,7 @@
     "preview": "vite preview",
     "test": "deno test supabase/functions/tests/*test.ts --allow-env --allow-net --allow-read --unstable-sloppy-imports",
     "test:watch": "deno test supabase/functions/tests/*test.ts --allow-env --allow-net --allow-read --unstable-sloppy-imports --watch",
-    "generate-types": "supabase gen types typescript --project-id hdynkgrvfdeqsltmpncd --schema public > supabase/database.types.ts"
+    "generate-types": "supabase gen types typescript --project-id hdynkgrvfdeqsltmpncd --schema public > supabase/database/supabase.ts"
   },
   "dependencies": {
     "@capacitor/android": "^7.4.2",

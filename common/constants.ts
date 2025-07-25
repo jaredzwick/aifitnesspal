@@ -8,3 +8,10 @@ export enum FITNESS_EXPERIENCE_LEVELS {
     INTERMEDIATE = "intermediate",
     ADVANCED = "advanced",
 }
+
+export enum WORKOUT_STATUS {
+    SCHEDULED = "scheduled",
+    IN_PROGRESS = "in_progress",
+    COMPLETED = "completed",
+    SKIPPED = "skipped",
+}

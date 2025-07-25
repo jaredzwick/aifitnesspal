@@ -15,12 +15,12 @@ import {
 import { ButtonSpinner } from '../ui/LoadingSpinner';
 import { ErrorMessage } from '../ui/ErrorMessage';
 import { ErrorBoundary } from '../ui/ErrorBoundary';
-import { WorkoutSet, PersonalizedPlan, WeeklyWorkoutPlan, UserWorkout } from '../../../common';
+import { WorkoutSet, PersonalizedPlan, WeeklyWorkoutPlan } from '../../../common';
 import { useMutation } from '@tanstack/react-query';
 import { workoutService } from '../../services/workoutService';
 
 
-export const WorkoutTracker: React.FC<{ plan: PersonalizedPlan, inProgressWorkout?: UserWorkout }> = ({ plan, inProgressWorkout }) => {
+export const WorkoutTracker: React.FC<{ plan: PersonalizedPlan, inProgressWorkout?: WeeklyWorkoutPlan }> = ({ plan, inProgressWorkout }) => {
 
   // //TODO: IF IN PROGRESS WORKOUT, SET ACTIVE WORKOUT TO IN PROGRESS WORKOUT, MUST PERSIST IT ON START WORKOUT
   const [activeWorkout, setActiveWorkout] = useState<WeeklyWorkoutPlan | null>(null);
@@ -30,6 +30,16 @@ export const WorkoutTracker: React.FC<{ plan: PersonalizedPlan, inProgressWorkou
   const [restTimer, setRestTimer] = useState(0);
   const [workoutTimer, setWorkoutTimer] = useState(0);
   const [showWorkoutSelector, setShowWorkoutSelector] = useState(false);
+
+
+  // Set activeWorkout when inProgressWorkout changes
+  useEffect(() => {
+    console.log('inProgressWorkout', inProgressWorkout)
+    if (inProgressWorkout) {
+      setActiveWorkout(inProgressWorkout);
+    }
+  }, [inProgressWorkout]);
+
 
   // Get available workouts
   let workoutsError: Error | null = null;
@@ -48,8 +58,9 @@ export const WorkoutTracker: React.FC<{ plan: PersonalizedPlan, inProgressWorkou
     const today = new Date().toLocaleDateString('en-US', { weekday: 'long' }).toLowerCase();
     console.log(today)
     if (plan.trainingRegimen!.find(workout => workout.day === today)) {
-      startWorkoutMutation.mutate(today);
-      setActiveWorkout(plan.trainingRegimen!.find(workout => workout.day === today)!);
+      const activeWorkout = plan.trainingRegimen!.find(workout => workout.day === today)!
+      startWorkoutMutation.mutate({ day: today, workout: activeWorkout });
+      setActiveWorkout(activeWorkout);
     }
   };
 

@@ -1,17 +1,27 @@
-import { UserWorkout } from "../../common/types";
+import { WeeklyWorkoutPlan } from "../../common/types";
+import { UserWorkout, WORKOUT_STATUS } from "../../common";
 import { apiClient } from "../lib/api";
+
+interface StartWorkoutParams {
+  day: string;
+  workout: WeeklyWorkoutPlan;
+}
 
 // Workout service
 export const workoutService = {
   // Start workout
-  startWorkout: (day: string): Promise<UserWorkout> => {
+  startWorkout: ({
+    day,
+    workout,
+  }: StartWorkoutParams): Promise<UserWorkout> => {
     return apiClient.post(`/user-workouts`, {
       name: day,
-      status: "in_progress",
+      status: WORKOUT_STATUS.IN_PROGRESS,
       started_at: new Date().toISOString(),
+      exercises: workout,
     });
   },
-  getActiveWorkout: () => {
-    return apiClient.get<UserWorkout>(`/user-workouts?status=in_progress`);
+  getActiveWorkout: (): Promise<UserWorkout> => {
+    return apiClient.get<UserWorkout>(`/user-workouts`);
   },
 };

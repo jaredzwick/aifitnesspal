@@ -19,7 +19,7 @@ import { useAuth } from '../hooks/useAuth';
 import { User } from '@supabase/supabase-js';
 import { ErrorBoundary } from './ui/ErrorBoundary';
 import logo from '../assets/logo-navbar.png';
-import { FitnessUser, PersonalizedPlan } from '../../common';
+import { FitnessUser, PersonalizedPlan, WeeklyWorkoutPlan, WORKOUT_STATUS } from '../../common';
 import { TrainingRegimen } from './training/TrainingRegimen';
 import { workoutService } from '../services/workoutService';
 import { useQuery } from '@tanstack/react-query';
@@ -35,8 +35,18 @@ export const Dashboard: React.FC<DashboardProps> = ({ user }) => {
   const [currentView, setCurrentView] = useState<DashboardView>('overview');
   const { data: activeWorkout, isLoading: activeWorkoutLoading, error: activeWorkoutError } = useQuery({
     queryKey: ['getActiveWorkout'],
-    queryFn: () => workoutService.getActiveWorkout(),
+    queryFn: async () => {
+      const response = await workoutService.getActiveWorkout();
+      console.log('~response.activeWorkout', response);
+      if (response) {
+        if (response.status === WORKOUT_STATUS.IN_PROGRESS) {
+          setCurrentView('workout-tracker')
+        }
+      }
+      return response
+    },
   })
+  console.log('~dashboard.activeWorkout ', activeWorkout)
   const handleSignOut = async () => {
     await signOut();
   };
@@ -281,7 +291,7 @@ export const Dashboard: React.FC<DashboardProps> = ({ user }) => {
                   <div className="text-right">
                     <span className={`px-2 py-1 rounded-full text-xs font-medium ${workout.status === 'completed'
                       ? 'bg-green-100 dark:bg-green-900/20 text-green-700 dark:text-green-300'
-                      : workout.status === 'in_progress'
+                      : workout.status === WORKOUT_STATUS.IN_PROGRESS
                         ? 'bg-blue-100 dark:bg-blue-900/20 text-blue-700 dark:text-blue-300'
                         : 'bg-gray-100 dark:bg-gray-700 text-gray-600 dark:text-gray-300'
                       }`}>
@@ -380,7 +390,7 @@ export const Dashboard: React.FC<DashboardProps> = ({ user }) => {
   const renderCurrentView = () => {
     switch (currentView) {
       case 'workout-tracker':
-        return <WorkoutTracker plan={user?.user_metadata.personalizedPlan as PersonalizedPlan} />;
+        return <WorkoutTracker plan={user?.user_metadata.personalizedPlan as PersonalizedPlan} inProgressWorkout={activeWorkout?.exercises as WeeklyWorkoutPlan} />;
       case 'training-regimen':
         return <TrainingRegimen plan={user?.user_metadata.personalizedPlan as PersonalizedPlan} />;
       case 'nutrition':

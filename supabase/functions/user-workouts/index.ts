@@ -4,6 +4,7 @@ import { Pool } from "npm:pg";
 import type { Database as KyselyDatabase } from "../../database/kysely.ts";
 import type { Database as SupabaseDatabase } from "../../database/supabase.ts";
 import { corsHeaders } from "../_shared/cors.ts";
+import { WORKOUT_STATUS } from "../../../common/constants.ts";
 
 export const kysely = new Kysely<KyselyDatabase>({
   dialect: new PostgresDialect({
@@ -41,6 +42,7 @@ Deno.serve(async (req) => {
       case "POST": {
         // Create user workout when user clicks "Start Workout" on a workout day
         const workoutData = await req.json();
+        console.log(workoutData);
         const response = await kysely
           .insertInto("user_workouts")
           .values({
@@ -62,8 +64,9 @@ Deno.serve(async (req) => {
         const response = await kysely
           .selectFrom("user_workouts")
           .where("user_id", "=", user.user.id)
-          .where("status", "=", "in_progress")
+          .where("status", "=", WORKOUT_STATUS.IN_PROGRESS)
           .where("started_at", ">", twentyFourHoursAgo)
+          .orderBy("started_at", "desc")
           .selectAll()
           .executeTakeFirst();
 
