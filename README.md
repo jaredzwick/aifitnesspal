@@ -1,1 +1,1 @@
-made in a weekend with supabase and bolt!
+made a web app, mobile app in a week with supabase and bolt!
