@@ -38,7 +38,6 @@ export const Dashboard: React.FC<DashboardProps> = ({ user }) => {
     queryKey: ['getActiveWorkout'],
     queryFn: async () => {
       const response = await workoutService.getActiveWorkout();
-      console.log('~response.activeWorkout', response);
       if (response) {
         if (response.status === WORKOUT_STATUS.IN_PROGRESS) {
           setCurrentView('workout-tracker')
@@ -47,7 +46,6 @@ export const Dashboard: React.FC<DashboardProps> = ({ user }) => {
       return response
     },
   })
-  console.log('~dashboard.activeWorkout ', activeWorkout)
   const handleSignOut = async () => {
     await signOut();
   };

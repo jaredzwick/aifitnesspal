@@ -119,7 +119,7 @@ export const PlanGenerationStep: React.FC<PlanGenerationStepProps> = ({
                                         key={index}
                                         className="px-3 py-1 bg-blue-200 dark:bg-blue-800 text-blue-800 dark:text-blue-200 text-sm font-medium rounded-full"
                                     >
-                                        {day.day}
+                                        {day.day.charAt(0).toUpperCase() + day.day.slice(1)}
                                     </span>
                                 ))}
                             </div>
@@ -142,7 +142,7 @@ export const PlanGenerationStep: React.FC<PlanGenerationStepProps> = ({
                                             key={index}
                                             className="px-3 py-1 bg-gray-200 dark:bg-gray-700 text-gray-600 dark:text-gray-400 text-sm font-medium rounded-full"
                                         >
-                                            {day.day}
+                                            {day.day.charAt(0).toUpperCase() + day.day.slice(1)}
                                         </span>
                                     ))}
                                 </div>

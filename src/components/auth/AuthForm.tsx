@@ -85,7 +85,6 @@ export const AuthForm: React.FC<AuthFormProps> = ({
   const isValid = formData.email && formData.password &&
     (mode === 'signin' || formData.confirmPassword);
 
-  console.log('userData', userData)
   return (
     <div className="w-full max-w-md">
       <div className="text-center mb-8">

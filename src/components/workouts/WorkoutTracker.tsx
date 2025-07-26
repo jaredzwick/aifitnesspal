@@ -22,15 +22,38 @@ import { workoutService } from '../../services/workoutService';
 export const WorkoutTracker: React.FC<{ plan: PersonalizedPlan, inProgressUserWorkout?: UserWorkout, prefersMetric: boolean }> = ({ plan, inProgressUserWorkout, prefersMetric }) => {
 
   const [activeWorkout, setActiveWorkout] = useState<WeeklyWorkoutPlan | null>(null);
-  const [currentExerciseIndex, setCurrentExerciseIndex] = useState(0);
-  const [currentSetIndex, setCurrentSetIndex] = useState(0);
+  const [currentInProgressWorkout, setCurrentInProgressWorkout] = useState<UserWorkout | undefined>(inProgressUserWorkout);
+  const [currentExerciseIndex, setCurrentExerciseIndex] = useState<number>(() => {
+    if (!inProgressUserWorkout?.exercises) return 0;
+    const newWorkout = inProgressUserWorkout.exercises as WeeklyWorkoutPlan;
+    if (!newWorkout.workout) return 0;
+    let cnt = 0;
+    for (let i = 0; i < newWorkout.workout!.length; i++) {
+      if (newWorkout.workout![i].userSets?.length) {
+        if (newWorkout.workout![i].userSets!.length >= newWorkout.workout![i].numberOfSets!) {
+          cnt++;
+        }
+      }
+    }
+    return cnt;
+  });
+  const [currentSetIndex, setCurrentSetIndex] = useState(() => {
+    if (!inProgressUserWorkout?.exercises) return 0;
+    const newWorkout = inProgressUserWorkout.exercises as WeeklyWorkoutPlan;
+    if (newWorkout.workout && newWorkout.workout[currentExerciseIndex] && newWorkout.workout[currentExerciseIndex].userSets) {
+      const newIdx = newWorkout.workout[currentExerciseIndex].userSets?.length;
+      console.log('~newIdx', newIdx)
+      if (newIdx >= newWorkout.workout[currentExerciseIndex].numberOfSets!) {
+        setCurrentExerciseIndex(prev => prev + 1);
+        return 0;
+      }
+      return newIdx;
+    }
+    return 0;
+  });
   const [isResting, setIsResting] = useState(false);
   const [restTimer, setRestTimer] = useState(0);
-  const [workoutTimer, setWorkoutTimer] = useState(0);
-  const [showWorkoutSelector, setShowWorkoutSelector] = useState(false);
 
-
-  // Set activeWorkout when inProgressUserWorkout changes
   useEffect(() => {
     if (inProgressUserWorkout) {
       setActiveWorkout(inProgressUserWorkout.exercises as WeeklyWorkoutPlan);
@@ -65,13 +88,13 @@ export const WorkoutTracker: React.FC<{ plan: PersonalizedPlan, inProgressUserWo
     }
   })
 
-  const startWorkout = () => {
+  const startWorkout = async () => {
     const today = new Date().toLocaleDateString('en-US', { weekday: 'long' }).toLowerCase();
-    console.log(today)
     const todaysWorkout = plan.trainingRegimen!.find(workout => workout.day === today)
     if (todaysWorkout) {
-      startWorkoutMutation.mutate({ day: today, workout: todaysWorkout });
+      const response = await startWorkoutMutation.mutateAsync({ day: today, workout: todaysWorkout });
       setActiveWorkout(todaysWorkout);
+      setCurrentInProgressWorkout(response);
     }
   };
 
@@ -84,16 +107,6 @@ export const WorkoutTracker: React.FC<{ plan: PersonalizedPlan, inProgressUserWo
       setActiveWorkout(null);
     }
   };
-  // Timer effects
-  useEffect(() => {
-    let interval: NodeJS.Timeout;
-    if (activeWorkout && !isResting) {
-      interval = setInterval(() => {
-        setWorkoutTimer(prev => prev + 1);
-      }, 1000);
-    }
-    return () => clearInterval(interval);
-  }, [activeWorkout, isResting]);
 
   useEffect(() => {
     let interval: NodeJS.Timeout;
@@ -138,17 +151,29 @@ export const WorkoutTracker: React.FC<{ plan: PersonalizedPlan, inProgressUserWo
   const isCardioExercise = currentExercise?.type === 'cardio';
 
   const updateSet = (updates: Partial<WorkoutSet>) => {
+    console.log('~updates', updates)
+    console.log('~currentSet', currentSet)
+    console.log('~currentExercise', currentExercise)
+    console.log('~activeWorkout', activeWorkout)
+    console.log('~currentExerciseIndex', currentExerciseIndex)
+    console.log('~currentSetIndex', currentSetIndex)
     if (!activeWorkout || !currentSet) return;
-
+    console.log('~didnt return')
     setActiveWorkout(prev => {
-      if (!prev) return prev;
+      if (!prev || !prev.workout) return prev;
 
       const newWorkout = { ...prev };
       const set = currentExercise?.userSets?.[currentSetIndex] || null;
-      newWorkout.workout![currentExerciseIndex].userSets![currentSetIndex] = {
-        ...set,
-        ...updates
-      };
+      console.log('~set', set)
+
+      // Ensure workout exists and has the exercise at the current index
+      if (newWorkout.workout && newWorkout.workout[currentExerciseIndex] && newWorkout.workout[currentExerciseIndex].userSets) {
+        newWorkout.workout[currentExerciseIndex].userSets![currentSetIndex] = {
+          ...set,
+          ...updates
+        };
+      }
+      console.log('~newWorkout', newWorkout)
       return newWorkout;
     });
   };
@@ -170,7 +195,7 @@ export const WorkoutTracker: React.FC<{ plan: PersonalizedPlan, inProgressUserWo
     }
     persistCompletedSetMutation.mutate({
       activeWorkout: activeWorkout!,
-      userWorkout: inProgressUserWorkout!
+      userWorkout: currentInProgressWorkout!
     });
   };
 
@@ -301,6 +326,9 @@ export const WorkoutTracker: React.FC<{ plan: PersonalizedPlan, inProgressUserWo
               <h2 className="text-2xl font-bold">{activeWorkout?.workout?.[currentExerciseIndex].name}</h2>
               <p className="text-emerald-100">
                 Exercise {currentExerciseIndex + 1} of {activeWorkout?.workout?.length}
+              </p>
+              <p className="text-emerald-100">
+                Set {currentSetIndex + 1} of {currentExercise!.numberOfSets}
               </p>
             </div>
 

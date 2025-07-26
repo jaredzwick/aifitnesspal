@@ -71,7 +71,8 @@ Deno.serve(async (req) => {
           .selectAll()
           .executeTakeFirst();
 
-        return new Response(JSON.stringify(response), {
+        // Return null if no active workout is found (this is expected behavior)
+        return new Response(JSON.stringify(response || null), {
           status: 200,
           headers: { ...corsHeaders, "Content-Type": "application/json" },
         });
@@ -94,39 +95,53 @@ Deno.serve(async (req) => {
 
         const workoutData: WeeklyWorkoutPlan = await req.json();
 
-        // Fetch the current exercises array
-        const currentWorkout = await kysely
-          .selectFrom("user_workouts")
-          .where("id", "=", workoutId)
-          .where("user_id", "=", user.user.id)
-          .select("exercises")
-          .executeTakeFirst();
-
-        if (!currentWorkout) {
-          return new Response(JSON.stringify({ error: "Workout not found" }), {
-            status: 404,
-            headers: { ...corsHeaders, "Content-Type": "application/json" },
-          });
-        }
-
-        // Parse the exercises array and update the matching day
-        const exercisesArray = currentWorkout.exercises as WeeklyWorkoutPlan[];
-        const updatedExercises = exercisesArray.map((exercise) => {
-          if (exercise.day === workoutData.day) {
-            // Update the workout for the matching day
-            return {
-              ...exercise,
-              workout: workoutData.workout,
-            };
-          }
-          return exercise; // Keep other days unchanged
-        });
-
-        // Build update query dynamically to handle both persistCompletedSet and completeWorkout
         const updateQuery = kysely
           .updateTable("user_workouts")
           .set({
-            exercises: JSON.stringify(updatedExercises),
+            exercises: workoutData,
+          })
+          .where("id", "=", workoutId)
+          .where("user_id", "=", user.user.id);
+
+        const response = await updateQuery
+          .returningAll()
+          .executeTakeFirst();
+
+        if (!response) {
+          return new Response(
+            JSON.stringify({ error: "Workout not found or access denied" }),
+            {
+              status: 404,
+              headers: { ...corsHeaders, "Content-Type": "application/json" },
+            },
+          );
+        }
+
+        return new Response(JSON.stringify(response), {
+          status: 200,
+          headers: { ...corsHeaders, "Content-Type": "application/json" },
+        });
+      }
+      case "PATCH": {
+        const url = new URL(req.url);
+        const pathParts = url.pathname.split("/");
+        const workoutId = pathParts[pathParts.length - 1];
+
+        if (!workoutId) {
+          return new Response(
+            JSON.stringify({ error: "Workout ID is required" }),
+            {
+              status: 400,
+              headers: { ...corsHeaders, "Content-Type": "application/json" },
+            },
+          );
+        }
+
+        const workoutData = await req.json();
+        const updateQuery = kysely
+          .updateTable("user_workouts")
+          .set({
+            ...workoutData,
           })
           .where("id", "=", workoutId)
           .where("user_id", "=", user.user.id);

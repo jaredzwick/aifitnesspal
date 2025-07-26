@@ -44,8 +44,8 @@ export const workoutService = {
     activeWorkout,
     userWorkout,
   }: CompleteWorkoutParams) => {
-    return apiClient.put(`/user-workouts/${userWorkout.id}`, {
-      activeWorkout,
+    return apiClient.patch(`/user-workouts/${userWorkout.id}`, {
+      exercises: activeWorkout,
       status: WORKOUT_STATUS.COMPLETED,
       completed_at: new Date().toISOString(),
     });
