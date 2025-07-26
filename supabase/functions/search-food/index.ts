@@ -4,7 +4,7 @@ import { Kysely, PostgresDialect, sql } from "npm:kysely";
 import { Pool } from "npm:pg";
 import type { Database as KyselyDatabase } from "../../database/kysely.ts";
 import type { Database as SupabaseDatabase } from "../../database/supabase.ts";
-import { corsHeaders } from "../_shared/cors.ts";
+import { getCorsHeaders } from "../_shared/cors.ts";
 console.log("Hello from Functions!");
 
 export const kysely = new Kysely<KyselyDatabase>({
@@ -16,6 +16,8 @@ export const kysely = new Kysely<KyselyDatabase>({
 });
 
 Deno.serve(async (req) => {
+  const corsHeaders = getCorsHeaders(req.headers.get("origin"));
+
   if (req.method === "OPTIONS") {
     return new Response("ok", { headers: corsHeaders });
   }
@@ -51,13 +53,9 @@ Deno.serve(async (req) => {
   }
 
   try {
-    // Use hybrid search with deduplication
+    // Use sql template with parameters directly
     const results = await sql`
-      SELECT DISTINCT ON (category, SUBSTRING(description, 1, 20))
-        id, description, category, kilocalories, protein, carbohydrate, total_lipid as total_fat
-      FROM hybrid_search(${cleanQuery}, ${0.2}, ${limit * 2})
-      ORDER BY category, SUBSTRING(description, 1, 20), similarity DESC
-      LIMIT ${limit}
+      SELECT * FROM hybrid_search(${cleanQuery}, ${0.2}, ${limit})
     `.execute(kysely);
 
     return new Response(JSON.stringify(results), {

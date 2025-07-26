@@ -6,8 +6,8 @@ import './index.css';
 
 createRoot(document.getElementById('root')!).render(
   <StrictMode>
-    <PostHogProviderWrapper>
-      <App />
-    </PostHogProviderWrapper>
+    {/* <PostHogProviderWrapper> */}
+    <App />
+    {/* </PostHogProviderWrapper> */}
   </StrictMode>
 );

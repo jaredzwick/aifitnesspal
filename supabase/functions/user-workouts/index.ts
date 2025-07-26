@@ -3,7 +3,7 @@ import { Kysely, PostgresDialect } from "npm:kysely";
 import { Pool } from "npm:pg";
 import type { Database as KyselyDatabase } from "../../database/kysely.ts";
 import type { Database as SupabaseDatabase } from "../../database/supabase.ts";
-import { corsHeaders } from "../_shared/cors.ts";
+import { getCorsHeaders } from "../_shared/cors.ts";
 import { WORKOUT_STATUS } from "../../../common/constants.ts";
 import { WeeklyWorkoutPlan } from "../../../common/types.ts";
 
@@ -16,6 +16,7 @@ export const kysely = new Kysely<KyselyDatabase>({
 });
 
 Deno.serve(async (req) => {
+  const corsHeaders = getCorsHeaders(req.headers.get("origin"));
   if (req.method === "OPTIONS") {
     return new Response(null, { headers: corsHeaders });
   }
