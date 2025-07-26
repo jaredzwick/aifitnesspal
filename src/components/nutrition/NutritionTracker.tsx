@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useEffect, useState } from 'react';
 import {
   Plus,
   Search,
@@ -19,6 +19,7 @@ import {
 import { ButtonSpinner, SkeletonCard } from '../ui/LoadingSpinner';
 import { ErrorMessage } from '../ui/ErrorMessage';
 import { ErrorBoundary } from '../ui/ErrorBoundary';
+import { nutritionService } from '../../services/nutritionService';
 
 interface MacroTarget {
   calories: number;
@@ -39,6 +40,14 @@ export const NutritionTracker: React.FC = () => {
   const [selectedMealType, setSelectedMealType] = useState<'breakfast' | 'lunch' | 'dinner' | 'snack'>('breakfast');
   const [searchQuery, setSearchQuery] = useState('');
   const [showMacroDetails, setShowMacroDetails] = useState(false);
+
+  useEffect(() => {
+    if (searchQuery.length > 1) {
+      nutritionService.autoCompleteFoods(searchQuery).then((results) => {
+        console.log(results);
+      });
+    }
+  }, [searchQuery]);
 
   // Mock targets - would come from user profile/goals
   const targets: MacroTarget = {

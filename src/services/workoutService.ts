@@ -32,7 +32,7 @@ export const workoutService = {
     });
   },
   getActiveWorkout: (): Promise<UserWorkout> => {
-    return apiClient.get<UserWorkout>(`/user-workouts`);
+    return apiClient.get<UserWorkout>(`/user-workouts?q=active`);
   },
   persistCompletedSet: ({
     activeWorkout,
@@ -49,5 +49,8 @@ export const workoutService = {
       status: WORKOUT_STATUS.COMPLETED,
       completed_at: new Date().toISOString(),
     });
+  },
+  getRecentWorkouts: (): Promise<UserWorkout[]> => {
+    return apiClient.get<UserWorkout[]>(`/user-workouts?q=recent`);
   },
 };

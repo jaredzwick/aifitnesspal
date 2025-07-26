@@ -15,7 +15,7 @@ import { ButtonSpinner } from '../ui/LoadingSpinner';
 import { ErrorMessage } from '../ui/ErrorMessage';
 import { ErrorBoundary } from '../ui/ErrorBoundary';
 import { WorkoutSet, PersonalizedPlan, WeeklyWorkoutPlan, UserWorkout } from '../../../common';
-import { useMutation } from '@tanstack/react-query';
+import { useMutation, useQuery } from '@tanstack/react-query';
 import { workoutService } from '../../services/workoutService';
 
 
@@ -60,6 +60,10 @@ export const WorkoutTracker: React.FC<{ plan: PersonalizedPlan, inProgressUserWo
     }
   }, [inProgressUserWorkout]);
 
+  const { data: recentWorkouts, isLoading: recentWorkoutsLoading, error: recentWorkoutsError } = useQuery({
+    queryKey: ['getRecentWorkouts'],
+    queryFn: workoutService.getRecentWorkouts
+  })
 
   // Get available workouts
   let workoutsError: Error | null = null;
@@ -85,7 +89,8 @@ export const WorkoutTracker: React.FC<{ plan: PersonalizedPlan, inProgressUserWo
     onError: (error: Error) => {
       console.error(error);
       workoutsError = error;
-    }
+    },
+
   })
 
   const startWorkout = async () => {
@@ -105,6 +110,8 @@ export const WorkoutTracker: React.FC<{ plan: PersonalizedPlan, inProgressUserWo
         userWorkout: inProgressUserWorkout
       });
       setActiveWorkout(null);
+      setCurrentInProgressWorkout(undefined);
+      window.location.reload();
     }
   };
 
@@ -241,11 +248,136 @@ export const WorkoutTracker: React.FC<{ plan: PersonalizedPlan, inProgressUserWo
             <h3 className="text-lg font-semibold text-gray-900 dark:text-white mb-4">
               Recent Workouts
             </h3>
-            <div className="text-center py-8 text-gray-500 dark:text-gray-400">
-              <Activity className="w-12 h-12 mx-auto mb-3 opacity-50" />
-              <p>No recent workouts</p>
-              <p className="text-sm">Start your first workout to see it here</p>
-            </div>
+            {recentWorkoutsLoading ? (
+              <div className="space-y-3">
+                {[...Array(3)].map((_, i) => (
+                  <div key={i} className="animate-pulse">
+                    <div className="flex items-center space-x-4 p-4 bg-gray-100 dark:bg-gray-700 rounded-xl">
+                      <div className="w-12 h-12 bg-gray-300 dark:bg-gray-600 rounded-full"></div>
+                      <div className="flex-1 space-y-2">
+                        <div className="h-4 bg-gray-300 dark:bg-gray-600 rounded w-3/4"></div>
+                        <div className="h-3 bg-gray-300 dark:bg-gray-600 rounded w-1/2"></div>
+                      </div>
+                      <div className="w-16 h-6 bg-gray-300 dark:bg-gray-600 rounded"></div>
+                    </div>
+                  </div>
+                ))}
+              </div>
+            ) : recentWorkoutsError ? (
+              <div className="text-center py-8 text-red-500 dark:text-red-400">
+                <Activity className="w-12 h-12 mx-auto mb-3 opacity-50" />
+                <p>Failed to load recent workouts</p>
+                <p className="text-sm">Please try again later</p>
+              </div>
+            ) : !recentWorkouts || recentWorkouts.length === 0 ? (
+              <div className="text-center py-8 text-gray-500 dark:text-gray-400">
+                <Activity className="w-12 h-12 mx-auto mb-3 opacity-50" />
+                <p>No recent workouts</p>
+                <p className="text-sm">Start your first workout to see it here</p>
+              </div>
+            ) : (
+              <div className="space-y-3 max-h-96 overflow-y-auto">
+                {recentWorkouts.map((workout) => {
+                  const workoutDate = new Date(workout.started_at!);
+                  const isToday = workoutDate.toDateString() === new Date().toDateString();
+                  const isYesterday = workoutDate.toDateString() === new Date(Date.now() - 86400000).toDateString();
+
+                  let dateDisplay;
+                  if (isToday) {
+                    dateDisplay = 'Today';
+                  } else if (isYesterday) {
+                    dateDisplay = 'Yesterday';
+                  } else {
+                    dateDisplay = workoutDate.toLocaleDateString('en-US', {
+                      month: 'short',
+                      day: 'numeric'
+                    });
+                  }
+
+                  const workoutPlan = workout.exercises as WeeklyWorkoutPlan;
+                  const exerciseCount = workoutPlan?.workout?.length || 0;
+                  const completedSets = workoutPlan?.workout?.reduce((total, exercise) =>
+                    total + (exercise.userSets?.length || 0), 0
+                  ) || 0;
+
+                  const statusColor = workout.status === 'completed'
+                    ? 'text-emerald-600 dark:text-emerald-400 bg-emerald-50 dark:bg-emerald-900/20'
+                    : workout.status === 'in_progress'
+                      ? 'text-blue-600 dark:text-blue-400 bg-blue-50 dark:bg-blue-900/20'
+                      : 'text-gray-600 dark:text-gray-400 bg-gray-50 dark:bg-gray-700';
+
+                  const statusIcon = workout.status === 'completed'
+                    ? <CheckCircle2 className="w-4 h-4" />
+                    : workout.status === 'in_progress'
+                      ? <Timer className="w-4 h-4" />
+                      : <Activity className="w-4 h-4" />;
+
+                  return (
+                    <div
+                      key={workout.id}
+                      className="group relative overflow-hidden bg-gradient-to-r from-white to-gray-50 dark:from-gray-800 dark:to-gray-750 border border-gray-200 dark:border-gray-700 rounded-xl p-4 hover:shadow-lg hover:border-emerald-200 dark:hover:border-emerald-700 transition-all duration-300 cursor-pointer transform hover:-translate-y-1"
+                    >
+                      {/* Workout Type Indicator */}
+                      <div className="absolute top-0 left-0 w-1 h-full bg-gradient-to-b from-emerald-500 to-emerald-600"></div>
+
+                      <div className="flex items-center justify-between">
+                        <div className="flex items-center space-x-4 flex-1">
+                          {/* Workout Icon */}
+                          <div className="flex-shrink-0">
+                            <div className="w-12 h-12 bg-emerald-100 dark:bg-emerald-900/30 rounded-full flex items-center justify-center group-hover:bg-emerald-200 dark:group-hover:bg-emerald-900/50 transition-colors duration-200">
+                              <Activity className="w-6 h-6 text-emerald-600 dark:text-emerald-400" />
+                            </div>
+                          </div>
+
+                          {/* Workout Details */}
+                          <div className="flex-1 min-w-0">
+                            <div className="flex items-center space-x-2 mb-1">
+                              <h4 className="font-semibold text-gray-900 dark:text-white truncate">
+                                {workoutPlan?.day ? workoutPlan.day.charAt(0).toUpperCase() + workoutPlan.day.slice(1) : 'Workout'}
+                              </h4>
+                              <span className={`inline-flex items-center space-x-1 px-2 py-1 rounded-full text-xs font-medium ${statusColor}`}>
+                                {statusIcon}
+                                <span className="capitalize">{workout.status?.replace('_', ' ')}</span>
+                              </span>
+                            </div>
+
+                            <div className="flex items-center space-x-4 text-sm text-gray-600 dark:text-gray-400">
+                              <span className="flex items-center space-x-1">
+                                <Target className="w-4 h-4" />
+                                <span>{exerciseCount} exercises</span>
+                              </span>
+                              {completedSets > 0 && (
+                                <span className="flex items-center space-x-1">
+                                  <CheckCircle2 className="w-4 h-4" />
+                                  <span>{completedSets} sets</span>
+                                </span>
+                              )}
+                            </div>
+                          </div>
+                        </div>
+
+                        {/* Date and Duration */}
+                        <div className="flex flex-col items-end space-y-1 text-right">
+                          <span className="text-sm font-medium text-gray-900 dark:text-white">
+                            {dateDisplay}
+                          </span>
+                          <span className="text-xs text-gray-500 dark:text-gray-400">
+                            {workoutDate.toLocaleTimeString('en-US', {
+                              hour: 'numeric',
+                              minute: '2-digit',
+                              hour12: true
+                            })}
+                          </span>
+                        </div>
+                      </div>
+
+                      {/* Hover Effect Overlay */}
+                      <div className="absolute inset-0 bg-gradient-to-r from-emerald-500/5 to-transparent opacity-0 group-hover:opacity-100 transition-opacity duration-300 pointer-events-none"></div>
+                    </div>
+                  );
+                })}
+              </div>
+            )}
           </div>
         </div>
       </ErrorBoundary>

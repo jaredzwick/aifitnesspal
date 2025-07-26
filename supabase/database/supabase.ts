@@ -200,60 +200,201 @@ export type Database = {
         }
         Relationships: []
       }
-      foods: {
+      food: {
         Row: {
-          barcode: string | null
-          brand: string | null
-          calories_per_serving: number
-          carbs_g: number | null
+          alpha_carotene: number | null
+          ash: number | null
+          beta_carotene: number | null
+          beta_cryptoxanthin: number | null
+          calcium: number | null
+          carbohydrate: number | null
+          category: string | null
+          cholesterol: number | null
+          choline: number | null
+          copper: number | null
           created_at: string | null
-          created_by: string | null
-          fat_g: number | null
-          fiber_g: number | null
+          description: string
+          fiber: number | null
+          first_household_weight: number | null
+          first_household_weight_description: string | null
+          household_weight_1: number | null
+          household_weight_1_desc: string | null
+          household_weight_2: number | null
+          household_weight_2_desc: string | null
           id: string
-          is_verified: boolean | null
-          name: string
-          protein_g: number | null
-          serving_size: number
-          serving_unit: string
-          sodium_mg: number | null
-          sugar_g: number | null
+          iron: number | null
+          kilocalories: number
+          lutein_and_zeaxanthin: number | null
+          lutein_zeaxanthin: number | null
+          lycopene: number | null
+          magnesium: number | null
+          manganese: number | null
+          monosaturated_fat: number | null
+          monounsaturated_fat: number | null
+          niacin: number | null
+          nutrient_data_bank_number: string
+          pantothenic_acid: number | null
+          phosphorus: number | null
+          polysaturated_fat: number | null
+          polyunsaturated_fat: number | null
+          potassium: number | null
+          protein: number | null
+          refuse_percentage: number | null
+          retinol: number | null
+          riboflavin: number | null
+          saturated_fat: number | null
+          search_vector: unknown | null
+          second_household_weight: number | null
+          second_household_weight_description: string | null
+          selenium: number | null
+          serving_size: number | null
+          serving_unit: string | null
+          sodium: number | null
+          sugar: number | null
+          sugar_total: number | null
+          thiamin: number | null
+          total_fat: number | null
+          total_lipid: number | null
+          vitamin_a_iu: number | null
+          vitamin_a_rae: number | null
+          vitamin_b12: number | null
+          vitamin_b6: number | null
+          vitamin_c: number | null
+          vitamin_e: number | null
+          vitamin_k: number | null
+          water: number | null
+          water_content: number | null
+          zinc: number | null
         }
         Insert: {
-          barcode?: string | null
-          brand?: string | null
-          calories_per_serving: number
-          carbs_g?: number | null
+          alpha_carotene?: number | null
+          ash?: number | null
+          beta_carotene?: number | null
+          beta_cryptoxanthin?: number | null
+          calcium?: number | null
+          carbohydrate?: number | null
+          category?: string | null
+          cholesterol?: number | null
+          choline?: number | null
+          copper?: number | null
           created_at?: string | null
-          created_by?: string | null
-          fat_g?: number | null
-          fiber_g?: number | null
+          description: string
+          fiber?: number | null
+          first_household_weight?: number | null
+          first_household_weight_description?: string | null
+          household_weight_1?: number | null
+          household_weight_1_desc?: string | null
+          household_weight_2?: number | null
+          household_weight_2_desc?: string | null
           id?: string
-          is_verified?: boolean | null
-          name: string
-          protein_g?: number | null
-          serving_size?: number
-          serving_unit?: string
-          sodium_mg?: number | null
-          sugar_g?: number | null
+          iron?: number | null
+          kilocalories: number
+          lutein_and_zeaxanthin?: number | null
+          lutein_zeaxanthin?: number | null
+          lycopene?: number | null
+          magnesium?: number | null
+          manganese?: number | null
+          monosaturated_fat?: number | null
+          monounsaturated_fat?: number | null
+          niacin?: number | null
+          nutrient_data_bank_number: string
+          pantothenic_acid?: number | null
+          phosphorus?: number | null
+          polysaturated_fat?: number | null
+          polyunsaturated_fat?: number | null
+          potassium?: number | null
+          protein?: number | null
+          refuse_percentage?: number | null
+          retinol?: number | null
+          riboflavin?: number | null
+          saturated_fat?: number | null
+          search_vector?: unknown | null
+          second_household_weight?: number | null
+          second_household_weight_description?: string | null
+          selenium?: number | null
+          serving_size?: number | null
+          serving_unit?: string | null
+          sodium?: number | null
+          sugar?: number | null
+          sugar_total?: number | null
+          thiamin?: number | null
+          total_fat?: number | null
+          total_lipid?: number | null
+          vitamin_a_iu?: number | null
+          vitamin_a_rae?: number | null
+          vitamin_b12?: number | null
+          vitamin_b6?: number | null
+          vitamin_c?: number | null
+          vitamin_e?: number | null
+          vitamin_k?: number | null
+          water?: number | null
+          water_content?: number | null
+          zinc?: number | null
         }
         Update: {
-          barcode?: string | null
-          brand?: string | null
-          calories_per_serving?: number
-          carbs_g?: number | null
+          alpha_carotene?: number | null
+          ash?: number | null
+          beta_carotene?: number | null
+          beta_cryptoxanthin?: number | null
+          calcium?: number | null
+          carbohydrate?: number | null
+          category?: string | null
+          cholesterol?: number | null
+          choline?: number | null
+          copper?: number | null
           created_at?: string | null
-          created_by?: string | null
-          fat_g?: number | null
-          fiber_g?: number | null
+          description?: string
+          fiber?: number | null
+          first_household_weight?: number | null
+          first_household_weight_description?: string | null
+          household_weight_1?: number | null
+          household_weight_1_desc?: string | null
+          household_weight_2?: number | null
+          household_weight_2_desc?: string | null
           id?: string
-          is_verified?: boolean | null
-          name?: string
-          protein_g?: number | null
-          serving_size?: number
-          serving_unit?: string
-          sodium_mg?: number | null
-          sugar_g?: number | null
+          iron?: number | null
+          kilocalories?: number
+          lutein_and_zeaxanthin?: number | null
+          lutein_zeaxanthin?: number | null
+          lycopene?: number | null
+          magnesium?: number | null
+          manganese?: number | null
+          monosaturated_fat?: number | null
+          monounsaturated_fat?: number | null
+          niacin?: number | null
+          nutrient_data_bank_number?: string
+          pantothenic_acid?: number | null
+          phosphorus?: number | null
+          polysaturated_fat?: number | null
+          polyunsaturated_fat?: number | null
+          potassium?: number | null
+          protein?: number | null
+          refuse_percentage?: number | null
+          retinol?: number | null
+          riboflavin?: number | null
+          saturated_fat?: number | null
+          search_vector?: unknown | null
+          second_household_weight?: number | null
+          second_household_weight_description?: string | null
+          selenium?: number | null
+          serving_size?: number | null
+          serving_unit?: string | null
+          sodium?: number | null
+          sugar?: number | null
+          sugar_total?: number | null
+          thiamin?: number | null
+          total_fat?: number | null
+          total_lipid?: number | null
+          vitamin_a_iu?: number | null
+          vitamin_a_rae?: number | null
+          vitamin_b12?: number | null
+          vitamin_b6?: number | null
+          vitamin_c?: number | null
+          vitamin_e?: number | null
+          vitamin_k?: number | null
+          water?: number | null
+          water_content?: number | null
+          zinc?: number | null
         }
         Relationships: []
       }
@@ -295,13 +436,6 @@ export type Database = {
           unit?: string
         }
         Relationships: [
-          {
-            foreignKeyName: "meal_foods_food_id_fkey"
-            columns: ["food_id"]
-            isOneToOne: false
-            referencedRelation: "foods"
-            referencedColumns: ["id"]
-          },
           {
             foreignKeyName: "meal_foods_meal_id_fkey"
             columns: ["meal_id"]
@@ -836,7 +970,38 @@ export type Database = {
       [_ in never]: never
     }
     Functions: {
-      [_ in never]: never
+      gtrgm_compress: {
+        Args: { "": unknown }
+        Returns: unknown
+      }
+      gtrgm_decompress: {
+        Args: { "": unknown }
+        Returns: unknown
+      }
+      gtrgm_in: {
+        Args: { "": unknown }
+        Returns: unknown
+      }
+      gtrgm_options: {
+        Args: { "": unknown }
+        Returns: undefined
+      }
+      gtrgm_out: {
+        Args: { "": unknown }
+        Returns: unknown
+      }
+      set_limit: {
+        Args: { "": number }
+        Returns: number
+      }
+      show_limit: {
+        Args: Record<PropertyKey, never>
+        Returns: number
+      }
+      show_trgm: {
+        Args: { "": string }
+        Returns: string[]
+      }
     }
     Enums: {
       [_ in never]: never

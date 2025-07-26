@@ -59,23 +59,50 @@ Deno.serve(async (req) => {
         });
       }
       case "GET": {
-        // Get active user workout
-        const twentyFourHoursAgo = new Date(Date.now() - 24 * 60 * 60 * 1000)
-          .toISOString();
-        const response = await kysely
-          .selectFrom("user_workouts")
-          .where("user_id", "=", user.user.id)
-          .where("status", "=", WORKOUT_STATUS.IN_PROGRESS)
-          .where("started_at", ">", twentyFourHoursAgo)
-          .orderBy("started_at", "desc")
-          .selectAll()
-          .executeTakeFirst();
+        const url = new URL(req.url);
+        const queryParam = url.searchParams.get("q");
 
-        // Return null if no active workout is found (this is expected behavior)
-        return new Response(JSON.stringify(response || null), {
-          status: 200,
-          headers: { ...corsHeaders, "Content-Type": "application/json" },
-        });
+        if (queryParam === "active") {
+          // Get active user workout
+          const twentyFourHoursAgo = new Date(Date.now() - 24 * 60 * 60 * 1000)
+            .toISOString();
+          const response = await kysely
+            .selectFrom("user_workouts")
+            .where("user_id", "=", user.user.id)
+            .where("status", "=", WORKOUT_STATUS.IN_PROGRESS)
+            .where("started_at", ">", twentyFourHoursAgo)
+            .orderBy("started_at", "desc")
+            .selectAll()
+            .executeTakeFirst();
+
+          // Return null if no active workout is found (this is expected behavior)
+          return new Response(JSON.stringify(response || null), {
+            status: 200,
+            headers: { ...corsHeaders, "Content-Type": "application/json" },
+          });
+        } else if (queryParam === "recent") {
+          // Get 10 most recent workouts
+          const response = await kysely
+            .selectFrom("user_workouts")
+            .where("user_id", "=", user.user.id)
+            .orderBy("started_at", "desc")
+            .limit(10)
+            .selectAll()
+            .execute();
+
+          return new Response(JSON.stringify(response), {
+            status: 200,
+            headers: { ...corsHeaders, "Content-Type": "application/json" },
+          });
+        } else {
+          return new Response(
+            JSON.stringify({ error: "Invalid query parameter" }),
+            {
+              status: 400,
+              headers: { ...corsHeaders, "Content-Type": "application/json" },
+            },
+          );
+        }
       }
       case "PUT": {
         // Update user workout - extract ID from URL path
