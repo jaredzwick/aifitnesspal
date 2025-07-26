@@ -58,10 +58,10 @@ Deno.serve(async (req) => {
       WHERE description ILIKE ${`%${query}%`} 
          OR category ILIKE ${`%${query}%`}
       ORDER BY category, SUBSTRING(description, 1, 10), description
-      LIMIT 8
+      LIMIT 25
     `.execute(kysely);
 
-    return new Response(JSON.stringify(results), {
+    return new Response(JSON.stringify(results.rows), {
       headers: { ...corsHeaders, "Content-Type": "application/json" },
     });
   } catch (error) {

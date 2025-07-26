@@ -32,6 +32,9 @@ interface MacroTarget {
 interface FoodSearchResult {
   selected_quantity?: number;
   selected_unit?: string;
+  category: string;
+  description: string;
+  id: string;
 }
 
 export const NutritionTracker: React.FC = () => {
@@ -40,11 +43,17 @@ export const NutritionTracker: React.FC = () => {
   const [selectedMealType, setSelectedMealType] = useState<'breakfast' | 'lunch' | 'dinner' | 'snack'>('breakfast');
   const [searchQuery, setSearchQuery] = useState('');
   const [showMacroDetails, setShowMacroDetails] = useState(false);
+  const [searchResults, setSearchResults] = useState<FoodSearchResult[]>([]);
+  const [selectedFood, setSelectedFood] = useState<FoodSearchResult | null>(null);
+  const [showQuantityModal, setShowQuantityModal] = useState(false);
+  const [quantity, setQuantity] = useState('1');
+  const [selectedUnit, setSelectedUnit] = useState('serving');
+  const [isAddingFood, setIsAddingFood] = useState(false);
 
   useEffect(() => {
     if (searchQuery.length > 1) {
       nutritionService.autoCompleteFoods(searchQuery).then((results) => {
-        console.log(results);
+        setSearchResults(results);
       });
     }
   }, [searchQuery]);
@@ -63,12 +72,60 @@ export const NutritionTracker: React.FC = () => {
   const refreshEntry = () => { };
 
   // Search foods
-  const searchResults: FoodSearchResult[] = [];
   const searchLoading = null;
-  const searchFoods = () => { };
-  const resetSearch = () => { };
+  const resetSearch = () => {
+    setSearchQuery('');
+    setSearchResults([]);
+  };
+
+  // Handle food selection
+  const handleSelectFood = (food: FoodSearchResult) => {
+    setSelectedFood(food);
+    setQuantity('1');
+    setSelectedUnit('serving');
+    setShowQuantityModal(true);
+  };
+
+  const handleCloseQuantityModal = () => {
+    setShowQuantityModal(false);
+    setSelectedFood(null);
+    setQuantity('1');
+    setSelectedUnit('serving');
+  };
 
   // Add food to meal
+  const handleConfirmAddFood = async () => {
+    if (!selectedFood || !quantity) return;
+
+    setIsAddingFood(true);
+    try {
+      // Here you would call your API to add the food to the meal
+      // await nutritionService.addFoodToMeal({
+      //   foodId: selectedFood.id,
+      //   mealType: selectedMealType,
+      //   quantity: parseFloat(quantity),
+      //   unit: selectedUnit
+      // });
+
+      console.log('Adding food:', {
+        food: selectedFood,
+        quantity: parseFloat(quantity),
+        unit: selectedUnit,
+        mealType: selectedMealType
+      });
+
+      // Close modal and reset
+      handleCloseQuantityModal();
+
+      // Refresh the nutrition data
+      // refetch();
+    } catch (error) {
+      console.error('Error adding food:', error);
+    } finally {
+      setIsAddingFood(false);
+    }
+  };
+
   const addFoodToMeal = () => { };
   const addingFood = null;
 
@@ -644,43 +701,31 @@ export const NutritionTracker: React.FC = () => {
                   <div className="space-y-3">
                     {searchResults.map((food) => (
                       <div
+                        key={food.id}
                         className="flex items-center justify-between p-4 border border-gray-200 dark:border-gray-600 rounded-xl hover:bg-gray-50 dark:hover:bg-gray-700 transition-colors"
                       >
                         <div className="flex items-center space-x-4">
                           <div className="w-12 h-12 bg-gradient-to-br from-orange-400 to-orange-500 rounded-xl flex items-center justify-center">
                             <Apple className="w-6 h-6 text-white" />
                           </div>
-                          <div>
-                            <p className="font-semibold text-gray-900 dark:text-white">
-                              {/* {food.name} */}
+                          <div className="flex-1 min-w-0">
+                            <p className="font-semibold text-gray-900 dark:text-white truncate">
+                              {food.description}
                             </p>
-                            {/* {food.brand && (
-                              <p className="text-sm text-gray-600 dark:text-gray-300">
-                                {food.brand}
+                            {food.category && (
+                              <p className="text-sm text-gray-600 dark:text-gray-300 truncate">
+                                {food.category}
                               </p>
-                            )} */}
-                            <div className="flex items-center space-x-4 text-sm text-gray-500 dark:text-gray-400">
-                              {/* <span>{food.calories_per_100g} cal/100g</span>
-                              <span>P: {food.protein_per_100g}g</span>
-                              <span>C: {food.carbs_per_100g}g</span>
-                              <span>F: {food.fat_per_100g}g</span> */}
-                            </div>
+                            )}
                           </div>
                         </div>
 
                         <button
-                          onClick={() => handleAddFood(food)}
-                          // disabled={addingFood}
-                          className="flex items-center space-x-2 px-4 py-2 bg-emerald-600 hover:bg-emerald-700 disabled:opacity-50 text-white rounded-lg font-medium transition-colors"
+                          onClick={() => handleSelectFood(food)}
+                          className="flex items-center space-x-2 px-6 py-3 bg-emerald-600 hover:bg-emerald-700 disabled:opacity-50 text-white rounded-xl font-medium transition-all duration-200 hover:scale-105 hover:shadow-lg focus:outline-none focus:ring-2 focus:ring-emerald-500 focus:ring-offset-2"
                         >
-                          {addingFood ? (
-                            <ButtonSpinner />
-                          ) : (
-                            <>
-                              <Plus className="w-4 h-4" />
-                              <span>Add</span>
-                            </>
-                          )}
+                          <Plus className="w-5 h-5" />
+                          <span>Select</span>
                         </button>
                       </div>
                     ))}
@@ -698,6 +743,157 @@ export const NutritionTracker: React.FC = () => {
                     <p className="text-sm">Enter a food name to get started</p>
                   </div>
                 )}
+              </div>
+            </div>
+          </div>
+        )}
+
+        {/* Quantity Selection Modal */}
+        {showQuantityModal && selectedFood && (
+          <div className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-black/60 backdrop-blur-sm">
+            <div className="w-full max-w-md bg-white dark:bg-gray-800 rounded-2xl shadow-2xl transform transition-all duration-300 scale-100 opacity-100">
+              {/* Header */}
+              <div className="p-6 border-b border-gray-200 dark:border-gray-700">
+                <div className="flex items-center justify-between">
+                  <h3 className="text-xl font-bold text-gray-900 dark:text-white">
+                    Add to {selectedMealType.charAt(0).toUpperCase() + selectedMealType.slice(1)}
+                  </h3>
+                  <button
+                    onClick={handleCloseQuantityModal}
+                    className="p-2 text-gray-400 hover:text-gray-600 dark:hover:text-gray-300 rounded-lg hover:bg-gray-100 dark:hover:bg-gray-700 transition-colors"
+                  >
+                    <X className="w-5 h-5" />
+                  </button>
+                </div>
+              </div>
+
+              {/* Food Info */}
+              <div className="p-6 border-b border-gray-200 dark:border-gray-700">
+                <div className="flex items-center space-x-4">
+                  <div className="w-16 h-16 bg-gradient-to-br from-orange-400 to-orange-500 rounded-2xl flex items-center justify-center flex-shrink-0">
+                    <Apple className="w-8 h-8 text-white" />
+                  </div>
+                  <div className="flex-1 min-w-0">
+                    <h4 className="text-lg font-semibold text-gray-900 dark:text-white truncate">
+                      {selectedFood.category}
+                    </h4>
+                    <p className="text-sm text-gray-600 dark:text-gray-400 truncate">
+                      {selectedFood.description}
+                    </p>
+                  </div>
+                </div>
+              </div>
+
+              {/* Quantity Input */}
+              <div className="p-6 space-y-6">
+                <div>
+                  <label className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-3">
+                    How much did you eat?
+                  </label>
+
+                  <div className="flex items-center space-x-4">
+                    {/* Quantity Input */}
+                    <div className="flex-1">
+                      <div className="relative">
+                        <input
+                          type="number"
+                          value={quantity}
+                          onChange={(e) => setQuantity(e.target.value)}
+                          min="0.1"
+                          step="0.1"
+                          className="w-full px-4 py-3 text-lg font-semibold text-center bg-gray-50 dark:bg-gray-700 border border-gray-300 dark:border-gray-600 rounded-xl focus:ring-2 focus:ring-emerald-500 focus:border-emerald-500 dark:text-white transition-colors"
+                          placeholder="1"
+                        />
+                        <div className="absolute inset-y-0 right-0 flex items-center">
+                          <div className="flex flex-col">
+                            <button
+                              type="button"
+                              onClick={() => setQuantity(String(Math.max(0.1, parseFloat(quantity || '1') + 0.5)))}
+                              className="px-3 py-1 text-gray-400 hover:text-emerald-600 transition-colors"
+                            >
+                              <ChevronUp className="w-4 h-4" />
+                            </button>
+                            <button
+                              type="button"
+                              onClick={() => setQuantity(String(Math.max(0.1, parseFloat(quantity || '1') - 0.5)))}
+                              className="px-3 py-1 text-gray-400 hover:text-emerald-600 transition-colors"
+                            >
+                              <ChevronDown className="w-4 h-4" />
+                            </button>
+                          </div>
+                        </div>
+                      </div>
+                    </div>
+
+                    {/* Unit Selection */}
+                    <div className="flex-1">
+                      <select
+                        value={selectedUnit}
+                        onChange={(e) => setSelectedUnit(e.target.value)}
+                        className="w-full px-4 py-3 bg-gray-50 dark:bg-gray-700 border border-gray-300 dark:border-gray-600 rounded-xl focus:ring-2 focus:ring-emerald-500 focus:border-emerald-500 dark:text-white transition-colors"
+                      >
+                        <option value="serving">Serving</option>
+                        <option value="cup">Cup</option>
+                        <option value="tablespoon">Tablespoon</option>
+                        <option value="teaspoon">Teaspoon</option>
+                        <option value="gram">Gram</option>
+                        <option value="ounce">Ounce</option>
+                        <option value="piece">Piece</option>
+                        <option value="slice">Slice</option>
+                      </select>
+                    </div>
+                  </div>
+                </div>
+
+                {/* Quick Amount Buttons */}
+                <div>
+                  <p className="text-sm font-medium text-gray-700 dark:text-gray-300 mb-3">
+                    Quick amounts
+                  </p>
+                  <div className="grid grid-cols-4 gap-2">
+                    {['0.5', '1', '1.5', '2'].map((amount) => (
+                      <button
+                        key={amount}
+                        onClick={() => setQuantity(amount)}
+                        className={`px-3 py-2 text-sm font-medium rounded-lg transition-all duration-200 ${quantity === amount
+                          ? 'bg-emerald-600 text-white shadow-lg'
+                          : 'bg-gray-100 dark:bg-gray-700 text-gray-700 dark:text-gray-300 hover:bg-gray-200 dark:hover:bg-gray-600'
+                          }`}
+                      >
+                        {amount}
+                      </button>
+                    ))}
+                  </div>
+                </div>
+              </div>
+
+              {/* Actions */}
+              <div className="p-6 bg-gray-50 dark:bg-gray-900 rounded-b-2xl">
+                <div className="flex space-x-3">
+                  <button
+                    onClick={handleCloseQuantityModal}
+                    className="flex-1 px-4 py-3 text-gray-700 dark:text-gray-300 bg-white dark:bg-gray-800 border border-gray-300 dark:border-gray-600 rounded-xl font-medium hover:bg-gray-50 dark:hover:bg-gray-700 transition-colors focus:outline-none focus:ring-2 focus:ring-gray-500 focus:ring-offset-2"
+                  >
+                    Cancel
+                  </button>
+                  <button
+                    onClick={handleConfirmAddFood}
+                    disabled={isAddingFood || !quantity || parseFloat(quantity) <= 0}
+                    className="flex-1 px-4 py-3 bg-emerald-600 hover:bg-emerald-700 disabled:opacity-50 disabled:cursor-not-allowed text-white rounded-xl font-medium transition-all duration-200 hover:shadow-lg focus:outline-none focus:ring-2 focus:ring-emerald-500 focus:ring-offset-2 flex items-center justify-center space-x-2"
+                  >
+                    {isAddingFood ? (
+                      <>
+                        <ButtonSpinner />
+                        <span>Adding...</span>
+                      </>
+                    ) : (
+                      <>
+                        <Plus className="w-5 h-5" />
+                        <span>Add to Meal</span>
+                      </>
+                    )}
+                  </button>
+                </div>
               </div>
             </div>
           </div>
